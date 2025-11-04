@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Planta · One UI 8 — PWA + Abrir/Guardar JSON</title>
+
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  :root{
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --radius:16px; --radius-xl:20px;
+    --shadow-1: 0 1px 3px rgba(0,0,0,.08), 0 6px 20px rgba(0,0,0,.06);
+    --shadow-2: 0 2px 6px rgba(0,0,0,.10), 0 10px 24px rgba(0,0,0,.08);
+    --header-h: 64px;
+    --appbar-h: 72px;
+    --bg:#ffffff; --card:#ffffff; --card-2:#f7f9fc;
+    --ink:#0f172a; --muted:#64748b; --border:#e2e8f0;
+    --primary:#0ea5e9; --primary-ink:#ffffff;
+    --ok:#10b981; --warn:#f59e0b; --danger:#ef4444;
+    --accent-planta:#e0f2fe; --accent-inter:#efe8ff;
+    --focus:#22c55e;
+    --toast-bg: rgba(2,6,23,.92); --toast-fg:#f8fafc;
+    --head-active: linear-gradient(90deg, #0ea5e9, #22c55e);
+    --head-done:   linear-gradient(90deg, #64748b, #10b981);
+    --tip-bg:#0b1220; --tip-fg:#f8fafc;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1220; --card:#0f172a; --card-2:#101826;
+      --ink:#e5e7eb; --muted:#94a3b8; --border:#1f2937;
+      --primary:#38bdf8; --primary-ink:#0b1220;
+      --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
+      --accent-planta:#082f49; --accent-inter:#1e1b4b;
+      --toast-bg: rgba(2,6,23,.9); --toast-fg:#e5e7eb;
+      --head-active: linear-gradient(90deg, #38bdf8, #22c55e);
+      --head-done:   linear-gradient(90deg, #334155, #34d399);
+      --tip-bg: rgba(2,6,23,.95); --tip-fg: #e5e7eb;
+    }
+  }
+  body{
+    font-family:var(--font); color:var(--ink); background:var(--bg);
+    font-size:clamp(16px,1.45vw,18px); line-height:1.6; -webkit-font-smoothing:antialiased;
+    min-height:100dvh; word-break: normal; overflow-wrap: anywhere; hyphens: none; overscroll-behavior-y: contain;
+  }
+  ::placeholder{color:var(--muted);opacity:.95}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:10px; border-radius:10px}
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+
+  header.appbar{
+    position:sticky; top:calc(env(safe-area-inset-top,0px));
+    z-index:5; min-height:var(--header-h);
+    background:linear-gradient(180deg,var(--card) 0%, color-mix(in oklab, var(--card), transparent 6%) 100%);
+    border-bottom:1px solid var(--border);
+    display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px;
+    padding:10px clamp(12px,4vw,24px); backdrop-filter:blur(4px);
+  }
+  .title{display:flex; align-items:center; gap:10px; min-width:0}
+  .title h1{margin:0; font-size:clamp(18px,3.4vw,22px); font-weight:900; letter-spacing:.2px; white-space:nowrap}
+  .title .date{font-weight:700; color:var(--muted); min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+  .actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+  .btn{
+    border:1px solid var(--border); background:var(--card); color:var(--ink);
+    padding:10px 12px; border-radius:12px; box-shadow:var(--shadow-1);
+    font-size:14px; display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    min-height:44px; min-width:44px; justify-content:center; white-space:nowrap;
+  }
+  .btn.primary{ background:var(--primary); color:var(--primary-ink); border-color:transparent }
+  .btn.small{ padding:8px 10px; min-height:36px; border-radius:10px; font-size:13px }
+  details.actions-menu{ display:none; position:relative }
+  details.actions-menu summary{ list-style:none; cursor:pointer; user-select:none }
+  details.actions-menu[open] > .menu{ transform:translateY(0); opacity:1; pointer-events:auto }
+  .menu{ position:absolute; right:0; top:calc(100% + 8px); background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-2);
+    padding:8px; display:grid; gap:8px; min-width:220px; transform:translateY(8px); opacity:0; pointer-events:none; transition:transform .12s ease, opacity .12s ease; z-index:10; }
+  .menu .btn{ width:100% }
+  @media (max-width:720px){ .actions{ display:none } details.actions-menu{ display:block } }
+
+  html{ scroll-padding-top: calc(var(--appbar-h,72px) + 8px); }
+  main{ padding:12px clamp(12px,4vw,24px) calc(24px + env(safe-area-inset-bottom)); max-width:1200px; margin:0 auto; display:grid; gap:16px }
+  .section{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--shadow-1); overflow:clip }
+  .section > .h{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; color:#fff; }
+  .section.active > .h{ background: var(--head-active); }
+  .section.done   > .h{ background: var(--head-done); }
+  .section h2{ margin:0; font-size:clamp(18px,2vw,22px) }
+  .section .muted{ color:#ffffffcc }
+  .sect-b{ padding:12px }
+  .subgrid{ display:grid; gap:16px; grid-template-columns:1fr }
+  @media (min-width:780px){ .subgrid{ grid-template-columns:1fr 1fr } }
+  .panel{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-1) }
+  .panel .ph{ padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid var(--border) }
+  .panel .ph h3{ margin:0; font-size:1.05rem; font-weight:900; display:flex; align-items:center; gap:8px }
+  .accent{ width:.9em; height:.9em; border-radius:999px }
+  .accent.planta{ background:var(--accent-planta) }
+  .accent.inter{ background:var(--accent-inter) }
+  .counter{ font-weight:700; font-size:.95rem; color:var(--muted) }
+
+  .add{ padding:12px; display:flex; gap:8px; flex-wrap:wrap }
+  .add input{ border:1px solid var(--border); background:var(--card); color:var(--ink);
+    padding:10px 12px; border-radius:12px; font-size:16px; min-height:44px; }
+  .add input[name="hab"]{ width:8ch; font-family:ui-monospace,SFMono-Regular,Consolas,monospace }
+  .add input[name="desc"]{ flex:1 1 220px; min-width:160px }
+  .add input[name="pend"]{ flex:1 1 180px; min-width:140px }
+
+  ul.list{ list-style:none; margin:0; padding:8px 12px; display:grid; gap:8px }
+  ul.done{ list-style:none; margin:0; padding:8px 12px; display:grid; gap:8px }
+
+  .item{ display:grid; align-items:center; column-gap:8px; row-gap:6px;
+    grid-template-areas:"circle hab desc pend actions";
+    grid-template-columns:auto minmax(6ch,10ch) minmax(15ch,1fr) minmax(140px,1fr) auto;
+    padding:8px; border:1px solid var(--border); border-radius:12px; background:var(--card); box-shadow:var(--shadow-1); content-visibility:auto; min-width:0; }
+  @media (max-width:740px){
+    .item{ grid-template-areas:"circle hab actions" "desc desc desc" "pend pend pend";
+      grid-template-columns:auto minmax(6ch,10ch) minmax(15ch,1fr); }
+  }
+  .item .hab, .item .desc{ min-width:0; max-width:100%; white-space:nowrap; overflow-x:auto; overflow-y:hidden; text-overflow:clip; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
+  .item .hab::-webkit-scrollbar, .item .desc::-webkit-scrollbar{ display:none }
+  .item .desc{ min-width:15ch; font-weight:800 }
+  .hab{ grid-area:hab; font-family:ui-monospace,SFMono-Regular,Consolas,monospace }
+  .desc{ grid-area:desc }
+  .pend{ grid-area:pend; min-width:0 }
+  .pend input{ width:100%; border:1px solid var(--border); background:var(--card-2); color:var(--ink); border-radius:10px; padding:8px 10px; min-height:40px; font-size:15px; }
+  .circle{ grid-area:circle; display:inline-flex; align-items:center; justify-content:center; width:2.5rem; height:2.5rem; border-radius:50%;
+    border:3px solid currentColor; background:transparent; min-width:44px; min-height:44px; font-size:1.15rem; color:var(--danger); }
+  .circle.r{ color:var(--danger) } .circle.o{ color:var(--warn) } .circle.g{ color:#fff; background:var(--ok); border-color:var(--ok); cursor:default }
+  .circle.r:hover,.circle.o:hover{ background:currentColor; color:#fff }
+  .item.done .desc,.item.done .hab,.item.done .pend{ color:var(--muted); text-decoration:line-through }
+  .actions-inline{ display:flex; gap:6px; justify-self:end }
+  .iconbtn{ background:var(--card-2); border:1px solid var(--border); width:2.4rem; height:2.4rem; border-radius:50%;
+    min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+
+  .dropzone{ border:2px dashed var(--border); border-radius:12px; padding:10px; text-align:center; min-height:44px;
+    display:flex; align-items:center; justify-content:center; color:var(--muted) }
+  .dropzone.drag{ background:#eef7ff }
+  #overlaySaved{ position:fixed; inset:auto 50% calc(18px + env(safe-area-inset-bottom)) auto; transform:translateX(-50%) translateY(12px);
+    background:var(--toast-bg); color:var(--toast-fg); padding:10px 14px; border-radius:12px; font-size:14px; box-shadow:var(--shadow-2);
+    opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease; z-index:20 }
+  #overlaySaved.show{ opacity:1; transform:translateX(-50%) translateY(0) }
+  #tooltip{ position:fixed; inset:auto auto 0 0; transform:translate(-9999px,-9999px); background:var(--tip-bg); color:var(--tip-fg);
+    border:1px solid color-mix(in oklab, var(--tip-bg), white 8%); box-shadow: var(--shadow-2); padding:8px 10px; font-size:14px; border-radius:10px; max-width:min(80vw,520px);
+    z-index:15; pointer-events:none; opacity:0; transition:opacity .12s ease, transform .12s ease; white-space:normal; word-break:break-word; }
+  #tooltip.show{ opacity:1 }
+  .sr-only{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+</style>
+</head>
+<body>
+<header class="appbar" role="banner" aria-label="Barra de aplicación">
+  <div class="title">
+    <h1>Planta</h1>
+    <span class="date" id="today" aria-live="polite"></span>
+  </div>
+  <div class="actions" role="toolbar" aria-label="Acciones">
+    <button class="btn" id="btnOpen">Abrir JSON</button>
+    <button class="btn" id="btnSave">Guardar JSON</button>
+    <button class="btn primary" id="btnInstall" onclick="triggerInstall()">Instalar</button>
+    <input class="sr-only" type="file" id="fileImport" accept="application/json">
+  </div>
+  <details class="actions-menu">
+    <summary class="btn" aria-label="Abrir acciones">Acciones</summary>
+    <div class="menu" role="menu">
+      <button class="btn" id="m_btnOpen" role="menuitem">Abrir JSON</button>
+      <button class="btn" id="m_btnSave" role="menuitem">Guardar JSON</button>
+      <button class="btn primary" id="m_btnInstall" role="menuitem" onclick="triggerInstall()">Instalar</button>
+    </div>
+  </details>
+</header>
+
+<main role="main">
+  <section class="section active" aria-labelledby="trabajoTitle">
+    <div class="h">
+      <h2 id="trabajoTitle">Trabajo diario</h2>
+      <div class="muted" id="persistInfo" aria-live="polite"></div>
+    </div>
+    <div class="sect-b">
+      <div class="subgrid">
+        <section class="panel" aria-labelledby="plantaTitle">
+          <div class="ph">
+            <h3><span class="accent planta" aria-hidden="true"></span> <span id="plantaTitle">Planta</span></h3>
+            <span class="counter" id="countPlanta" aria-live="polite">(R:0 · N:0)</span>
+          </div>
+          <form class="add" data-list="planta" aria-label="Añadir tarea en Planta">
+            <input name="hab" maxlength="8" placeholder="Hab." inputmode="text" autocomplete="off" aria-label="Habitación">
+            <input name="desc" placeholder="Descripción" required autocomplete="off" aria-label="Descripción">
+            <input name="pend" placeholder="Pendiente" autocomplete="off" aria-label="Pendiente (opcional)">
+            <button class="btn primary" type="submit" aria-label="Añadir a Planta">Añadir</button>
+          </form>
+          <ul id="listPlanta" class="list" aria-label="Tareas de Planta"></ul>
+        </section>
+        <section class="panel" aria-labelledby="interTitle">
+          <div class="ph">
+            <h3><span class="accent inter" aria-hidden="true"></span> <span id="interTitle">Interconsultas</span></h3>
+            <span class="counter" id="countInter" aria-live="polite">(R:0 · N:0)</span>
+          </div>
+          <form class="add" data-list="inter" aria-label="Añadir tarea en Interconsultas">
+            <input name="hab" maxlength="8" placeholder="Hab." inputmode="text" autocomplete="off" aria-label="Habitación">
+            <input name="desc" placeholder="Descripción" required autocomplete="off" aria-label="Descripción">
+            <input name="pend" placeholder="Pendiente" autocomplete="off" aria-label="Pendiente (opcional)">
+            <button class="btn primary" type="submit" aria-label="Añadir a Interconsultas">Añadir</button>
+          </form>
+          <ul id="listInter" class="list" aria-label="Tareas de Interconsultas"></ul>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="section done" aria-labelledby="doneTitle">
+    <div class="h">
+      <h2 id="doneTitle">Completadas</h2>
+      <div class="actions-inline">
+        <button class="btn small" id="btnMoveNaranja">Naranja → ✅</button>
+        <button class="btn small" id="btnRestoreAll">Restaurar todo</button>
+        <button class="btn small" id="btnClearDone">Vaciar ✅</button>
+      </div>
+    </div>
+    <div class="sect-b">
+      <div class="subgrid">
+        <section class="panel" aria-labelledby="donePlantaTitle">
+          <div class="ph"><h3 id="donePlantaTitle">Planta</h3></div>
+          <ul id="donePlanta" class="done" aria-label="Completadas de Planta"></ul>
+        </section>
+        <section class="panel" aria-labelledby="doneInterTitle">
+          <div class="ph"><h3 id="doneInterTitle">Interconsultas</h3></div>
+          <ul id="doneInter" class="done" aria-label="Completadas de Interconsultas"></ul>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <div class="dropzone" id="dropzone" aria-label="Arrastra JSON para importar">Arrastra JSON aquí • Esc limpia</div>
+</main>
+
+<div id="overlaySaved" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+<script type="application/json" id="seed">
+{"version":"1","lists":{"planta":[],"inter":[],"donePlanta":[],"doneInter":[]}}
+</script>
+
+<template id="tplActive">
+  <li class="item" tabindex="0">
+    <button class="circle r" title="Marcar completada" aria-label="Marcar completada">✓</button>
+    <span class="hab"></span>
+    <span class="desc"></span>
+    <div class="pend"><input type="text" placeholder="Pendiente…"></div>
+    <div class="actions-inline">
+      <button class="iconbtn" data-act="toRed" title="Marcar rojo" aria-label="Marcar rojo">🟥</button>
+      <button class="iconbtn" data-act="toOrange" title="Marcar naranja" aria-label="Marcar naranja">🟧</button>
+      <button class="iconbtn" data-act="trash" title="Enviar a completadas" aria-label="Enviar a completadas">✅</button>
+    </div>
+  </li>
+</template>
+
+<template id="tplDone">
+  <li class="item done">
+    <span class="circle g" aria-hidden="true">✓</span>
+    <span class="hab"></span>
+    <span class="desc"></span>
+    <div class="pend"></div>
+    <div class="actions-inline">
+      <button class="iconbtn" data-act="undo" title="Deshacer" aria-label="Deshacer">↩</button>
+      <button class="iconbtn" data-act="del" title="Eliminar" aria-label="Eliminar">✖</button>
+    </div>
+  </li>
+</template>
+
+<script>
+(()=>{
+  'use strict';
+  function isInstallableContext(){
+    const https = location.protocol === "https:" || location.hostname === "localhost";
+    const blocked = /google\.com$|googleusercontent\.com$|drive\.google\.com|docs\.google\.com/i.test(location.hostname);
+    return https && !blocked;
+  }
+  function setInstallUI(mode){
+    const btn = document.getElementById("btnInstall");
+    const btnM = document.getElementById("m_btnInstall");
+    if(!btn || !btnM) return;
+    btn.hidden = btnM.hidden = false;
+    if(mode === "pwa"){ btn.textContent = btnM.textContent = "Instalar"; btn.title = btnM.title = "Instalar como app"; }
+    else{ btn.textContent = btnM.textContent = "Añadir a pantalla de inicio"; btn.title = btnM.title = "Acceso directo desde el menú de Chrome"; }
+  }
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt",(e)=>{ if(!isInstallableContext()) return; e.preventDefault(); deferredPrompt=e; setInstallUI("pwa"); });
+  window.triggerInstall = async function triggerInstall(){
+    if(isInstallableContext() && deferredPrompt){ deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if(outcome==="accepted") toast("Instalada"); deferredPrompt=null; document.getElementById("btnInstall")?.setAttribute("hidden",""); document.getElementById("m_btnInstall")?.setAttribute("hidden",""); }
+    else{ alert("Para añadir a la pantalla de inicio: menú de Chrome (⋮) → «Añadir a la pantalla de inicio»."); }
+  };
+  (function initInstallUI(){ if(!isInstallableContext()) setInstallUI("fallback"); })();
+  (async function registerSW(){ if(!isInstallableContext()) return; if(!("serviceWorker" in navigator)) return; try{ const reg=await navigator.serviceWorker.register("./sw.js",{scope:"./"}); if(!navigator.serviceWorker.controller) setTimeout(()=>location.reload(),250); }catch{} })();
+
+  const APP_FILE = 'planta.html';
+  function resolveBase(){ try{ const htmlName=(new URL(location.href)).pathname.split('/').pop()||APP_FILE; const base=htmlName.replace(/\.(html?|HTM)$/i,'')||'planta'; return {htmlName, base}; }catch{ return {htmlName:APP_FILE, base:'planta'}; } }
+  const { base: BASE_NAME } = resolveBase();
+  const HOMONYM_JSON = BASE_NAME + '.json';
+
+  const $=(s,r=document)=>r.querySelector(s);
+  const todayFmt=new Intl.DateTimeFormat('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('today').textContent=((t)=>t[0].toUpperCase()+t.slice(1))(todayFmt.format(new Date()));
+  const overlay=document.getElementById('overlaySaved'); let overlayTimer=null; function toast(msg){ overlay.textContent=msg; overlay.classList.add('show'); clearTimeout(overlayTimer); overlayTimer=setTimeout(()=>overlay.classList.remove('show'),1600); }
+
+  const STORAGE_KEY='planta.oneui8';
+  function loadLocal(){ try{ const raw=localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw);}catch{} return {"version":"1","lists":{"planta":[],"inter":[],"donePlanta":[],"doneInter":[]}}; }
+  function saveLocal(state){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch{} }
+
+  let opfsFileHandle=null;
+  async function opfsWriteSnapshot(){ try{ if(!('storage' in navigator) || !navigator.storage.getDirectory) return; const root=await navigator.storage.getDirectory(); opfsFileHandle=await root.getFileHandle(HOMONYM_JSON,{create:true}); const w=await opfsFileHandle.createWritable(); await w.write(JSON.stringify(State.data,null,2)); await w.close(); }catch{} }
+  let saveTimer=null; function scheduleAutoSave(){ if(saveTimer) clearTimeout(saveTimer); saveTimer=setTimeout(()=>{ saveLocal(State.data); opfsWriteSnapshot(); },350); }
+
+  function s(v){ return (typeof v === 'string' ? v : (v==null?'':String(v))).trim(); }
+  function n(v,f){ const x=Number(v); return Number.isFinite(x)?x:f; }
+  function normalize(obj){ const L=(obj&&obj.lists)?obj.lists:{}; const norm=(arr,origin)=>(Array.isArray(arr)?arr:[]).map(t=>{ const desc=s(t?.desc), hab=s(t?.hab), pend=s(t?.pend), createdAt=n(t?.createdAt, Date.now()); return { id: s(t?.id)||crypto.randomUUID?.():Math.random().toString(36).slice(2), hab, desc, pend, createdAt, origin }; }).filter(t=>t.desc); return {version:'1',lists:{ planta:norm(L.planta,'planta'), inter:norm(L.inter,'inter'), donePlanta:norm(L.donePlanta,'planta'), doneInter:norm(L.doneInter ?? L.doneInterconsultas,'inter') }}; }
+  const State={ data: normalize(loadLocal()), save(){ saveLocal(this.data); scheduleAutoSave(); } };
+
+  const derive = pend => (pend && pend.trim()) ? 'o' : 'r';
+  function habKey(hab){ const str=(hab||'').trim(); const m=str.match(/\d+/); const num=m?parseInt(m[0],10):Number.POSITIVE_INFINITY; return {num,label:str.toLowerCase()}; }
+  function sortActive(arr){ arr.sort((a,b)=>{ const ka=habKey(a.hab), kb=habKey(b.hab); if(ka.num!==kb.num) return ka.num-kb.num; if(ka.label!==kb.label) return ka.label<kb.label?-1:1; const ea=derive(a.pend), eb=derive(b.pend); if(ea!==eb) return ea==='r'?-1:1; return a.createdAt-b.createdAt; }); }
+
+  const els={ listPlanta:$('#listPlanta'), listInter:$('#listInter'), donePlanta:$('#donePlanta'), doneInter:$('#doneInter'), countPlanta:$('#countPlanta'), countInter:$('#countInter'), persistInfo:$('#persistInfo') };
+  function badge(name){ const arr=State.data.lists[name]||[]; let r=0,nc=0; for(const t of arr) (derive(t.pend)==='o'? nc++ : r++); return `(R:${r} · N:${nc})`; }
+  function setTip(el,text){ el.textContent=text||''; el.dataset.tip=text||''; if(el.hasAttribute('title')) el.removeAttribute('title'); }
+  function renderActive(name,ul){ const arr=State.data.lists[name]||[]; sortActive(arr); ul.innerHTML=''; const tpl=document.getElementById('tplActive').content; const frag=document.createDocumentFragment(); for(const t of arr){ const li=tpl.firstElementChild.cloneNode(true); li.dataset.id=t.id; li.dataset.origin=name; const c=li.querySelector('.circle'); c.classList.remove('r','o'); c.classList.add(derive(t.pend)); setTip(li.querySelector('.hab'), t.hab||''); setTip(li.querySelector('.desc'), t.desc||''); const input=li.querySelector('.pend input'); input.value=t.pend||''; input.setAttribute('aria-label','Pendiente'); frag.appendChild(li); } ul.appendChild(frag); }
+  function renderDone(name,ul){ const arr=State.data.lists[name]||[]; ul.innerHTML=''; const tpl=document.getElementById('tplDone').content; const frag=document.createDocumentFragment(); for(const t of arr){ const li=tpl.firstElementChild.cloneNode(true); li.dataset.id=t.id; li.dataset.origin=t.origin||'planta'; setTip(li.querySelector('.hab'), t.hab||''); setTip(li.querySelector('.desc'), t.desc||''); li.querySelector('.pend').textContent=t.pend||''; frag.appendChild(li);} ul.appendChild(frag); }
+  const UI={ renderAll(){ renderActive('planta',els.listPlanta); renderActive('inter',els.listInter); renderDone('donePlanta',els.donePlanta); renderDone('doneInter',els.doneInter); els.countPlanta.textContent=badge('planta'); els.countInter.textContent=badge('inter'); initTooltips(); }, setPersistInfo(txt){ els.persistInfo.textContent=txt||''; } };
+
+  async function exportChoose(){ const data=JSON.stringify(State.data,null,2); const blob=new Blob([data],{type:'application/json'}); if('showSaveFilePicker' in window){ try{ const h=await window.showSaveFilePicker({ suggestedName: HOMONYM_JSON, types:[{description:'JSON', accept:{'application/json':['.json']}}] }); const w=await h.createWritable(); await w.write(blob); await w.close(); toast('Guardado JSON'); }catch{} } else { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=HOMONYM_JSON; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href); toast('Descargado JSON'); } }
+  async function importPick(){ if('showOpenFilePicker' in window){ try{ const [h]=await window.showOpenFilePicker({ multiple:false, types:[{description:'JSON', accept:{'application/json':['.json']}}] }); const f=await h.getFile(); await importFromFile(f); return; }catch(e){ if(e?.name==='AbortError') return; } } document.getElementById('fileImport').click(); }
+  async function importFromFile(file){ try{ const text=await file.text(); const json=JSON.parse(text); if(!json || !json.lists) throw new Error('Formato inválido'); State.data=normalize(json); State.save(); UI.renderAll(); toast('Importación completada'); }catch{ toast('No se pudo importar'); } }
+
+  function addTask(listName,{hab,desc,pend}){ desc=s(desc); if(!desc){ alert('La descripción es obligatoria.'); return; } const t={ id:crypto.randomUUID?.()||Math.random().toString(36).slice(2), hab:s(hab), desc, pend:s(pend), createdAt:Date.now(), origin:listName }; State.data.lists[listName].push(t); State.save(); UI.renderAll(); }
+  function complete(id,origin){ const arr=State.data.lists[origin]; const idx=arr.findIndex(x=>x.id===id); if(idx<0) return; const t=arr[idx]; arr.splice(idx,1); (origin==='planta'? State.data.lists.donePlanta : State.data.lists.doneInter).push(t); if(navigator.vibrate) navigator.vibrate(10); State.save(); UI.renderAll(); }
+  function undo(id,fromDone){ const doneArr=fromDone==='donePlanta'? State.data.lists.donePlanta : State.data.lists.doneInter; const idx=doneArr.findIndex(x=>x.id===id); if(idx<0) return; const t=doneArr[idx]; doneArr.splice(idx,1); (t.origin==='planta'? State.data.lists.planta : State.data.lists.inter).push(t); if(navigator.vibrate) navigator.vibrate(10); State.save(); UI.renderAll(); }
+  function delDone(id,fromDone){ const doneArr=fromDone==='donePlanta'? State.data.lists.donePlanta : State.data.lists.doneInter; const idx=doneArr.findIndex(x=>x.id===id); if(idx<0) return; doneArr.splice(idx,1); State.save(); UI.renderAll(); }
+  function moveAllOrange(){ if(!confirm('¿Mover todas las Naranja a Completadas?')) return; for(const ln of ['planta','inter']){ const arr=State.data.lists[ln]; for(let i=arr.length-1;i>=0;i--){ const t=arr[i]; if(derive(t.pend)==='o'){ arr.splice(i,1); (ln==='planta'? State.data.lists.donePlanta : State.data.lists.doneInter).push(t); } } } State.save(); UI.renderAll(); }
+  function clearDone(){ if(!confirm('¿Vaciar todas las Completadas?')) return; State.data.lists.donePlanta=[]; State.data.lists.doneInter=[]; State.save(); UI.renderAll(); }
+  function restoreAll(){ const mv=(from,to)=>{ while(from.length) to.push(from.shift()); }; mv(State.data.lists.donePlanta, State.data.lists.planta); mv(State.data.lists.doneInter, State.data.lists.inter); State.save(); UI.renderAll(); }
+
+  const pendTimers=new Map();
+  function schedulePend(id,origin,val){ if(pendTimers.has(id)) clearTimeout(pendTimers.get(id)); const to=setTimeout(()=>{ pendTimers.delete(id); applyPend(id,origin,val); },220); pendTimers.set(id,to); }
+  function applyPend(id,origin,val){ const arr=State.data.lists[origin]; if(!arr) return; const t=arr.find(x=>x.id===id); if(!t) return; const before=derive(t.pend); t.pend=s(val); const after=derive(t.pend); if(before!==after){ State.save(); UI.renderAll(); } else { const ul=origin==='planta'? document.getElementById('listPlanta') : document.getElementById('listInter'); const li=ul.querySelector(`li[data-id="${id}"]`); const c=li?.querySelector('.circle'); if(c){ c.classList.remove('r','o'); c.classList.add(after); } document.getElementById('countPlanta').textContent=badge('planta'); document.getElementById('countInter').textContent=badge('inter'); State.save(); } }
+
+  const tip=document.getElementById('tooltip'); let pressTimer=null, tipTarget=null;
+  function placeTip(x,y){ const pad=10, rect=tip.getBoundingClientRect(); let tx=x+pad, ty=y+pad; if(tx+rect.width>innerWidth-8) tx=Math.max(8, innerWidth-rect.width-8); if(ty+rect.height>innerHeight-8) ty=y-rect.height-pad; if(ty<8) ty=8; tip.style.transform=`translate(${Math.round(tx)}px,${Math.round(ty)}px)`; }
+  function showTip(text,x,y){ if(!text) return; tip.textContent=text; tip.setAttribute('aria-hidden','false'); tip.classList.add('show'); placeTip(x,y); }
+  function hideTip(){ tip.classList.remove('show'); tip.setAttribute('aria-hidden','true'); tip.style.transform='translate(-9999px,-9999px)'; }
+  function wantsTip(el){ return el && (el.classList?.contains('hab')||el.classList?.contains('desc')) && el.dataset.tip; }
+  function initTooltips(){ const root=document.body;
+    root.addEventListener('mousemove',(e)=>{ const el=e.target.closest('.hab,.desc'); if(!wantsTip(el)){ if(tipTarget){ tipTarget=null; hideTip(); } return; } tipTarget=el; showTip(el.dataset.tip, e.clientX,e.clientY); });
+    root.addEventListener('mouseleave',(e)=>{ if(!e.relatedTarget || !document.body.contains(e.relatedTarget)) hideTip(); });
+    root.addEventListener('focusin',(e)=>{ const el=e.target.closest('.hab,.desc'); if(!wantsTip(el)) return; const r=el.getBoundingClientRect(); showTip(el.dataset.tip, r.right, r.top); });
+    root.addEventListener('focusout',()=>{ hideTip(); });
+    root.addEventListener('touchstart',(e)=>{ const el=e.target.closest('.hab,.desc'); if(!wantsTip(el)) return; const t=e.touches[0]; pressTimer=setTimeout(()=>{ showTip(el.dataset.tip, t.clientX,t.clientY); },420); },{passive:true});
+    root.addEventListener('touchmove',()=>{ clearTimeout(pressTimer); hideTip(); },{passive:true});
+    root.addEventListener('touchend', ()=>{ clearTimeout(pressTimer); },{passive:true});
+    root.addEventListener('touchcancel',()=>{ clearTimeout(pressTimer); hideTip(); },{passive:true});
+  }
+
+  document.body.addEventListener('submit',(e)=>{ if(!(e.target instanceof HTMLFormElement)) return; if(!e.target.classList.contains('add')) return; e.preventDefault(); const form=e.target; const listName=form.dataset.list; addTask(listName,{hab:form.hab.value, desc:form.desc.value, pend:form.pend.value}); form.reset(); form.hab.focus(); });
+  document.body.addEventListener('click',(e)=>{
+    const btn=e.target.closest('button'); if(!btn) return;
+    if(btn.id==='btnOpen'||btn.id==='m_btnOpen') return importPick();
+    if(btn.id==='btnSave'||btn.id==='m_btnSave') return exportChoose();
+    if(btn.id==='btnMoveNaranja') return moveAllOrange();
+    if(btn.id==='btnRestoreAll') return restoreAll();
+    if(btn.id==='btnClearDone') return clearDone();
+    const li=btn.closest('li.item'); if(!li) return; const id=li.dataset.id;
+    if(btn.classList.contains('circle')){ if(li.classList.contains('done')) return; complete(id, li.dataset.origin); return; }
+    if(btn.dataset.act==='trash'){ complete(id, li.dataset.origin); return; }
+    if(btn.dataset.act==='undo'){ const fromDone = li.closest('#donePlanta') ? 'donePlanta' : 'doneInter'; undo(id, fromDone); return; }
+    if(btn.dataset.act==='del'){ const fromDone = li.closest('#donePlanta') ? 'donePlanta' : 'doneInter'; delDone(id, fromDone); return; }
+    if(btn.dataset.act==='toRed' || btn.dataset.act==='toOrange'){ const arr=State.data.lists[li.dataset.origin]; const t=arr.find(x=>x.id===id); if(!t) return; t.pend=(btn.dataset.act==='toRed')?'':(t.pend||'Pendiente'); State.save(); UI.renderAll(); }
+  });
+  document.body.addEventListener('input',(e)=>{ if(!(e.target instanceof HTMLInputElement)) return; if(e.target.closest('.pend')){ const li=e.target.closest('li.item'); if(li) schedulePend(li.dataset.id, li.dataset.origin, e.target.value); } });
+  document.body.addEventListener('focusout',(e)=>{ if(!(e.target instanceof HTMLInputElement)) return; if(e.target.closest('.pend')){ const li=e.target.closest('li.item'); if(!li) return; const id=li.dataset.id; if(pendTimers.has(id)){ clearTimeout(pendTimers.get(id)); pendTimers.delete(id); } applyPend(id, li.dataset.origin, e.target.value); } });
+
+  const drop=document.getElementById('dropzone');
+  ['dragenter','dragover'].forEach(ev=> drop.addEventListener(ev, e=>{e.preventDefault(); drop.classList.add('drag')}, {passive:false}));
+  ['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{e.preventDefault(); drop.classList.remove('drag')}, {passive:false}));
+  drop.addEventListener('drop', e=>{ const f=e.dataTransfer.files?.[0]; if(f) importFromFile(f); });
+
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ const a=document.activeElement; if(a&&a.blur) a.blur(); } }, {passive:false});
+
+  const appbar=document.querySelector('header.appbar');
+  function syncAppbarHeight(){ if(!appbar) return; const h=Math.round(appbar.getBoundingClientRect().height); document.documentElement.style.setProperty('--appbar-h', h + 'px'); document.documentElement.style.scrollPaddingTop=(h+8)+'px'; }
+  syncAppbarHeight(); try{ new ResizeObserver(syncAppbarHeight).observe(appbar); }catch{} window.addEventListener('orientationchange', syncAppbarHeight, {passive:true}); window.addEventListener('resize', syncAppbarHeight, {passive:true});
+
+  UI.renderAll(); UI.setPersistInfo('Datos locales + Abrir/Guardar JSON. Instalación disponible en HTTPS.');
+  opfsWriteSnapshot();
+})();
+</script>
+</body>
+</html>
