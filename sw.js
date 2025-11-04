@@ -1,5 +1,5 @@
-// sw.js — Planta PWA (v3)
-const CACHE_NAME = "planta-cache-v3";
+// sw.js — Planta PWA (v4, fondo siempre blanco)
+const CACHE_NAME = "planta-cache-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,11 +8,12 @@ const ASSETS = [
   "./icon-512.png"
 ];
 
+// Precache de shell + activación inmediata
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
-  self.skipWaiting(); // activa sin esperar a clientes antiguos
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -23,13 +24,15 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Navegación: Network-First con fallback a caché (soporta offline)
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Navegación: estrategia Network-First con fallback a caché
+  // Navegaciones (documentos)
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).then(res => {
+        // Actualiza copia en caché de index.html para futuros offline
         const copy = res.clone();
         caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
         return res;
@@ -38,7 +41,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Otros: Cache-First con fallback a network
+  // Otros recursos estáticos: Cache-First
   event.respondWith(
     caches.match(req).then(cached => cached || fetch(req))
   );

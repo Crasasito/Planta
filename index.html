@@ -2,18 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-  <meta name="theme-color" content="#0ea5e9">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
   <title>Planta</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <style>
-    /* ===== Design tokens (One UI-like) ===== */
+    /* ===== Tokens (fondo SIEMPRE blanco) ===== */
     :root{
-      --bg: #f6f7f9;
+      --bg: #ffffff;
       --card: #ffffff;
       --text: #0b1220;
       --muted: #5b6471;
@@ -22,49 +19,34 @@
       --ok: #16a34a;
       --warn: #f59e0b;
       --danger: #ef4444;
-      --border: #e6e8ec;
-      --shadow: 0 6px 20px rgba(10,20,30,.06);
+      --border: #e8ebf0;
+      --shadow: 0 6px 22px rgba(10,20,30,.06);
 
       --radius-xl: 20px;
       --radius-lg: 14px;
-      --radius-md: 12px;
 
-      /* Tipografía accesible */
+      /* Tipografía accesible (sin dark mode) */
       --fs-xxl: clamp(22px, 3.5vw, 26px);
       --fs-xl:  clamp(18px, 2.9vw, 22px);
       --fs-lg:  clamp(16px, 2.6vw, 18px);
       --fs-md:  clamp(15px, 2.4vw, 17px);
       --fs-sm:  clamp(14px, 2.2vw, 16px);
 
-      --pad-xxl: 28px;
       --pad-xl:  22px;
       --pad-lg:  18px;
       --pad-md:  14px;
-      --pad-sm:  10px;
 
-      --tap: 48px; /* tamaño táctil mínimo */
-      --gap: 14px;
-      --gap-lg: 18px;
-      --maxw: 840px;
-    }
-
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg: #0c111b;
-        --card: #141a27;
-        --text: #e8edf6;
-        --muted: #a3adbb;
-        --border: #1d2635;
-        --shadow: 0 6px 20px rgba(0,0,0,.45);
-        --primary-ink: #081018;
-      }
+      --tap: 48px;   /* objetivo táctil mínimo */
+      --gap: 12px;
+      --gap-lg: 16px;
+      --maxw: 860px;
     }
 
     html, body{
       height:100%;
       background: var(--bg);
       color: var(--text);
-      font: 500 var(--fs-md)/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font: 500 var(--fs-md)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
@@ -83,8 +65,7 @@
       padding: var(--pad-xl) 0 var(--pad-lg);
     }
     .title{
-      display:flex; align-items:center; gap:12px;
-      margin:0 0 var(--pad-lg) 0;
+      display:flex; align-items:center; gap:12px; margin:0 0 var(--pad-lg) 0;
     }
     .logo{
       width:38px;height:38px;border-radius:12px;
@@ -92,11 +73,8 @@
       display:grid;place-items:center;color:#fff;font-weight:800;
       box-shadow: var(--shadow);
     }
-    .title h1{
-      font-size: var(--fs-xxl);
-      margin:0;
-      letter-spacing:.2px;
-    }
+    .title h1{ font-size: var(--fs-xxl); margin:0; letter-spacing:.2px; }
+
     .tabs{
       display:flex; gap:10px; margin-bottom: var(--pad-lg);
     }
@@ -112,7 +90,7 @@
       border-color: transparent;
     }
 
-    /* ===== Card de entrada ===== */
+    /* ===== Composer ===== */
     .composer{
       background: var(--card); border:1px solid var(--border);
       border-radius: var(--radius-xl); box-shadow: var(--shadow);
@@ -121,7 +99,7 @@
     .row{ display:flex; gap: var(--gap); align-items:center; flex-wrap: wrap; }
     .input{
       flex:1; min-height: var(--tap);
-      background: transparent; border:1px solid var(--border);
+      background: #fff; border:1px solid var(--border);
       border-radius: var(--radius-lg); padding: 12px 14px;
       font-size: var(--fs-lg); color: var(--text);
       outline: none;
@@ -129,7 +107,7 @@
     .input::placeholder{ color: var(--muted); }
     .prio{
       display:flex; gap: 10px; align-items:center;
-      border-radius: 999px; background: var(--bg);
+      border-radius: 999px; background: #f6f8fb;
       padding: 6px 8px; border:1px solid var(--border);
     }
     .dot{
@@ -139,48 +117,34 @@
     .dot[data-v="red"]{ background: var(--danger); }
     .dot[data-v="amber"]{ background: var(--warn); }
     .dot[data-v="green"]{ background: var(--ok); }
-    .dot[aria-checked="true"]{ box-shadow: 0 0 0 3px rgba(0,0,0,.06) inset, 0 0 0 2px #fff inset; border-color: rgba(0,0,0,.2); }
+    .dot[aria-checked="true"]{ box-shadow: 0 0 0 3px rgba(0,0,0,.06) inset, 0 0 0 2px #fff inset; border-color: rgba(0,0,0,.12); }
     .btn{
       min-height: var(--tap); padding: 12px 16px; border-radius: 14px;
       border: none; background: var(--primary); color: var(--primary-ink);
       font-weight: 800; letter-spacing:.3px; cursor: pointer; box-shadow: var(--shadow);
     }
 
-    /* ===== Listado ===== */
+    /* ===== Secciones y listas ===== */
     .section{ margin-top: var(--pad-xl); }
-    .section h2{
-      font-size: var(--fs-xl); margin:0 0 var(--pad-md) 0;
-      letter-spacing:.2px;
-    }
+    .section h2{ font-size: var(--fs-xl); margin:0 0 var(--pad-md) 0; letter-spacing:.2px; }
 
-    .list{
-      display:grid; gap: 10px;
-    }
+    .list{ display:grid; gap: 10px; }
     .item{
       display:grid; grid-template-columns: 1fr auto; align-items:center;
       gap: 12px; padding: 14px; background: var(--card); border:1px solid var(--border);
       border-radius: var(--radius-lg); box-shadow: var(--shadow);
     }
     .item-body{ display:flex; gap:12px; align-items: flex-start; }
-    .chip{
-      width:14px;height:14px;border-radius:50%;
-      margin-top: 3px; flex: 0 0 14px;
-    }
+    .chip{ width:14px;height:14px;border-radius:50%; margin-top: 3px; flex:0 0 14px; }
     .chip.red{ background: var(--danger); }
     .chip.amber{ background: var(--warn); }
     .chip.green{ background: var(--ok); }
-    .text{
-      font-size: var(--fs-lg); line-height:1.35;
-      word-break: break-word;
-    }
-    .actions{
-      display:flex; gap:8px;
-    }
+    .text{ font-size: var(--fs-lg); line-height:1.35; word-break: break-word; }
+    .actions{ display:flex; gap:8px; }
     .iconbtn{
       width: var(--tap); height: var(--tap);
       display:grid; place-items:center; border-radius: 12px;
-      border:1px solid var(--border); background: var(--bg);
-      cursor: pointer;
+      border:1px solid var(--border); background: #f6f8fb; cursor: pointer;
     }
     .iconbtn:active{ transform: translateY(1px); }
 
@@ -197,16 +161,12 @@
     }
     details.trash[open] .trash-body{ margin-top: var(--pad-md); }
     .trash-list .item{ opacity:.7; }
-    .toolbar{
-      display:flex; gap:10px; flex-wrap: wrap; margin-top: var(--pad-md);
-    }
-    .ghost{ opacity:.6; }
+    .toolbar{ display:flex; gap:10px; flex-wrap: wrap; margin-top: var(--pad-md); }
 
-    /* ===== Utilidades ===== */
     .muted{ color: var(--muted); }
     .hidden{ display:none !important; }
 
-    /* ===== Fab (instalar) ===== */
+    /* ===== Botón Instalar (sólo si hay evento) ===== */
     .fab{
       position: fixed; right: calc(16px + env(safe-area-inset-right));
       bottom: calc(16px + env(safe-area-inset-bottom));
@@ -271,15 +231,16 @@
     </main>
   </div>
 
-  <!-- Botón instalar (solo visible si hay beforeinstallprompt) -->
+  <!-- Botón instalar (aparece solo con beforeinstallprompt) -->
   <button id="installFab" class="fab hidden" title="Instalar">⬇</button>
 
   <script>
-  /* ===== Estado y persistencia ===== */
+  /* ===== Utilidades ===== */
   const $$$ = (sel, root=document) => root.querySelector(sel);
   const $$A = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-  const KEY = "planta.v2";  // nueva versión de almacenamiento
+  /* ===== Estado ===== */
+  const KEY = "planta.v2";  // persistencia (sin cambios de clave)
   const state = load() || { planta: [], inter: [], done: [] };
   let currentList = "planta";
   let deferredPrompt = null;
@@ -291,7 +252,6 @@
 
   /* ===== Render ===== */
   function render(){
-    // filtro búsqueda
     const q = ($$$('#q').value || '').trim().toLowerCase();
 
     const renderList = (arr, host) => {
@@ -337,7 +297,6 @@
     renderList(state.inter, $$$('#list-inter'));
     renderList(state.done,  $$$('#list-done'));
 
-    // contadores
     $$$('#count-planta').textContent = `(${state.planta.length})`;
     $$$('#count-inter').textContent  = `(${state.inter.length})`;
     $$$('#count-done').textContent   = `(${state.done.length})`;
@@ -378,12 +337,11 @@
   }
 
   /* ===== UI wiring ===== */
-  // prioridad como radio
   $$A('.dot').forEach(d=>{
     d.addEventListener('click', ()=>{
       $$A('.dot').forEach(x=>x.setAttribute('aria-checked','false'));
       d.setAttribute('aria-checked','true');
-    });
+    }, {passive:true});
     d.addEventListener('keydown', (e)=>{
       if(e.key==='Enter' || e.key===' '){ d.click(); e.preventDefault(); }
     });
@@ -393,9 +351,8 @@
   $$$('#text').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTask(); }});
   $$$('#undoBtn').addEventListener('click', undo);
   $$$('#emptyBtn').addEventListener('click', emptyTrash);
-  $$$('#q').addEventListener('input', render);
+  $$$('#q').addEventListener('input', render, {passive:true});
 
-  // tabs
   function setTab(tab){
     currentList = tab;
     $$$('#tab-planta').setAttribute('aria-selected', tab==='planta');
@@ -406,7 +363,6 @@
   $$$('#tab-planta').addEventListener('click', ()=>setTab('planta'));
   $$$('#tab-inter').addEventListener('click', ()=>setTab('inter'));
 
-  // delegación de eventos en listas
   function listClick(e, list){
     const btn = e.target.closest('.iconbtn');
     if(!btn) return;
@@ -414,7 +370,6 @@
     if(!id) return;
     if(btn.textContent==='✔') removeTask(id, list);
     if(btn.textContent==='✖'){
-      // eliminar sin pasar a completadas
       const idx = state[list].findIndex(t=>t.id===id);
       if(idx>=0){ state[list].splice(idx,1); save(); render(); }
     }
@@ -422,10 +377,9 @@
   $$$('#list-planta').addEventListener('click', e=>listClick(e, 'planta'));
   $$$('#list-inter').addEventListener('click', e=>listClick(e, 'inter'));
 
-  // render inicial
   render();
 
-  /* ===== Install prompt (FAB) ===== */
+  /* ===== Install FAB ===== */
   const fab = $$$('#installFab');
   window.addEventListener('beforeinstallprompt', (e)=>{
     e.preventDefault();
@@ -435,18 +389,16 @@
   fab.addEventListener('click', async ()=>{
     if(!deferredPrompt) return;
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    await deferredPrompt.userChoice;
     deferredPrompt = null;
     fab.classList.add('hidden');
-    console.log('Install choice:', outcome);
   });
 
   /* ===== Service Worker ===== */
   if('serviceWorker' in navigator){
-    window.addEventListener('load', ()=>{
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
-        .catch(console.error);
-    });
+    // Registrar cuando el hilo esté libre para priorizar interacción inicial
+    const reg = () => navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(console.error);
+    if (window.requestIdleCallback) requestIdleCallback(reg, {timeout: 2000}); else window.addEventListener('load', reg);
   }
   </script>
 </body>
