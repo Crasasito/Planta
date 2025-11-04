@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#0ea5e9">
+  <title>Planta</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    /* ===== Design tokens (One UI-like) ===== */
+    :root{
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --text: #0b1220;
+      --muted: #5b6471;
+      --primary: #0ea5e9;
+      --primary-ink: #ffffff;
+      --ok: #16a34a;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --border: #e6e8ec;
+      --shadow: 0 6px 20px rgba(10,20,30,.06);
+
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 12px;
+
+      /* Tipografía accesible */
+      --fs-xxl: clamp(22px, 3.5vw, 26px);
+      --fs-xl:  clamp(18px, 2.9vw, 22px);
+      --fs-lg:  clamp(16px, 2.6vw, 18px);
+      --fs-md:  clamp(15px, 2.4vw, 17px);
+      --fs-sm:  clamp(14px, 2.2vw, 16px);
+
+      --pad-xxl: 28px;
+      --pad-xl:  22px;
+      --pad-lg:  18px;
+      --pad-md:  14px;
+      --pad-sm:  10px;
+
+      --tap: 48px; /* tamaño táctil mínimo */
+      --gap: 14px;
+      --gap-lg: 18px;
+      --maxw: 840px;
+    }
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0c111b;
+        --card: #141a27;
+        --text: #e8edf6;
+        --muted: #a3adbb;
+        --border: #1d2635;
+        --shadow: 0 6px 20px rgba(0,0,0,.45);
+        --primary-ink: #081018;
+      }
+    }
+
+    html, body{
+      height:100%;
+      background: var(--bg);
+      color: var(--text);
+      font: 500 var(--fs-md)/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    .app{
+      max-width: var(--maxw);
+      margin: 0 auto env(safe-area-inset-bottom);
+      padding: env(safe-area-inset-top) var(--pad-xl) var(--pad-xl) var(--pad-xl);
+    }
+
+    /* ===== Header fijo ===== */
+    .header{
+      position: sticky; top: 0; z-index: 10;
+      background: linear-gradient(var(--bg), var(--bg));
+      padding: var(--pad-xl) 0 var(--pad-lg);
+    }
+    .title{
+      display:flex; align-items:center; gap:12px;
+      margin:0 0 var(--pad-lg) 0;
+    }
+    .logo{
+      width:38px;height:38px;border-radius:12px;
+      background: linear-gradient(180deg, #22c1ee, #0ea5e9);
+      display:grid;place-items:center;color:#fff;font-weight:800;
+      box-shadow: var(--shadow);
+    }
+    .title h1{
+      font-size: var(--fs-xxl);
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .tabs{
+      display:flex; gap:10px; margin-bottom: var(--pad-lg);
+    }
+    .tab{
+      flex:1; text-align:center; border-radius:999px; padding:10px 14px;
+      border:1px solid var(--border); background:var(--card);
+      box-shadow: var(--shadow);
+      font-weight:700; letter-spacing:.2px;
+    }
+    .tab[aria-selected="true"]{
+      background: var(--primary);
+      color: var(--primary-ink);
+      border-color: transparent;
+    }
+
+    /* ===== Card de entrada ===== */
+    .composer{
+      background: var(--card); border:1px solid var(--border);
+      border-radius: var(--radius-xl); box-shadow: var(--shadow);
+      padding: var(--pad-lg); display:grid; gap: var(--gap);
+    }
+    .row{ display:flex; gap: var(--gap); align-items:center; flex-wrap: wrap; }
+    .input{
+      flex:1; min-height: var(--tap);
+      background: transparent; border:1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 12px 14px;
+      font-size: var(--fs-lg); color: var(--text);
+      outline: none;
+    }
+    .input::placeholder{ color: var(--muted); }
+    .prio{
+      display:flex; gap: 10px; align-items:center;
+      border-radius: 999px; background: var(--bg);
+      padding: 6px 8px; border:1px solid var(--border);
+    }
+    .dot{
+      width:22px;height:22px;border-radius:50%;
+      border:2px solid transparent; outline-offset:2px; cursor:pointer;
+    }
+    .dot[data-v="red"]{ background: var(--danger); }
+    .dot[data-v="amber"]{ background: var(--warn); }
+    .dot[data-v="green"]{ background: var(--ok); }
+    .dot[aria-checked="true"]{ box-shadow: 0 0 0 3px rgba(0,0,0,.06) inset, 0 0 0 2px #fff inset; border-color: rgba(0,0,0,.2); }
+    .btn{
+      min-height: var(--tap); padding: 12px 16px; border-radius: 14px;
+      border: none; background: var(--primary); color: var(--primary-ink);
+      font-weight: 800; letter-spacing:.3px; cursor: pointer; box-shadow: var(--shadow);
+    }
+
+    /* ===== Listado ===== */
+    .section{ margin-top: var(--pad-xl); }
+    .section h2{
+      font-size: var(--fs-xl); margin:0 0 var(--pad-md) 0;
+      letter-spacing:.2px;
+    }
+
+    .list{
+      display:grid; gap: 10px;
+    }
+    .item{
+      display:grid; grid-template-columns: 1fr auto; align-items:center;
+      gap: 12px; padding: 14px; background: var(--card); border:1px solid var(--border);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    }
+    .item-body{ display:flex; gap:12px; align-items: flex-start; }
+    .chip{
+      width:14px;height:14px;border-radius:50%;
+      margin-top: 3px; flex: 0 0 14px;
+    }
+    .chip.red{ background: var(--danger); }
+    .chip.amber{ background: var(--warn); }
+    .chip.green{ background: var(--ok); }
+    .text{
+      font-size: var(--fs-lg); line-height:1.35;
+      word-break: break-word;
+    }
+    .actions{
+      display:flex; gap:8px;
+    }
+    .iconbtn{
+      width: var(--tap); height: var(--tap);
+      display:grid; place-items:center; border-radius: 12px;
+      border:1px solid var(--border); background: var(--bg);
+      cursor: pointer;
+    }
+    .iconbtn:active{ transform: translateY(1px); }
+
+    /* ===== Completadas / Papelera ===== */
+    details.trash{
+      margin-top: var(--pad-xl);
+      background: var(--card); border:1px solid var(--border);
+      border-radius: var(--radius-xl); box-shadow: var(--shadow);
+      padding: var(--pad-md);
+    }
+    details.trash summary{
+      cursor:pointer; list-style:none; display:flex; align-items:center; gap:10px;
+      font-weight:800; font-size: var(--fs-lg);
+    }
+    details.trash[open] .trash-body{ margin-top: var(--pad-md); }
+    .trash-list .item{ opacity:.7; }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap: wrap; margin-top: var(--pad-md);
+    }
+    .ghost{ opacity:.6; }
+
+    /* ===== Utilidades ===== */
+    .muted{ color: var(--muted); }
+    .hidden{ display:none !important; }
+
+    /* ===== Fab (instalar) ===== */
+    .fab{
+      position: fixed; right: calc(16px + env(safe-area-inset-right));
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      width:56px;height:56px;border-radius: 999px; display:grid; place-items:center;
+      background: var(--primary); color: var(--primary-ink);
+      border:none; box-shadow: var(--shadow); cursor: pointer; font-size: 22px; font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title">
+        <div class="logo" aria-hidden="true">P</div>
+        <h1>Planta</h1>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Listas">
+        <button class="tab" role="tab" id="tab-planta" aria-selected="true">Planta <span class="muted" id="count-planta"></span></button>
+        <button class="tab" role="tab" id="tab-inter" aria-selected="false">Interconsultas <span class="muted" id="count-inter"></span></button>
+        <input id="q" class="input" type="search" placeholder="Buscar…" aria-label="Buscar" style="flex:2">
+      </div>
+
+      <div class="composer" role="form" aria-label="Añadir tarea">
+        <div class="row">
+          <div class="prio" role="radiogroup" aria-label="Prioridad">
+            <div class="dot" role="radio" tabindex="0" aria-checked="true" data-v="red" title="Alta"></div>
+            <div class="dot" role="radio" tabindex="0" aria-checked="false" data-v="amber" title="Media"></div>
+            <div class="dot" role="radio" tabindex="0" aria-checked="false" data-v="green" title="Baja"></div>
+          </div>
+          <select id="listSel" class="input" style="flex:0 0 220px" aria-label="Lista">
+            <option value="planta">Planta</option>
+            <option value="inter">Interconsultas</option>
+          </select>
+          <button id="addBtn" class="btn" aria-label="Añadir">Añadir</button>
+        </div>
+        <input id="text" class="input" type="text" placeholder="Describe la tarea…" aria-label="Descripción de la tarea" autocomplete="off">
+      </div>
+    </header>
+
+    <main>
+      <section class="section" id="sec-planta" aria-labelledby="tab-planta">
+        <h2>Planta</h2>
+        <div id="list-planta" class="list" role="list"></div>
+      </section>
+
+      <section class="section hidden" id="sec-inter" aria-labelledby="tab-inter">
+        <h2>Interconsultas</h2>
+        <div id="list-inter" class="list" role="list"></div>
+      </section>
+
+      <details class="trash" id="trash">
+        <summary>Completadas <span class="muted" id="count-done"></span></summary>
+        <div class="trash-body">
+          <div id="list-done" class="list trash-list" role="list"></div>
+          <div class="toolbar">
+            <button id="undoBtn" class="btn" type="button">Deshacer última</button>
+            <button id="emptyBtn" class="iconbtn" title="Vaciar papelera" aria-label="Vaciar papelera">🗑️</button>
+          </div>
+        </div>
+      </details>
+    </main>
+  </div>
+
+  <!-- Botón instalar (solo visible si hay beforeinstallprompt) -->
+  <button id="installFab" class="fab hidden" title="Instalar">⬇</button>
+
+  <script>
+  /* ===== Estado y persistencia ===== */
+  const $$$ = (sel, root=document) => root.querySelector(sel);
+  const $$A = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  const KEY = "planta.v2";  // nueva versión de almacenamiento
+  const state = load() || { planta: [], inter: [], done: [] };
+  let currentList = "planta";
+  let deferredPrompt = null;
+
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; }
+  }
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  /* ===== Render ===== */
+  function render(){
+    // filtro búsqueda
+    const q = ($$$('#q').value || '').trim().toLowerCase();
+
+    const renderList = (arr, host) => {
+      host.innerHTML = "";
+      for(const t of arr){
+        if(q && !t.text.toLowerCase().includes(q)) continue;
+
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.setAttribute('role','listitem');
+        item.dataset.id = t.id;
+
+        const body = document.createElement('div');
+        body.className = 'item-body';
+
+        const chip = document.createElement('div');
+        chip.className = 'chip ' + t.prio;
+
+        const txt = document.createElement('div');
+        txt.className = 'text';
+        txt.textContent = t.text;
+
+        body.append(chip, txt);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+
+        const done = document.createElement('button');
+        done.className = 'iconbtn'; done.title = 'Hecho'; done.setAttribute('aria-label','Hecho');
+        done.textContent = '✔';
+
+        const del = document.createElement('button');
+        del.className = 'iconbtn'; del.title = 'Eliminar'; del.setAttribute('aria-label','Eliminar');
+        del.textContent = '✖';
+
+        actions.append(done, del);
+        item.append(body, actions);
+        host.append(item);
+      }
+    };
+
+    renderList(state.planta, $$$('#list-planta'));
+    renderList(state.inter, $$$('#list-inter'));
+    renderList(state.done,  $$$('#list-done'));
+
+    // contadores
+    $$$('#count-planta').textContent = `(${state.planta.length})`;
+    $$$('#count-inter').textContent  = `(${state.inter.length})`;
+    $$$('#count-done').textContent   = `(${state.done.length})`;
+  }
+
+  /* ===== Acciones ===== */
+  function addTask(){
+    const text = ($$$('#text').value || '').trim();
+    if(!text) return;
+    const prio = $$A('.dot').find(d => d.getAttribute('aria-checked') === 'true').dataset.v;
+    const list = $$$('#listSel').value;
+
+    const t = { id: crypto.randomUUID(), text, prio };
+    state[list].unshift(t);
+    save();
+    $$$('#text').value = '';
+    render();
+  }
+
+  function removeTask(id, list){
+    const idx = state[list].findIndex(t=>t.id===id);
+    if(idx>=0){
+      const [t] = state[list].splice(idx,1);
+      state.done.unshift({ ...t, from:list });
+      save(); render();
+    }
+  }
+
+  function undo(){
+    const t = state.done.shift();
+    if(!t) return;
+    state[t.from].unshift({ id: crypto.randomUUID(), text: t.text, prio: t.prio });
+    save(); render();
+  }
+  function emptyTrash(){
+    state.done = [];
+    save(); render();
+  }
+
+  /* ===== UI wiring ===== */
+  // prioridad como radio
+  $$A('.dot').forEach(d=>{
+    d.addEventListener('click', ()=>{
+      $$A('.dot').forEach(x=>x.setAttribute('aria-checked','false'));
+      d.setAttribute('aria-checked','true');
+    });
+    d.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ d.click(); e.preventDefault(); }
+    });
+  });
+
+  $$$('#addBtn').addEventListener('click', addTask);
+  $$$('#text').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTask(); }});
+  $$$('#undoBtn').addEventListener('click', undo);
+  $$$('#emptyBtn').addEventListener('click', emptyTrash);
+  $$$('#q').addEventListener('input', render);
+
+  // tabs
+  function setTab(tab){
+    currentList = tab;
+    $$$('#tab-planta').setAttribute('aria-selected', tab==='planta');
+    $$$('#tab-inter').setAttribute('aria-selected', tab==='inter');
+    $$$('#sec-planta').classList.toggle('hidden', tab!=='planta');
+    $$$('#sec-inter').classList.toggle('hidden', tab!=='inter');
+  }
+  $$$('#tab-planta').addEventListener('click', ()=>setTab('planta'));
+  $$$('#tab-inter').addEventListener('click', ()=>setTab('inter'));
+
+  // delegación de eventos en listas
+  function listClick(e, list){
+    const btn = e.target.closest('.iconbtn');
+    if(!btn) return;
+    const id = e.target.closest('.item')?.dataset.id;
+    if(!id) return;
+    if(btn.textContent==='✔') removeTask(id, list);
+    if(btn.textContent==='✖'){
+      // eliminar sin pasar a completadas
+      const idx = state[list].findIndex(t=>t.id===id);
+      if(idx>=0){ state[list].splice(idx,1); save(); render(); }
+    }
+  }
+  $$$('#list-planta').addEventListener('click', e=>listClick(e, 'planta'));
+  $$$('#list-inter').addEventListener('click', e=>listClick(e, 'inter'));
+
+  // render inicial
+  render();
+
+  /* ===== Install prompt (FAB) ===== */
+  const fab = $$$('#installFab');
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredPrompt = e;
+    fab.classList.remove('hidden');
+  });
+  fab.addEventListener('click', async ()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    fab.classList.add('hidden');
+    console.log('Install choice:', outcome);
+  });
+
+  /* ===== Service Worker ===== */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .catch(console.error);
+    });
+  }
+  </script>
+</body>
+</html>

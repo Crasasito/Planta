@@ -1,40 +1,45 @@
-const CACHE = "planta-v1";
+// sw.js — Planta PWA (v3)
+const CACHE_NAME = "planta-cache-v3";
 const ASSETS = [
+  "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png"
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil((async () => {
-    const c = await caches.open(CACHE);
-    await c.addAll(ASSETS);
-  })());
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
+  self.skipWaiting(); // activa sin esperar a clientes antiguos
 });
 
-self.addEventListener("activate", (e) => {
-  e.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
-  })());
-  self.clients.claim();
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
 
-self.addEventListener("fetch", (e) => {
-  e.respondWith((async () => {
-    const r = await caches.match(e.request);
-    if (r) return r;
-    try {
-      const net = await fetch(e.request);
-      if (e.request.method === "GET" && new URL(e.request.url).origin === location.origin) {
-        const c = await caches.open(CACHE);
-        c.put(e.request, net.clone());
-      }
-      return net;
-    } catch {
-      return r || Response.error();
-    }
-  })());
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+
+  // Navegación: estrategia Network-First con fallback a caché
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
+        return res;
+      }).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
+  // Otros: Cache-First con fallback a network
+  event.respondWith(
+    caches.match(req).then(cached => cached || fetch(req))
+  );
 });
