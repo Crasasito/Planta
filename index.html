@@ -1,405 +1,335 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
-  <title>Planta</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="description" content="Planta — Gestor de planta e interconsultas. Sincroniza en tiempo real con Firestore, funciona offline y se instala como PWA." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <title>Planta — PWA (Firestore)</title>
   <style>
-    /* ===== Tokens (fondo SIEMPRE blanco) ===== */
     :root{
-      --bg: #ffffff;
-      --card: #ffffff;
-      --text: #0b1220;
-      --muted: #5b6471;
-      --primary: #0ea5e9;
-      --primary-ink: #ffffff;
-      --ok: #16a34a;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --border: #e8ebf0;
-      --shadow: 0 6px 22px rgba(10,20,30,.06);
-
-      --radius-xl: 20px;
-      --radius-lg: 14px;
-
-      /* Tipografía accesible (sin dark mode) */
-      --fs-xxl: clamp(22px, 3.5vw, 26px);
-      --fs-xl:  clamp(18px, 2.9vw, 22px);
-      --fs-lg:  clamp(16px, 2.6vw, 18px);
-      --fs-md:  clamp(15px, 2.4vw, 17px);
-      --fs-sm:  clamp(14px, 2.2vw, 16px);
-
-      --pad-xl:  22px;
-      --pad-lg:  18px;
-      --pad-md:  14px;
-
-      --tap: 48px;   /* objetivo táctil mínimo */
-      --gap: 12px;
-      --gap-lg: 16px;
-      --maxw: 860px;
+      --bg:#ffffff;--ink:#0b1220;--muted:#667085;
+      --primary:#2563eb;--primary-600:#1d4ed8;
+      --accent:#10b981;--warn:#f59e0b;--danger:#ef4444;
+      --radius:16px;--pad:16px;--gap:14px;--tap:48px;
+      --shadow:0 6px 24px rgba(2,6,23,.08),0 2px 8px rgba(2,6,23,.06);
+      --soft:0 2px 10px rgba(2,6,23,.06)
     }
-
-    html, body{
-      height:100%;
-      background: var(--bg);
-      color: var(--text);
-      font: 500 var(--fs-md)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
-
-    .app{
-      max-width: var(--maxw);
-      margin: 0 auto env(safe-area-inset-bottom);
-      padding: env(safe-area-inset-top) var(--pad-xl) var(--pad-xl) var(--pad-xl);
-    }
-
-    /* ===== Header fijo ===== */
-    .header{
-      position: sticky; top: 0; z-index: 10;
-      background: linear-gradient(var(--bg), var(--bg));
-      padding: var(--pad-xl) 0 var(--pad-lg);
-    }
-    .title{
-      display:flex; align-items:center; gap:12px; margin:0 0 var(--pad-lg) 0;
-    }
-    .logo{
-      width:38px;height:38px;border-radius:12px;
-      background: linear-gradient(180deg, #22c1ee, #0ea5e9);
-      display:grid;place-items:center;color:#fff;font-weight:800;
-      box-shadow: var(--shadow);
-    }
-    .title h1{ font-size: var(--fs-xxl); margin:0; letter-spacing:.2px; }
-
-    .tabs{
-      display:flex; gap:10px; margin-bottom: var(--pad-lg);
-    }
-    .tab{
-      flex:1; text-align:center; border-radius:999px; padding:10px 14px;
-      border:1px solid var(--border); background:var(--card);
-      box-shadow: var(--shadow);
-      font-weight:700; letter-spacing:.2px;
-    }
-    .tab[aria-selected="true"]{
-      background: var(--primary);
-      color: var(--primary-ink);
-      border-color: transparent;
-    }
-
-    /* ===== Composer ===== */
-    .composer{
-      background: var(--card); border:1px solid var(--border);
-      border-radius: var(--radius-xl); box-shadow: var(--shadow);
-      padding: var(--pad-lg); display:grid; gap: var(--gap);
-    }
-    .row{ display:flex; gap: var(--gap); align-items:center; flex-wrap: wrap; }
-    .input{
-      flex:1; min-height: var(--tap);
-      background: #fff; border:1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 12px 14px;
-      font-size: var(--fs-lg); color: var(--text);
-      outline: none;
-    }
-    .input::placeholder{ color: var(--muted); }
-    .prio{
-      display:flex; gap: 10px; align-items:center;
-      border-radius: 999px; background: #f6f8fb;
-      padding: 6px 8px; border:1px solid var(--border);
-    }
-    .dot{
-      width:22px;height:22px;border-radius:50%;
-      border:2px solid transparent; outline-offset:2px; cursor:pointer;
-    }
-    .dot[data-v="red"]{ background: var(--danger); }
-    .dot[data-v="amber"]{ background: var(--warn); }
-    .dot[data-v="green"]{ background: var(--ok); }
-    .dot[aria-checked="true"]{ box-shadow: 0 0 0 3px rgba(0,0,0,.06) inset, 0 0 0 2px #fff inset; border-color: rgba(0,0,0,.12); }
-    .btn{
-      min-height: var(--tap); padding: 12px 16px; border-radius: 14px;
-      border: none; background: var(--primary); color: var(--primary-ink);
-      font-weight: 800; letter-spacing:.3px; cursor: pointer; box-shadow: var(--shadow);
-    }
-
-    /* ===== Secciones y listas ===== */
-    .section{ margin-top: var(--pad-xl); }
-    .section h2{ font-size: var(--fs-xl); margin:0 0 var(--pad-md) 0; letter-spacing:.2px; }
-
-    .list{ display:grid; gap: 10px; }
-    .item{
-      display:grid; grid-template-columns: 1fr auto; align-items:center;
-      gap: 12px; padding: 14px; background: var(--card); border:1px solid var(--border);
-      border-radius: var(--radius-lg); box-shadow: var(--shadow);
-    }
-    .item-body{ display:flex; gap:12px; align-items: flex-start; }
-    .chip{ width:14px;height:14px;border-radius:50%; margin-top: 3px; flex:0 0 14px; }
-    .chip.red{ background: var(--danger); }
-    .chip.amber{ background: var(--warn); }
-    .chip.green{ background: var(--ok); }
-    .text{ font-size: var(--fs-lg); line-height:1.35; word-break: break-word; }
-    .actions{ display:flex; gap:8px; }
-    .iconbtn{
-      width: var(--tap); height: var(--tap);
-      display:grid; place-items:center; border-radius: 12px;
-      border:1px solid var(--border); background: #f6f8fb; cursor: pointer;
-    }
-    .iconbtn:active{ transform: translateY(1px); }
-
-    /* ===== Completadas / Papelera ===== */
-    details.trash{
-      margin-top: var(--pad-xl);
-      background: var(--card); border:1px solid var(--border);
-      border-radius: var(--radius-xl); box-shadow: var(--shadow);
-      padding: var(--pad-md);
-    }
-    details.trash summary{
-      cursor:pointer; list-style:none; display:flex; align-items:center; gap:10px;
-      font-weight:800; font-size: var(--fs-lg);
-    }
-    details.trash[open] .trash-body{ margin-top: var(--pad-md); }
-    .trash-list .item{ opacity:.7; }
-    .toolbar{ display:flex; gap:10px; flex-wrap: wrap; margin-top: var(--pad-md); }
-
-    .muted{ color: var(--muted); }
-    .hidden{ display:none !important; }
-
-    /* ===== Botón Instalar (sólo si hay evento) ===== */
-    .fab{
-      position: fixed; right: calc(16px + env(safe-area-inset-right));
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      width:56px;height:56px;border-radius: 999px; display:grid; place-items:center;
-      background: var(--primary); color: var(--primary-ink);
-      border:none; box-shadow: var(--shadow); cursor: pointer; font-size: 22px; font-weight: 900;
-    }
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);
+      font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    .container{max-width:1000px;margin:0 auto;padding:clamp(12px,2vw,24px)}
+    header.appbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.1) blur(6px);
+      background:color-mix(in oklab,#fff 88%, transparent);border-bottom:1px solid rgba(2,6,23,.06)}
+    .row{display:flex;align-items:center;gap:12px;min-height:64px}
+    .brand{display:flex;align-items:center;gap:10px;flex:1}
+    .logo{width:36px;height:36px;border-radius:12px;background:conic-gradient(from 200deg at 50% 50%,#3b82f6,#2563eb,#1d4ed8,#3b82f6);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 6px 18px rgba(37,99,235,.25)}
+    .brand h1{font-size:18px;margin:0 0 -2px 0;letter-spacing:.2px}
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+    button{appearance:none;border:0;border-radius:12px;padding:10px 14px;min-height:var(--tap);
+      font:inherit;cursor:pointer;background:#f3f4f6;color:#0b1220;box-shadow:var(--soft);
+      display:inline-flex;gap:10px;align-items:center;transition:transform .06s,box-shadow .2s,background .2s}
+    button.primary{background:linear-gradient(135deg,var(--primary),var(--primary-600));color:#fff;box-shadow:0 6px 22px rgba(37,99,235,.28)}
+    button.ghost{background:transparent;box-shadow:none;color:var(--primary)}
+    button:active{transform:translateY(1px) scale(.995)}
+    .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--pad)}
+    .grid{display:grid;gap:var(--gap)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:10px 14px;border-radius:999px;background:#eef2ff;color:#1e3a8a;border:1px solid rgba(37,99,235,.18);cursor:pointer;user-select:none}
+    .tab[aria-selected="true"]{background:linear-gradient(135deg,#e0e7ff,#dbeafe);border-color:color-mix(in oklab,var(--primary) 30%, transparent);box-shadow:inset 0 0 0 2px rgba(37,99,235,.12)}
+    .composer{display:grid;gap:10px;grid-template-columns:1fr auto;align-items:center}
+    .field{display:flex;align-items:center;gap:10px;background:#f8fafc;padding:10px 12px;border-radius:14px;border:1px solid rgba(2,6,23,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+    .field input{flex:1;border:0;outline:0;background:transparent;min-height:36px;font-size:16px}
+    .chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .chip{padding:8px 12px;border-radius:999px;background:#eef2ff;color:#1e3a8a;border:1px solid rgba(37,99,235,.18);cursor:pointer;user-select:none;font-size:13px}
+    .chip[data-selected="true"]{background:#dcfce7;color:#065f46;border-color:rgba(16,185,129,.25)}
+    ul.tasks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .task{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:10px 12px;border:1px solid rgba(2,6,23,.06);box-shadow:var(--soft)}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .dot.low{background:#93c5fd}.dot.med{background:#fbbf24}.dot.high{background:#f87171}
+    .task__text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .task__actions{display:flex;gap:6px}
+    .btn-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#f3f4f6}
+    .btn-icon.success{background:#dcfce7;color:#065f46}
+    .btn-icon.warn{background:#fff7ed;color:#9a3412}
+    .btn-icon.danger{background:#fee2e2;color:#991b1b}
+    .completed .task{opacity:.9;background:#f9fafb}
+    .completed .task__text{text-decoration:line-through;color:#4b5563}
+    .install{display:none;margin-top:12px;padding:12px;border-radius:14px;border:1px dashed rgba(37,99,235,.35);background:#f0f6ff}
+    .install[aria-hidden="false"]{display:block}
+    @media (max-width:680px){.composer{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <div class="title">
-        <div class="logo" aria-hidden="true">P</div>
-        <h1>Planta</h1>
-      </div>
-
-      <div class="tabs" role="tablist" aria-label="Listas">
-        <button class="tab" role="tab" id="tab-planta" aria-selected="true">Planta <span class="muted" id="count-planta"></span></button>
-        <button class="tab" role="tab" id="tab-inter" aria-selected="false">Interconsultas <span class="muted" id="count-inter"></span></button>
-        <input id="q" class="input" type="search" placeholder="Buscar…" aria-label="Buscar" style="flex:2">
-      </div>
-
-      <div class="composer" role="form" aria-label="Añadir tarea">
-        <div class="row">
-          <div class="prio" role="radiogroup" aria-label="Prioridad">
-            <div class="dot" role="radio" tabindex="0" aria-checked="true" data-v="red" title="Alta"></div>
-            <div class="dot" role="radio" tabindex="0" aria-checked="false" data-v="amber" title="Media"></div>
-            <div class="dot" role="radio" tabindex="0" aria-checked="false" data-v="green" title="Baja"></div>
-          </div>
-          <select id="listSel" class="input" style="flex:0 0 220px" aria-label="Lista">
-            <option value="planta">Planta</option>
-            <option value="inter">Interconsultas</option>
-          </select>
-          <button id="addBtn" class="btn" aria-label="Añadir">Añadir</button>
+  <header class="appbar">
+    <div class="container row">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Planta</h1>
+          <p>Sincronizada, offline, instalable</p>
         </div>
-        <input id="text" class="input" type="text" placeholder="Describe la tarea…" aria-label="Descripción de la tarea" autocomplete="off">
       </div>
-    </header>
+      <div class="actions">
+        <button id="installBtn" class="ghost" aria-label="Instalar app">➕ Instalar</button>
+        <button id="signin" class="primary">Acceder</button>
+        <button id="signout" class="ghost" style="display:none">Salir</button>
+      </div>
+    </div>
+  </header>
 
-    <main>
-      <section class="section" id="sec-planta" aria-labelledby="tab-planta">
-        <h2>Planta</h2>
-        <div id="list-planta" class="list" role="list"></div>
-      </section>
+  <main class="container grid" style="margin-top:16px">
+    <section id="authGate" class="card" role="region" aria-live="polite" style="text-align:center;padding:26px">
+      <h2 style="margin:0 0 6px 0">Bienvenido</h2>
+      <p style="margin:0 0 16px 0;color:var(--muted)">Accede con Google para sincronizar tus listas entre dispositivos.</p>
+      <button id="signin2" class="primary">Acceder con Google</button>
+    </section>
 
-      <section class="section hidden" id="sec-inter" aria-labelledby="tab-inter">
-        <h2>Interconsultas</h2>
-        <div id="list-inter" class="list" role="list"></div>
-      </section>
-
-      <details class="trash" id="trash">
-        <summary>Completadas <span class="muted" id="count-done"></span></summary>
-        <div class="trash-body">
-          <div id="list-done" class="list trash-list" role="list"></div>
-          <div class="toolbar">
-            <button id="undoBtn" class="btn" type="button">Deshacer última</button>
-            <button id="emptyBtn" class="iconbtn" title="Vaciar papelera" aria-label="Vaciar papelera">🗑️</button>
-          </div>
+    <section id="ui" class="grid" hidden>
+      <div class="card grid" role="region" aria-labelledby="tabs-label">
+        <div id="tabs-label" class="section-title">Listas</div>
+        <div class="tabs" role="tablist" aria-label="Listas">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" id="tab-planta">Planta</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-inter" id="tab-inter">Interconsultas</button>
         </div>
-      </details>
-    </main>
-  </div>
 
-  <!-- Botón instalar (aparece solo con beforeinstallprompt) -->
-  <button id="installFab" class="fab hidden" title="Instalar">⬇</button>
+        <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta">
+          <div class="composer" style="margin-top:12px">
+            <div class="field" aria-label="Nueva tarea de planta">
+              <input id="text-planta" type="text" inputmode="text" autocomplete="off" placeholder="Añadir tarea de planta…" />
+            </div>
+            <button class="primary" id="add-planta">Añadir</button>
+            <div class="chips" style="grid-column:1/-1">
+              <span>Prioridad:</span>
+              <button class="chip" data-prio="baja" data-list="planta">Baja</button>
+              <button class="chip" data-prio="media" data-selected="true" data-list="planta">Media</button>
+              <button class="chip" data-prio="alta" data-list="planta">Alta</button>
+            </div>
+          </div>
+          <h3 class="section-title">En curso</h3>
+          <ul id="list-planta" class="tasks" aria-live="polite"></ul>
+        </div>
 
-  <script>
-  /* ===== Utilidades ===== */
-  const $$$ = (sel, root=document) => root.querySelector(sel);
-  const $$A = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+        <div id="panel-inter" role="tabpanel" aria-labelledby="tab-inter" hidden>
+          <div class="composer" style="margin-top:12px">
+            <div class="field" aria-label="Nueva interconsulta">
+              <input id="text-inter" type="text" inputmode="text" autocomplete="off" placeholder="Añadir interconsulta…" />
+            </div>
+            <button class="primary" id="add-inter">Añadir</button>
+            <div class="chips" style="grid-column:1/-1">
+              <span>Prioridad:</span>
+              <button class="chip" data-prio="baja" data-list="inter">Baja</button>
+              <button class="chip" data-prio="media" data-selected="true" data-list="inter">Media</button>
+              <button class="chip" data-prio="alta" data-list="inter">Alta</button>
+            </div>
+          </div>
+          <h3 class="section-title">En curso</h3>
+          <ul id="list-inter" class="tasks" aria-live="polite"></ul>
+        </div>
+      </div>
 
-  /* ===== Estado ===== */
-  const KEY = "planta.v2";  // persistencia (sin cambios de clave)
-  const state = load() || { planta: [], inter: [], done: [] };
-  let currentList = "planta";
-  let deferredPrompt = null;
+      <div class="card grid completed" role="region" aria-labelledby="comp-title">
+        <div id="comp-title" class="section-title">Completadas</div>
+        <ul id="list-completed" class="tasks" aria-live="polite"></ul>
+        <div class="actions" style="justify-content:flex-end">
+          <button id="emptyTrash" class="btn danger">Vaciar papelera</button>
+        </div>
+      </div>
 
-  function load(){
-    try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; }
-  }
-  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+      <div id="installContainer" class="install" aria-hidden="true">
+        <b>Instala Planta</b> para un acceso más rápido. <button id="installAction" class="primary">Instalar</button>
+      </div>
+    </section>
+  </main>
 
-  /* ===== Render ===== */
-  function render(){
-    const q = ($$$('#q').value || '').trim().toLowerCase();
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
+      getRedirectResult, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+    import {
+      getFirestore, enableIndexedDbPersistence, serverTimestamp,
+      collection, addDoc, doc, setDoc, deleteDoc, onSnapshot, query, orderBy, runTransaction, getDocs
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase.config.js";
 
-    const renderList = (arr, host) => {
-      host.innerHTML = "";
-      for(const t of arr){
-        if(q && !t.text.toLowerCase().includes(q)) continue;
+    // Firebase init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        const item = document.createElement('div');
-        item.className = 'item';
-        item.setAttribute('role','listitem');
-        item.dataset.id = t.id;
+    // Sesión persistente + caché offline
+    (async () => {
+      try { await setPersistence(auth, browserLocalPersistence); } catch {}
+      try { await enableIndexedDbPersistence(db); } catch(e) {}
+      try { await getRedirectResult(auth); } catch {}
+    })();
 
-        const body = document.createElement('div');
-        body.className = 'item-body';
-
-        const chip = document.createElement('div');
-        chip.className = 'chip ' + t.prio;
-
-        const txt = document.createElement('div');
-        txt.className = 'text';
-        txt.textContent = t.text;
-
-        body.append(chip, txt);
-
-        const actions = document.createElement('div');
-        actions.className = 'actions';
-
-        const done = document.createElement('button');
-        done.className = 'iconbtn'; done.title = 'Hecho'; done.setAttribute('aria-label','Hecho');
-        done.textContent = '✔';
-
-        const del = document.createElement('button');
-        del.className = 'iconbtn'; del.title = 'Eliminar'; del.setAttribute('aria-label','Eliminar');
-        del.textContent = '✖';
-
-        actions.append(done, del);
-        item.append(body, actions);
-        host.append(item);
-      }
-    };
-
-    renderList(state.planta, $$$('#list-planta'));
-    renderList(state.inter, $$$('#list-inter'));
-    renderList(state.done,  $$$('#list-done'));
-
-    $$$('#count-planta').textContent = `(${state.planta.length})`;
-    $$$('#count-inter').textContent  = `(${state.inter.length})`;
-    $$$('#count-done').textContent   = `(${state.done.length})`;
-  }
-
-  /* ===== Acciones ===== */
-  function addTask(){
-    const text = ($$$('#text').value || '').trim();
-    if(!text) return;
-    const prio = $$A('.dot').find(d => d.getAttribute('aria-checked') === 'true').dataset.v;
-    const list = $$$('#listSel').value;
-
-    const t = { id: crypto.randomUUID(), text, prio };
-    state[list].unshift(t);
-    save();
-    $$$('#text').value = '';
-    render();
-  }
-
-  function removeTask(id, list){
-    const idx = state[list].findIndex(t=>t.id===id);
-    if(idx>=0){
-      const [t] = state[list].splice(idx,1);
-      state.done.unshift({ ...t, from:list });
-      save(); render();
+    // PWA: SW + instalación
+    if ('serviceWorker' in navigator) {
+      const swUrl = new URL('./sw.js', window.location.href);
+      navigator.serviceWorker.register(swUrl, { scope: './' }).catch(console.error);
     }
-  }
-
-  function undo(){
-    const t = state.done.shift();
-    if(!t) return;
-    state[t.from].unshift({ id: crypto.randomUUID(), text: t.text, prio: t.prio });
-    save(); render();
-  }
-  function emptyTrash(){
-    state.done = [];
-    save(); render();
-  }
-
-  /* ===== UI wiring ===== */
-  $$A('.dot').forEach(d=>{
-    d.addEventListener('click', ()=>{
-      $$A('.dot').forEach(x=>x.setAttribute('aria-checked','false'));
-      d.setAttribute('aria-checked','true');
-    }, {passive:true});
-    d.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter' || e.key===' '){ d.click(); e.preventDefault(); }
+    let deferredInstallEvent = null;
+    const installBanner = document.getElementById('installContainer');
+    const installBtn = document.getElementById('installBtn');
+    const installAction = document.getElementById('installAction');
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault(); deferredInstallEvent = e;
+      installBanner.setAttribute('aria-hidden','false');
     });
-  });
+    const triggerInstall = async () => {
+      if(!deferredInstallEvent) return;
+      deferredInstallEvent.prompt();
+      await deferredInstallEvent.userChoice;
+      deferredInstallEvent = null;
+      installBanner.setAttribute('aria-hidden','true');
+    };
+    installBtn.addEventListener('click', triggerInstall);
+    installAction?.addEventListener('click', triggerInstall);
 
-  $$$('#addBtn').addEventListener('click', addTask);
-  $$$('#text').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTask(); }});
-  $$$('#undoBtn').addEventListener('click', undo);
-  $$$('#emptyBtn').addEventListener('click', emptyTrash);
-  $$$('#q').addEventListener('input', render, {passive:true});
+    // Helpers UI
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>Array.from(document.querySelectorAll(s));
+    const state = { user:null, prio:{ planta:'media', inter:'media' } };
 
-  function setTab(tab){
-    currentList = tab;
-    $$$('#tab-planta').setAttribute('aria-selected', tab==='planta');
-    $$$('#tab-inter').setAttribute('aria-selected', tab==='inter');
-    $$$('#sec-planta').classList.toggle('hidden', tab!=='planta');
-    $$$('#sec-inter').classList.toggle('hidden', tab!=='inter');
-  }
-  $$$('#tab-planta').addEventListener('click', ()=>setTab('planta'));
-  $$$('#tab-inter').addEventListener('click', ()=>setTab('inter'));
-
-  function listClick(e, list){
-    const btn = e.target.closest('.iconbtn');
-    if(!btn) return;
-    const id = e.target.closest('.item')?.dataset.id;
-    if(!id) return;
-    if(btn.textContent==='✔') removeTask(id, list);
-    if(btn.textContent==='✖'){
-      const idx = state[list].findIndex(t=>t.id===id);
-      if(idx>=0){ state[list].splice(idx,1); save(); render(); }
+    const tabPlanta = $('#tab-planta'), tabInter = $('#tab-inter');
+    const panelPlanta = $('#panel-planta'), panelInter = $('#panel-inter');
+    function setTab(which){
+      const isPlanta = which==='planta';
+      tabPlanta.setAttribute('aria-selected', isPlanta?'true':'false');
+      tabInter.setAttribute('aria-selected', isPlanta?'false':'true');
+      panelPlanta.hidden = !isPlanta; panelInter.hidden = isPlanta;
+      (isPlanta?$('#text-planta'):$('#text-inter'))?.focus();
     }
-  }
-  $$$('#list-planta').addEventListener('click', e=>listClick(e, 'planta'));
-  $$$('#list-inter').addEventListener('click', e=>listClick(e, 'inter'));
+    tabPlanta.addEventListener('click',()=>setTab('planta'));
+    tabInter.addEventListener('click',()=>setTab('inter'));
+    $$('.chip').forEach(ch=>{
+      ch.addEventListener('click',()=>{
+        const list = ch.dataset.list;
+        $$('.chip[data-list="'+list+'"]').forEach(c=>c.removeAttribute('data-selected'));
+        ch.setAttribute('data-selected','true');
+        state.prio[list==='inter'?'inter':'planta'] = ch.dataset.prio;
+      });
+    });
 
-  render();
+    // Auth (popup con fallback redirect para móvil)
+    async function doSignin(){
+      const provider = new GoogleAuthProvider();
+      try{ await signInWithPopup(auth, provider); }
+      catch(e){ await signInWithRedirect(auth, provider); }
+    }
+    $('#signin').addEventListener('click', doSignin);
+    $('#signin2').addEventListener('click', doSignin);
+    $('#signout').addEventListener('click', ()=>signOut(auth));
 
-  /* ===== Install FAB ===== */
-  const fab = $$$('#installFab');
-  window.addEventListener('beforeinstallprompt', (e)=>{
-    e.preventDefault();
-    deferredPrompt = e;
-    fab.classList.remove('hidden');
-  });
-  fab.addEventListener('click', async ()=>{
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    fab.classList.add('hidden');
-  });
+    const authGate = $('#authGate'), ui = $('#ui');
+    const signInBtn = $('#signin'), signOutBtn = $('#signout');
 
-  /* ===== Service Worker ===== */
-  if('serviceWorker' in navigator){
-    // Registrar cuando el hilo esté libre para priorizar interacción inicial
-    const reg = () => navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(console.error);
-    if (window.requestIdleCallback) requestIdleCallback(reg, {timeout: 2000}); else window.addEventListener('load', reg);
-  }
+    onAuthStateChanged(auth, (user)=>{
+      state.user = user || null;
+      if(!user){
+        ui.hidden = true;
+        authGate.hidden = false;
+        signInBtn.style.display = '';
+        signOutBtn.style.display = 'none';
+        return;
+      }
+      signInBtn.style.display = 'none';
+      signOutBtn.style.display = '';
+      authGate.hidden = true;
+      ui.hidden = false;
+      subscribeAll();
+    });
+
+    // Firestore
+    const colRef = (name)=>collection(db,'users',state.user.uid,name);
+
+    function renderList(ul, snap, {completed=false}={}){
+      ul.innerHTML = '';
+      for(const d of snap.docs){
+        const item = d.data();
+        const li = document.createElement('li');
+        li.className='task'; li.dataset.id=d.id; li.dataset.col=d.ref.parent.id;
+
+        const dot = document.createElement('span');
+        dot.className = 'dot ' + (item.prioridad==='alta'?'high': item.prioridad==='baja'?'low':'med');
+        dot.title = `Prioridad: ${item.prioridad}`;
+
+        const text = document.createElement('div');
+        text.className='task__text'; text.textContent=item.texto || '(sin texto)';
+
+        const actions = document.createElement('div'); actions.className='task__actions';
+        if(!completed){
+          const done = document.createElement('button'); done.className='btn-icon success'; done.title='Marcar como completada'; done.textContent='✔';
+          done.addEventListener('click', ()=>completeTask(d.id, d.ref.parent.id));
+          const del = document.createElement('button'); del.className='btn-icon danger'; del.title='Eliminar'; del.textContent='🗑';
+          del.addEventListener('click', ()=>deleteTask(d.id, d.ref.parent.id));
+          actions.append(done, del);
+        }else{
+          const undo = document.createElement('button'); undo.className='btn-icon warn'; undo.title='Deshacer'; undo.textContent='↩';
+          undo.addEventListener('click', ()=>undoTask(d.id, item.previousList || 'planta'));
+          actions.append(undo);
+        }
+        li.append(dot, text, actions);
+        ul.appendChild(li);
+      }
+    }
+
+    let unsubPlanta=null, unsubInter=null, unsubComp=null;
+    function subscribeAll(){
+      unsubPlanta?.(); unsubInter?.(); unsubComp?.();
+      unsubPlanta = onSnapshot(query(colRef('planta'), orderBy('createdAt','asc')),(snap)=>renderList($('#list-planta'),snap));
+      unsubInter  = onSnapshot(query(colRef('interconsultas'), orderBy('createdAt','asc')),(snap)=>renderList($('#list-inter'),snap));
+      unsubComp   = onSnapshot(query(colRef('completadas'), orderBy('completedAt','desc')),(snap)=>renderList($('#list-completed'),snap,{completed:true}));
+    }
+
+    async function addTask(listName, text, prioridad){
+      if(!text?.trim()) return;
+      await addDoc(colRef(listName), {texto:text.trim(), prioridad, createdAt:serverTimestamp(), updatedAt:serverTimestamp()});
+    }
+    $('#add-planta').addEventListener('click', async ()=>{ const t=$('#text-planta'); await addTask('planta', t.value, state.prio.planta); t.value=''; t.focus(); });
+    $('#add-inter').addEventListener('click', async ()=>{ const t=$('#text-inter'); await addTask('interconsultas', t.value, state.prio.inter); t.value=''; t.focus(); });
+    $('#text-planta').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#add-planta').click(); });
+    $('#text-inter').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#add-inter').click(); });
+
+    async function completeTask(id, fromCol){
+      const src = doc(db,'users',state.user.uid,fromCol,id);
+      const dst = doc(colRef('completadas'));
+      await runTransaction(db, async (tx)=>{
+        const snap = await tx.get(src); if(!snap.exists()) return;
+        const data = snap.data();
+        tx.set(dst, {texto:data.texto, prioridad:data.prioridad, previousList:fromCol, createdAt:data.createdAt || serverTimestamp(), completedAt:serverTimestamp(), updatedAt:serverTimestamp()});
+        tx.delete(src);
+      });
+    }
+    async function undoTask(id, previous='planta'){
+      const src = doc(db,'users',state.user.uid,'completadas',id);
+      const dst = doc(colRef(previous));
+      await runTransaction(db, async (tx)=>{
+        const snap = await tx.get(src); if(!snap.exists()) return;
+        const data = snap.data();
+        tx.set(dst, {texto:data.texto, prioridad:data.prioridad, createdAt:data.createdAt || serverTimestamp(), updatedAt:serverTimestamp()});
+        tx.delete(src);
+      });
+    }
+    async function deleteTask(id, fromCol){
+      await deleteDoc(doc(db,'users',state.user.uid,fromCol,id));
+    }
+    document.getElementById('emptyTrash').addEventListener('click', async ()=>{
+      const qSnap = await getDocs(colRef('completadas'));
+      await Promise.allSettled(qSnap.docs.map(d=>deleteDoc(d.ref)));
+    });
+
+    setTab('planta');
   </script>
 </body>
 </html>
