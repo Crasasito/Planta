@@ -1,2 +1,0 @@
-# Planta
-Planta
