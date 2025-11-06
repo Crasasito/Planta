@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B1220" />
+  <meta name="description" content="Planta — Gestor de planta e interconsultas. PWA instalable, sincroniza con Firestore y funciona offline." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <title>Planta — PWA</title>
+
+  <style>
+    /* ============ ONE UI 8 — Design System ============ */
+    :root{
+      /* Core palette (OKLCH-friendly approximations) */
+      --bg:#0B1220;              /* deep ink for header gradient */
+      --surface:#0F172A;         /* appbar bg (slightly lighter) */
+      --card:#FFFFFF;            /* cards */
+      --ink:#0B1220;             /* text on light */
+      --ink-2:#111827;           /* headings */
+      --muted:#667085;           /* secondary text */
+      --primary:#3B82F6;         /* Samsung-ish blue */
+      --primary-600:#2563EB;     /* pressed */
+      --accent:#10B981;          /* success */
+      --warn:#F59E0B;            /* warning */
+      --danger:#EF4444;          /* danger */
+      --ring:rgba(59,130,246,.35);
+
+      --radius:20px;             /* 2xl */
+      --pad:16px;
+      --gap:14px;
+      --tap:48px;
+
+      --shadow-lg:0 20px 40px rgba(2,6,23,.08), 0 8px 16px rgba(2,6,23,.06);
+      --shadow-md:0 12px 24px rgba(2,6,23,.07), 0 4px 10px rgba(2,6,23,.05);
+      --shadow-sm:0 6px 14px rgba(2,6,23,.06), 0 2px 6px rgba(2,6,23,.04);
+
+      --grad:linear-gradient(135deg, rgba(59,130,246,.14), rgba(16,185,129,.10));
+    }
+
+    /* Typography & base */
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(59,130,246,.18), transparent 60%),
+        radial-gradient(1000px 600px at 100% -20%, rgba(16,185,129,.14), transparent 60%),
+        #F7FAFF;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    /* Appbar */
+    header.appbar{
+      position:sticky; top:0; z-index:30;
+      background:color-mix(in oklab, #FFFFFF 85%, transparent);
+      backdrop-filter:saturate(1.1) blur(8px);
+      border-bottom:1px solid rgba(2,6,23,.06);
+    }
+    .container{max-width:1100px;margin:0 auto;padding:clamp(12px,2vw,24px)}
+    .row{display:flex;align-items:center;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px;flex:1}
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background:conic-gradient(from 210deg at 50% 50%, #93C5FD, #3B82F6, #2563EB, #1D4ED8, #93C5FD);
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.9), var(--shadow-sm);
+    }
+    .brand h1{margin:0;font-weight:800;letter-spacing:.2px;font-size:20px;color:var(--ink-2)}
+    .badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      border-radius:999px;border:1px solid rgba(2,6,23,.06);
+      padding:6px 10px;font-size:12px;background:#F3F4F6;color:#0B1220
+    }
+    .online{background:#DCFCE7;color:#065F46;border-color:rgba(16,185,129,.25)}
+    .offline{background:#FEE2E2;color:#991B1B;border-color:rgba(239,68,68,.25)}
+    .userchip{display:flex;align-items:center;gap:8px}
+    .userchip img{width:30px;height:30px;border-radius:50%;box-shadow:var(--shadow-sm)}
+
+    /* Buttons */
+    button{
+      appearance:none;border:0;border-radius:14px;min-height:var(--tap);
+      padding:12px 16px;cursor:pointer;font:inherit;letter-spacing:.2px;
+      background:#F3F4F6;color:#0B1220;box-shadow:var(--shadow-sm);
+      display:inline-flex;gap:10px;align-items:center;transition:transform .06s,box-shadow .18s,background .18s
+    }
+    button.primary{background:linear-gradient(135deg,var(--primary),var(--primary-600));color:#fff;box-shadow:0 14px 28px rgba(37,99,235,.30)}
+    button.ghost{background:transparent;box-shadow:none;color:var(--primary)}
+    button:active{transform:translateY(1px) scale(.995)}
+    button[disabled]{opacity:.5;filter:grayscale(.2);cursor:not-allowed;box-shadow:none}
+
+    /* Cards & grid */
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:clamp(14px,2vw,18px)}
+    .grid{display:grid;gap:var(--gap)}
+
+    /* Tabs */
+    .tabs{display:flex;gap:10px;flex-wrap:wrap}
+    .tab{
+      padding:10px 14px;border-radius:999px;background:#EEF2FF;color:#1E3A8A;
+      border:1px solid rgba(37,99,235,.20);cursor:pointer;user-select:none
+    }
+    .tab[aria-selected="true"]{
+      background:linear-gradient(135deg,#E0E7FF,#DBEAFE);
+      border-color:color-mix(in oklab,var(--primary) 30%, transparent);
+      box-shadow:inset 0 0 0 2px rgba(37,99,235,.12)
+    }
+
+    /* Composer (inputs) */
+    .composer{display:grid;gap:12px;grid-template-columns:130px 1fr 200px auto;align-items:center}
+    .field{
+      display:flex;align-items:center;gap:10px;background:#F8FAFC;padding:12px 14px;
+      border-radius:16px;border:1px solid rgba(2,6,23,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)
+    }
+    .field input{
+      flex:1;border:0;outline:0;background:transparent;min-height:28px;font-size:16px;
+      -webkit-appearance:none;-moz-appearance:none;appearance:none;
+    }
+    .field input::placeholder{color:#9AA3AF}
+    .field:focus-within{outline:3px solid var(--ring);outline-offset:2px}
+
+    .chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+    .chip{padding:8px 12px;border-radius:999px;background:#EEF2FF;color:#1E3A8A;border:1px solid rgba(37,99,235,.18);cursor:pointer;font-size:13px}
+    .chip[data-selected="true"]{background:#DCFCE7;color:#065F46;border-color:rgba(16,185,129,.25)}
+
+    /* Tasks */
+    ul.tasks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .task{
+      display:grid;grid-template-columns:120px 1fr 200px auto;align-items:center;gap:12px;
+      background:#fff;border-radius:16px;padding:12px 14px;border:1px solid rgba(2,6,23,.06);box-shadow:var(--shadow-sm)
+    }
+    .room{font-weight:800;letter-spacing:.3px;border-radius:10px;padding:8px 10px;background:#EEF2FF;color:#1E3A8A;justify-self:start;min-width:100px;text-align:center}
+    .task__text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0F172A}
+    .pendiente{border-radius:999px;padding:8px 12px;background:#FFF7ED;color:#9A3412;justify-self:end;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .task__actions{display:flex;gap:8px;justify-self:end}
+    .btn-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#F3F4F6}
+    .btn-icon.success{background:#DCFCE7;color:#065F46}
+    .btn-icon.warn{background:#FEF9C3;color:#92400E}
+    .btn-icon.danger{background:#FEE2E2;color:#991B1B}
+
+    .completed .task{opacity:.95;background:#F9FAFB}
+    .completed .task__text{text-decoration:line-through;color:#4B5563}
+
+    /* Banners */
+    .banner{display:none;margin-top:12px;padding:12px;border-radius:16px;border:1px dashed rgba(37,99,235,.35);background:#F0F6FF}
+    .banner[aria-hidden="false"]{display:block}
+
+    /* Toast & Modal */
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#111827;color:#fff;padding:12px 16px;border-radius:14px;box-shadow:var(--shadow-md);max-width:92vw}
+    .toast[hidden]{display:none}
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(2,6,23,.35)}
+    .modal[aria-hidden="false"]{display:grid}
+    .modal .dialog{background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);padding:18px;max-width:480px;width:calc(100% - 32px)}
+    .dialog .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .composer{grid-template-columns:110px 1fr;grid-auto-rows:auto}
+      .composer button{grid-column:1/-1}
+      .task{grid-template-columns:110px 1fr;grid-auto-rows:auto}
+      .task .pendiente{grid-column:1/3;justify-self:start;margin-top:6px}
+      .task .task__actions{grid-column:2/3;justify-self:end}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============ APP BAR ============ -->
+  <header class="appbar">
+    <div class="container row">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Planta</h1>
+          <div class="badges">
+            <div id="badge-online" class="badge offline" aria-live="polite">Offline</div>
+            <div id="badge-auth" class="badge offline" aria-live="polite">Google: desconectado</div>
+          </div>
+          <div id="authHint" style="font-size:12px;color:#6B7280;margin-top:6px"></div>
+        </div>
+      </div>
+
+      <div class="userchip" id="userchip" hidden>
+        <img id="avatar" alt="" referrerpolicy="no-referrer"/>
+        <span id="displayname" style="font-weight:600"></span>
+      </div>
+
+      <div class="actions" style="display:flex;gap:10px">
+        <button id="installBtn" class="ghost">➕ Instalar</button>
+        <button id="signin" class="primary">Acceder</button>
+        <button id="signout" class="ghost" style="display:none">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main class="container grid" style="margin-top:16px">
+    <section id="authGate" class="card" role="region" aria-live="polite" style="text-align:center;padding:28px">
+      <h2 style="margin:0 0 8px 0">Bienvenido</h2>
+      <p style="margin:0 0 16px 0;color:#667085">
+        Accede con Google para sincronizar tus listas en todos los dispositivos.
+      </p>
+      <button id="signin2" class="primary">Acceder con Google</button>
+      <div id="authErr" style="color:#B91C1C;margin-top:12px;min-height:1.2em"></div>
+    </section>
+
+    <section id="ui" class="grid" hidden>
+      <div id="updateBanner" class="banner" aria-hidden="true">
+        <b>Nueva versión disponible.</b> <button id="reloadNow" class="primary" style="margin-left:8px">Actualizar</button>
+      </div>
+      <div id="installBanner" class="banner" aria-hidden="true">
+        <b>Instala Planta</b> para acceso más rápido. <button id="installAction" class="primary" style="margin-left:8px">Instalar</button>
+      </div>
+
+      <div class="card grid" role="region" aria-labelledby="tabs-label">
+        <div id="tabs-label" class="section-title" style="font-weight:700">Listas</div>
+        <div class="tabs" role="tablist" aria-label="Listas">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" id="tab-planta">Planta</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-inter" id="tab-inter">Interconsultas</button>
+        </div>
+
+        <!-- ======= PLANTA ======= -->
+        <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta">
+          <div class="composer" style="margin-top:12px">
+            <div class="field" aria-label="Habitación">
+              <input id="room-planta" type="text" inputmode="numeric" autocomplete="off" placeholder="Habitación (ej. 421-2)" />
+            </div>
+            <div class="field" aria-label="Descripción">
+              <input id="desc-planta" type="text" autocomplete="off" placeholder="Descripción de la tarea" />
+            </div>
+            <div class="field" aria-label="Pendiente">
+              <input id="pend-planta" type="text" autocomplete="off" placeholder="Pendiente (opcional)" />
+            </div>
+            <button class="primary" id="add-planta" title="Añadir tarea de planta" disabled>Añadir</button>
+            <div class="chips">
+              <span style="color:#667085">Prioridad:</span>
+              <button class="chip" data-prio="baja" data-list="planta">Baja</button>
+              <button class="chip" data-prio="media" data-selected="true" data-list="planta">Media</button>
+              <button class="chip" data-prio="alta" data-list="planta">Alta</button>
+            </div>
+            <div id="val-planta" style="font-size:12px;color:#6B7280"></div>
+          </div>
+          <h3 class="section-title" style="margin-top:6px">En curso</h3>
+          <ul id="list-planta" class="tasks" aria-live="polite"></ul>
+        </div>
+
+        <!-- ======= INTERCONSULTAS ======= -->
+        <div id="panel-inter" role="tabpanel" aria-labelledby="tab-inter" hidden>
+          <div class="composer" style="margin-top:12px">
+            <div class="field" aria-label="Habitación">
+              <input id="room-inter" type="text" inputmode="numeric" autocomplete="off" placeholder="Habitación (ej. 421-2)" />
+            </div>
+            <div class="field" aria-label="Descripción">
+              <input id="desc-inter" type="text" autocomplete="off" placeholder="Descripción de la tarea" />
+            </div>
+            <div class="field" aria-label="Pendiente">
+              <input id="pend-inter" type="text" autocomplete="off" placeholder="Pendiente (opcional)" />
+            </div>
+            <button class="primary" id="add-inter" title="Añadir interconsulta" disabled>Añadir</button>
+            <div class="chips">
+              <span style="color:#667085">Prioridad:</span>
+              <button class="chip" data-prio="baja" data-list="inter">Baja</button>
+              <button class="chip" data-prio="media" data-selected="true" data-list="inter">Media</button>
+              <button class="chip" data-prio="alta" data-list="inter">Alta</button>
+            </div>
+            <div id="val-inter" style="font-size:12px;color:#6B7280"></div>
+          </div>
+          <h3 class="section-title" style="margin-top:6px">En curso</h3>
+          <ul id="list-inter" class="tasks" aria-live="polite"></ul>
+        </div>
+      </div>
+
+      <div class="card grid completed" role="region" aria-labelledby="comp-title">
+        <div id="comp-title" class="section-title" style="font-weight:700">Completadas</div>
+        <ul id="list-completed" class="tasks" aria-live="polite"></ul>
+        <div class="actions" style="justify-content:flex-end">
+          <button id="emptyTrash" class="btn danger">Vaciar papelera</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal logout -->
+  <div id="modal" class="modal" aria-hidden="true" aria-modal="true" role="dialog">
+    <div class="dialog">
+      <div class="title" style="font-weight:800;margin-bottom:6px">¿Cerrar sesión?</div>
+      <div class="body" style="color:#667085">Se cerrará la sesión en este dispositivo.</div>
+      <div class="actions">
+        <button id="cancelLogout">Cancelar</button>
+        <button id="confirmLogout" class="primary">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- ============ APP LOGIC ============ -->
+  <script type="module">
+    import { firebaseConfig } from './firebase-config.js';
+
+    /* ---------- UI helpers ---------- */
+    const $  = (s)=>document.querySelector(s);
+    const $$ = (s)=>Array.from(document.querySelectorAll(s));
+    const toast = $('#toast');
+    const badgeOnline = $('#badge-online');
+    const badgeAuth   = $('#badge-auth');
+    const authHint    = $('#authHint');
+
+    const showToast = (msg)=>{ toast.textContent=msg; toast.hidden=false; setTimeout(()=>toast.hidden=true, 4000); };
+
+    const setOnline = ()=> {
+      const on = navigator.onLine;
+      badgeOnline.textContent = on ? 'Online' : 'Offline';
+      badgeOnline.classList.toggle('online', on);
+      badgeOnline.classList.toggle('offline', !on);
+    };
+    window.addEventListener('online', setOnline);
+    window.addEventListener('offline', setOnline);
+    setOnline();
+
+    /* ---------- PWA (SW + Install + Update) ---------- */
+    let deferredPrompt = null;
+    const installBanner = $('#installBanner');
+    const updateBanner  = $('#updateBanner');
+
+    if ('serviceWorker' in navigator) {
+      const url = new URL('./sw.js', location.href);
+      navigator.serviceWorker.register(url, { scope: './' }).then(async reg=>{
+        try{ await reg.update(); }catch{}
+        const onWaiting = (sw)=>{ if (sw && sw.state==='installed' && navigator.serviceWorker.controller) updateBanner.setAttribute('aria-hidden','false'); };
+        if(reg.waiting) onWaiting(reg.waiting);
+        reg.addEventListener('updatefound', ()=>{ const sw=reg.installing; sw?.addEventListener('statechange', ()=>onWaiting(sw)); });
+      }).catch(console.error);
+
+      window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt = e; installBanner.setAttribute('aria-hidden','false'); });
+    }
+    const triggerInstall = async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBanner.setAttribute('aria-hidden','true'); };
+    $('#installBtn').addEventListener('click', triggerInstall);
+    $('#installAction').addEventListener('click', triggerInstall);
+    $('#reloadNow').addEventListener('click', async ()=>{ const reg=await navigator.serviceWorker.getRegistration(); if(reg?.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'}); });
+    navigator.serviceWorker?.addEventListener('controllerchange', ()=>location.reload());
+
+    /* ---------- State ---------- */
+    const state = { user:null, prio:{planta:'media', inter:'media'} };
+
+    // Tabs
+    const tabPlanta = $('#tab-planta'), tabInter = $('#tab-inter');
+    const panelPlanta = $('#panel-planta'), panelInter = $('#panel-inter');
+    function setTab(which){
+      const isPlanta = which==='planta';
+      tabPlanta.setAttribute('aria-selected', isPlanta?'true':'false');
+      tabInter .setAttribute('aria-selected', isPlanta?'false':'true');
+      panelPlanta.hidden = !isPlanta; panelInter.hidden = isPlanta;
+      (isPlanta ? $('#room-planta') : $('#room-inter'))?.focus();
+      updateAddButtons();
+    }
+    tabPlanta.addEventListener('click',()=>setTab('planta'));
+    tabInter .addEventListener('click',()=>setTab('inter'));
+
+    // Prioridad chips
+    $$('.chip').forEach(ch=>{
+      ch.addEventListener('click',()=>{
+        const list = ch.dataset.list;
+        $$('.chip[data-list="'+list+'"]').forEach(c=>c.removeAttribute('data-selected'));
+        ch.setAttribute('data-selected','true');
+        state.prio[list==='inter'?'inter':'planta'] = ch.dataset.prio;
+      });
+    });
+
+    // Sanitización & parse habitación
+    const sanitize = (s)=> (s ?? '').toString().replace(/[<>]/g,'').trim();
+    const parseRoom = (s)=>{
+      if(!s) return null;
+      const m = s.trim().match(/^(\d{3})-(\d)$/);   // ###-#
+      if(!m) return null;
+      const planta = parseInt(m[1],10), cama = parseInt(m[2],10);
+      return { room: `${m[1]}-${m[2]}`, sortKey: planta*10 + cama };
+    };
+
+    // Validación JS (sin pattern/minlength nativos → no counters)
+    function inputsOk(prefix){
+      const room = $(`#room-${prefix}`).value;
+      const desc = $(`#desc-${prefix}`).value;
+      const pend = $(`#pend-${prefix}`).value;
+      const vr = !!parseRoom(room);
+      const vd = !!desc && desc.trim().length >= 20;
+      const vp = !pend || pend.trim().length <= 15;
+      return { ok: vr && vd && vp, vr, vd, vp };
+    }
+    function updateAddButtons(){
+      const connected = !!state.user;
+      const p1 = inputsOk('planta'); const p2 = inputsOk('inter');
+      $('#add-planta').disabled = !(connected && p1.ok);
+      $('#add-inter').disabled  = !(connected && p2.ok);
+      $('#val-planta').textContent = connected
+        ? (!p1.vr ? 'Formato de habitación: 421-2' : (!p1.vd ? 'Descripción mínima 20 caracteres' : (!p1.vp ? 'Pendiente máximo 15' : '')))
+        : 'Accede con Google para añadir';
+      $('#val-inter').textContent = connected
+        ? (!p2.vr ? 'Formato de habitación: 421-2' : (!p2.vd ? 'Descripción mínima 20 caracteres' : (!p2.vp ? 'Pendiente máximo 15' : '')))
+        : 'Accede con Google para añadir';
+    }
+    ['room-planta','desc-planta','pend-planta','room-inter','desc-inter','pend-inter'].forEach(id=>{
+      const el = document.getElementById(id);
+      el.addEventListener('input', updateAddButtons);
+      el.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ id.includes('planta') ? $('#add-planta').click() : $('#add-inter').click(); }});
+    });
+
+    /* ---------- Firebase (lazy import) ---------- */
+    let appMod, authMod, fsMod, app, auth, db;
+    let GoogleAuthProvider, getAuth, setPersistence, browserLocalPersistence,
+        signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, useDeviceLanguage;
+
+    let getFirestore, enableIndexedDbPersistence, serverTimestamp,
+        collection, addDoc, doc, deleteDoc, updateDoc, getDoc, getDocs,
+        onSnapshot, query, orderBy, writeBatch;
+
+    async function initFirebase(){
+      [appMod, authMod, fsMod] = await Promise.all([
+        import('https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js'),
+        import('https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js')
+      ]);
+
+      app = appMod.initializeApp(firebaseConfig);
+
+      ({ getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence,
+         signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, useDeviceLanguage } = authMod);
+      auth = getAuth(app);
+      try{ useDeviceLanguage(auth); }catch{}
+
+      ({ getFirestore, enableIndexedDbPersistence, serverTimestamp,
+         collection, addDoc, doc, deleteDoc, updateDoc, getDoc, getDocs,
+         onSnapshot, query, orderBy, writeBatch } = fsMod);
+      db = getFirestore(app);
+
+      try { await setPersistence(auth, browserLocalPersistence); } catch {}
+      try { await enableIndexedDbPersistence(db); } catch(e) { console.warn('IndexedDB persistence no habilitada:', e?.code||e?.message||e); }
+
+      // Recuperar posible redirect previo
+      try {
+        const res = await getRedirectResult(auth);
+        if (res?.user) console.log('Redirect login success:', res.user.email);
+      } catch (err) {
+        console.error('Redirect error:', err);
+        document.getElementById('authErr').textContent = (err?.message || err?.code) || 'Error tras redirigir el acceso.';
+      }
+    }
+    await initFirebase();
+
+    /* ---------- Auth UI (popup primero + fallback redirect) ---------- */
+    const userchip = $('#userchip'), avatar = $('#avatar'), displayname = $('#displayname');
+    const authErr = $('#authErr');
+    const addPlantaBtn = $('#add-planta'), addInterBtn = $('#add-inter');
+
+    function setAuthBadge(connected){
+      badgeAuth.textContent = connected ? 'Google: conectado' : 'Google: desconectado';
+      badgeAuth.classList.toggle('online', connected);
+      badgeAuth.classList.toggle('offline', !connected);
+      authHint.textContent = connected ? '' :
+        'Si el acceso falla: Firebase → Authentication → Google (Enable) y Authorized domains: añade crasasito.github.io';
+    }
+
+    const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    async function doSignin(){
+      authErr.textContent = '';
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      try{
+        try{
+          // Preferir popup (fiable en GitHub Pages)
+          const result = await signInWithPopup(auth, provider);
+          if (result?.user) console.log('Popup login success:', result.user.email);
+        }catch(popupErr){
+          console.warn('Popup falló, uso redirect:', popupErr?.code || popupErr?.message);
+          await signInWithRedirect(auth, provider);
+        }
+      }catch(err){
+        const msg = (err?.message || err?.code) || 'Error de acceso con Google';
+        authErr.textContent = msg;
+        console.error('Auth error:', err);
+        if (String(msg).includes('unauthorized-domain')) {
+          authHint.textContent = 'Añade crasasito.github.io en Firebase → Authentication → Authorized domains.';
+        }
+      }
+    }
+    $('#signin').addEventListener('click', doSignin);
+    $('#signin2').addEventListener('click', doSignin);
+
+    // Logout modal
+    const modal = $('#modal'); const openModal=()=>modal.setAttribute('aria-hidden','false'); const closeModal=()=>modal.setAttribute('aria-hidden','true');
+    $('#signout').addEventListener('click', openModal);
+    $('#cancelLogout').addEventListener('click', closeModal);
+    $('#confirmLogout').addEventListener('click', async ()=>{ closeModal(); try{ await signOut(auth); } catch(e){ console.error(e); } });
+
+    const authGate = $('#authGate'), ui = $('#ui');
+    const signInBtn = $('#signin'), signOutBtn = $('#signout');
+
+    onAuthStateChanged(auth, (user)=>{
+      state.user = user || null;
+      const connected = !!user;
+      setAuthBadge(connected);
+      addPlantaBtn.disabled = !connected;
+      addInterBtn.disabled  = !connected;
+      updateAddButtons();
+
+      if(!user){
+        ui.hidden = true; authGate.hidden = false;
+        signInBtn.style.display=''; signOutBtn.style.display='none';
+        userchip.hidden = true; avatar.src=''; displayname.textContent='';
+        return;
+      }
+      signInBtn.style.display='none'; signOutBtn.style.display='';
+      authGate.hidden = true; ui.hidden = false;
+      userchip.hidden = false; avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||'';
+      subscribeAll().then(backfillSortKeys).catch(console.error);
+    });
+
+    /* ---------- Firestore ---------- */
+    const colRef = (name)=>collection(db,'users',state.user.uid,name);
+
+    function renderList(ul, snap, {completed=false}={}){
+      const frag = document.createDocumentFragment();
+      for(const d of snap.docs){
+        const item = d.data();
+        const li = document.createElement('li');
+        li.className='task'; li.dataset.id=d.id; li.dataset.col=d.ref.parent.id;
+
+        const room = document.createElement('div'); room.className='room'; room.textContent = item.habitacion || '---';
+        const text = document.createElement('div'); text.className='task__text'; text.textContent = sanitize(item.descripcion || '(sin descripción)'); text.title=item.descripcion||'';
+        const pend = document.createElement('div'); pend.className='pendiente'; pend.textContent = sanitize(item.pendiente || ''); pend.title=item.pendiente||'';
+
+        const actions = document.createElement('div'); actions.className='task__actions';
+        if(!completed){
+          const done = document.createElement('button'); done.className='btn-icon success'; done.title='Marcar como completada'; done.textContent='✔';
+          const edit = document.createElement('button'); edit.className='btn-icon warn'; edit.title='Editar pendiente'; edit.textContent='✎';
+          const del  = document.createElement('button'); del .className='btn-icon danger'; del .title='Eliminar'; del .textContent='🗑';
+          done.addEventListener('click', ()=>completeTask(d.id, d.ref.parent.id));
+          edit.addEventListener('click', ()=>editPendiente(d.id, d.ref.parent.id, item.pendiente||'')); 
+          del .addEventListener('click', ()=>deleteTask(d.id, d.ref.parent.id));
+          actions.append(done, edit, del);
+        }else{
+          const undo = document.createElement('button'); undo.className='btn-icon warn'; undo.title='Deshacer'; undo.textContent='↩';
+          undo.addEventListener('click', ()=>undoTask(d.id, item.previousList || 'planta'));
+          actions.append(undo);
+        }
+        li.append(room, text, pend, actions);
+        frag.appendChild(li);
+      }
+      requestAnimationFrame(()=>ul.replaceChildren(frag));
+    }
+
+    let unsubPlanta=null, unsubInter=null, unsubComp=null;
+    async function subscribeAll(){
+      unsubPlanta?.(); unsubInter?.(); unsubComp?.();
+      unsubPlanta = onSnapshot(query(colRef('planta'), orderBy('sortKey','asc')), (snap)=>renderList($('#list-planta'),snap));
+      unsubInter  = onSnapshot(query(colRef('interconsultas'), orderBy('sortKey','asc')), (snap)=>renderList($('#list-inter'),snap));
+      unsubComp   = onSnapshot(query(colRef('completadas'), orderBy('completedAt','desc')), (snap)=>renderList($('#list-completed'),snap,{completed:true}));
+    }
+
+    async function backfillSortKeys(){
+      const lists = ['planta','interconsultas'];
+      for (const L of lists){
+        try{
+          const snap = await getDocs(colRef(L));
+          for (const d of snap.docs){
+            const it = d.data();
+            if (typeof it.sortKey !== 'number' && typeof it.habitacion === 'string'){
+              const parsed = parseRoom(it.habitacion);
+              if (parsed) await updateDoc(doc(db,'users',state.user.uid,L,d.id), { sortKey: parsed.sortKey });
+            }
+          }
+        }catch(e){ console.warn('backfill error', L, e); }
+      }
+    }
+
+    async function addTask(listName, roomVal, descVal, pendVal, prioridad){
+      if(!state.user){ showToast('Debes iniciar sesión con Google.'); return; }
+      const parsed = parseRoom(roomVal);
+      if(!parsed){ showToast('Habitación inválida (usa 421-2)'); return; }
+      const desc = sanitize(descVal);
+      const pend = sanitize(pendVal);
+      if(!desc || desc.length < 20){ showToast('Descripción mínima: 20 caracteres'); return; }
+      if(pend && pend.length > 15){ showToast('“Pendiente” máximo: 15 caracteres'); return; }
+
+      const payload = {
+        habitacion: parsed.room, sortKey: parsed.sortKey,
+        descripcion: desc, pendiente: pend || '',
+        prioridad, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+      };
+      try { await addDoc(colRef(listName), payload); }
+      catch(err){
+        console.error('addDoc error:', err);
+        const msg = (err?.message || err?.code) || 'Error al guardar';
+        showToast(msg);
+        if (String(msg).includes('permission-denied') || String(msg).includes('unauthorized-domain')){
+          authHint.textContent = 'En Firebase → Authentication → Authorized domains debe figurar: crasasito.github.io';
+        }
+      }
+    }
+    $('#add-planta').addEventListener('click', async ()=>{
+      const r=$('#room-planta'), d=$('#desc-planta'), p=$('#pend-planta');
+      await addTask('planta', r.value, d.value, p.value, state.prio.planta);
+      r.value=''; d.value=''; p.value=''; r.focus(); updateAddButtons();
+    });
+    $('#add-inter').addEventListener('click', async ()=>{
+      const r=$('#room-inter'), d=$('#desc-inter'), p=$('#pend-inter');
+      await addTask('interconsultas', r.value, d.value, p.value, state.prio.inter);
+      r.value=''; d.value=''; p.value=''; r.focus(); updateAddButtons();
+    });
+
+    async function editPendiente(id, fromCol, current=''){
+      const nuevo = prompt('Editar “Pendiente” (≤15 caracteres):', current || '');
+      if(nuevo===null) return;
+      const v = sanitize(nuevo).slice(0,15);
+      await updateDoc(doc(db,'users',state.user.uid,fromCol,id), { pendiente:v, updatedAt:serverTimestamp() });
+    }
+    async function completeTask(id, fromCol){
+      const srcRef = doc(db,'users',state.user.uid,fromCol,id);
+      const snap = await getDoc(srcRef);
+      if(!snap.exists()) return;
+      const data = snap.data();
+      const batch = writeBatch(db);
+      const dstRef = doc(colRef('completadas'));
+      batch.set(dstRef, {
+        habitacion:data.habitacion, sortKey:data.sortKey,
+        descripcion:data.descripcion, pendiente:data.pendiente,
+        prioridad:data.prioridad, previousList:fromCol,
+        createdAt:data.createdAt || serverTimestamp(),
+        completedAt:serverTimestamp(), updatedAt:serverTimestamp()
+      });
+      batch.delete(srcRef);
+      await batch.commit();
+    }
+    async function undoTask(id, previous='planta'){
+      const srcRef = doc(db,'users',state.user.uid,'completadas',id);
+      const snap = await getDoc(srcRef);
+      if(!snap.exists()) return;
+      const data = snap.data();
+      const batch = writeBatch(db);
+      const dstRef = doc(colRef(previous));
+      batch.set(dstRef, {
+        habitacion:data.habitacion, sortKey:data.sortKey,
+        descripcion:data.descripcion, pendiente:data.pendiente,
+        prioridad:data.prioridad, createdAt:data.createdAt || serverTimestamp(),
+        updatedAt:serverTimestamp()
+      });
+      batch.delete(srcRef);
+      await batch.commit();
+    }
+    async function deleteTask(id, fromCol){
+      await deleteDoc(doc(db,'users',state.user.uid,fromCol,id));
+    }
+
+    setTab('planta'); updateAddButtons();
+  </script>
+</body>
+</html>
