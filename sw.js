@@ -1,15 +1,51 @@
-// sw.js — PWA shell cache + auto-update (sin composite index deps)
-const VERSION = 'hub-sw-v3.2.0';
-const SHELL = ['/Planta/','/Planta/index.html','/Planta/manifest.webmanifest','/Planta/firebase-config.js','/Planta/sw.js','/Planta/icons/icon-192.png','/Planta/icons/icon-512.png'];
+// sw.js — PWA cache estable con aviso de actualización
+const VERSION = 'v3.2.0';
+const BC = new BroadcastChannel('pwa-updates');
 
-self.addEventListener('install', e=>e.waitUntil((async()=>{const c=await caches.open(VERSION); for(const u of SHELL){try{const r=await fetch(u,{cache:'no-cache'}); if(r.ok) await c.put(u,r.clone());}catch{}} await self.skipWaiting();})()));
-self.addEventListener('activate', e=>e.waitUntil((async()=>{try{await self.registration.navigationPreload.enable();}catch{} const ks=await caches.keys(); await Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k))); await self.clients.claim();})()));
-self.addEventListener('fetch', e=>{
-  const req=e.request; if(req.method!=='GET') return; const url=new URL(req.url);
-  if(/accounts\.google\.com|firebaseapp\.com|googleusercontent\.com/i.test(url.hostname)) return;
-  if(req.mode==='navigate'){ e.respondWith((async()=>{try{const p=await e.preloadResponse; if(p){const c=await caches.open(VERSION); await c.put('/Planta/index.html',p.clone()); return p;} const n=await fetch(req); const c=await caches.open(VERSION); await c.put('/Planta/index.html',n.clone()); return n;}catch{const c=await caches.open(VERSION); return (await c.match('/Planta/index.html')) || new Response('<h1>Offline</h1>',{headers:{'Content-Type':'text/html'}});} })()); return; }
-  if(/\.js$|\.css$|\.png$|\.json$|\.webmanifest$/i.test(url.pathname) || url.origin===location.origin){
-    e.respondWith((async()=>{const c=await caches.open(VERSION); const hit=await c.match(req); const net=fetch(req).then(r=>{if(r&&r.ok) c.put(req,r.clone()); return r;}).catch(()=>hit); return hit||net;})());
-  }
+const BASE = new URL('./', self.registration.scope).pathname;
+const TO_CACHE = [
+  BASE + 'index.html',
+  BASE + 'manifest.webmanifest',
+  BASE + 'sw.js',
+  BASE + 'icons/icon-192.png',
+  BASE + 'icons/icon-512.png'
+];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil((async () => {
+    const cache = await caches.open('cache-' + VERSION);
+    await cache.addAll(TO_CACHE.map(u => new Request(u, { cache: 'reload' })));
+    await self.skipWaiting();
+  })());
 });
-self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING') self.skipWaiting();});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k.startsWith('cache-') && k !== 'cache-' + VERSION).map(k => caches.delete(k)));
+    await self.clients.claim();
+    BC.postMessage({ type: 'READY', version: VERSION });
+  })());
+});
+
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  e.respondWith((async () => {
+    const cache = await caches.open('cache-' + VERSION);
+    const cached = await cache.match(req);
+    if (cached) return cached;
+    try {
+      const res = await fetch(req);
+      if (res && res.ok && res.type === 'basic') cache.put(req, res.clone());
+      return res;
+    } catch {
+      if (req.mode === 'navigate') return cache.match(BASE + 'index.html');
+      throw new Error('Offline sin recurso en caché');
+    }
+  })());
+});
+
+self.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
