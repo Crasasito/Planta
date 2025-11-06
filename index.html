@@ -13,10 +13,10 @@
   <link rel="apple-touch-icon" href="/Planta/icons/icon-192.png" />
 
   <style>
-    /* ========= Sistema cromático “prestige” (suave, profesional) ========= */
+    /* ===== Sistema cromático “prestige” (suave, profesional) ===== */
     :root{
       /* Bases */
-      --bg:#ffffff; --surface:#ffffff; --surface-2:#f7f8fa; --ink:#0f172a; --muted:#667085; --border:#e5e7eb;
+      --bg:#ffffff; --surface:#ffffff; --surface-2:#f6f7f9; --ink:#0f172a; --muted:#667085; --border:#e5e7eb;
       --radius:14px; --radius-xl:20px; --app-h:64px; --touch:44px;
       --shadow-1:0 1px 2px rgba(2,6,23,.05),0 8px 24px rgba(2,6,23,.06);
       --shadow-2:0 2px 6px rgba(2,6,23,.08),0 16px 36px rgba(2,6,23,.08);
@@ -27,7 +27,7 @@
       --hdr-fg-3:hsl(220 10% 72%);
 
       /* Gradientes de cabecera (muy sutiles) */
-      --brand-hi:hsl(216 36% 18%); --brand-lo:hsl(216 34% 16%); /* navy profundo no negro */
+      --brand-hi:hsl(216 36% 18%); --brand-lo:hsl(216 34% 16%); /* navy profundo */
       --planta-hi:hsl(170 26% 23%); --planta-lo:hsl(170 24% 20%); /* verde quirófano sobrio */
       --inter-hi:hsl(28 28% 30%);  --inter-lo:hsl(28 26% 26%);    /* ámbar tostado */
       --add-hi:hsl(221 28% 28%);   --add-lo:hsl(221 26% 24%);     /* azul acero */
@@ -46,14 +46,15 @@
 
       /* Acentos (elegantes, no estridentes) */
       --accent-gold:hsl(43 40% 52%); /* oro suave */
-      --accent-mint:hsl(160 36% 40%);
-      --accent-coral:hsl(8 40% 52%);
 
-      /* Chips/píldoras (colores suaves, NO chillones) */
+      /* Píldoras suaves */
       --pill-ink:#0f172a;
-      --pill-room-bg:hsl(216 35% 96%);  --pill-room-bd:hsl(216 24% 86%); /* habitación */
-      --pill-date-bg:hsl(220 35% 96%);  --pill-date-bd:hsl(220 24% 86%); /* fecha */
-      --pill-section-bg:hsl(210 28% 96%);--pill-section-bd:hsl(210 20% 86%);/* directorio sección */
+      --pill-room-bg:hsl(220 35% 97%);  --pill-room-bd:hsl(220 24% 86%);
+      --pill-date-bg:hsl(220 35% 97%);  --pill-date-bd:hsl(220 24% 86%);
+      --pill-section-bg:hsl(210 28% 97%);--pill-section-bd:hsl(210 20% 86%);
+
+      /* Chips de teléfono */
+      --phone-bg:#f4f5f7; --phone-bd:#e3e6ea; --phone-ink:#111827;
 
       /* Badges */
       --badge-bg:hsl(210 16% 14%); --badge-fg:#fff;
@@ -64,9 +65,9 @@
     body{
       margin:0;background:var(--bg);color:var(--ink);
       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.6;min-height:100dvh;-webkit-tap-highlight-color:transparent
+      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.62;min-height:100dvh;-webkit-tap-highlight-color:transparent
     }
-    :focus-visible{outline:3px solid color-mix(in oklab, var(--accent-gold), #22c55e 20%);outline-offset:2px;border-radius:10px}
+    :focus-visible{outline:3px solid color-mix(in oklab, var(--accent-gold), #22c55e 18%);outline-offset:2px;border-radius:10px}
 
     /* ===== App bar: evita apelotonamiento en Android ===== */
     .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
@@ -82,7 +83,6 @@
     .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .toolbar .btn{white-space:nowrap}
 
-    /* Reorganiza en pantallas estrechas (Android) */
     @media (max-width:480px){
       .statusRow{order:3;width:100%}
       #userGroup{order:2;margin-left:auto}
@@ -135,12 +135,26 @@
     .hdr-done::before{background-image:var(--grad-done)}
     .hdr-trash::before{background-image:var(--grad-trash)}
 
-    /* Píldoras suaves (sustituyen gradientes estridentes) */
-    .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;color:var(--pill-ink);background:var(--surface-2)}
+    /* ===== Píldoras suaves (habitación/fecha/sección) ===== */
+    .pill{
+      display:inline-flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;
+      color:var(--pill-ink);background:var(--surface-2);
+      font-variant-numeric: tabular-nums; /* cifras alineadas */
+    }
     .pill.room{background:var(--pill-room-bg);border-color:var(--pill-room-bd)}
     .pill.date{background:var(--pill-date-bg);border-color:var(--pill-date-bd)}
     .pill.section{background:var(--pill-section-bg);border-color:var(--pill-section-bd)}
 
+    /* Chips de teléfono sobrios */
+    .phone-chip{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+      background:var(--phone-bg);border:1px solid var(--phone-bd);color:var(--phone-ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-variant-numeric: tabular-nums; line-height:1.2; margin:2px 6px 2px 0;
+    }
+
+    /* Lista */
     ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
     li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
     .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
@@ -165,11 +179,28 @@
     #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-2);z-index:60}
     #toast[hidden]{display:none}
 
-    /* Modal accesible: NO usar aria-hidden cuando está abierto */
+    /* Modal accesible */
     .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:70}
     .modal[open]{display:grid}
     .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(560px,92vw)}
     .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+
+    /* Selector segmentado Planta/Interconsulta + badge destino */
+    .segmented{
+      display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1)
+    }
+    .segmented button{
+      border:0;background:transparent;border-radius:999px;padding:8px 12px;cursor:pointer;color:#334155;min-height:36px
+    }
+    .segmented button.active{
+      background:color-mix(in oklab,#fff,var(--accent-gold) 16%);color:#111827;
+      box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--accent-gold),transparent 60%)
+    }
+    .target-badge{
+      display:inline-flex;align-items:center;gap:8px;margin-left:8px;padding:6px 10px;border-radius:999px;font-weight:700;border:1px solid transparent
+    }
+    .target-badge.is-planta{background:linear-gradient(180deg,hsl(170 28% 95%),#fff);border-color:hsl(170 22% 78%);color:hsl(170 24% 26%)}
+    .target-badge.is-inter {background:linear-gradient(180deg,hsl(28 32% 95%),#fff); border-color:hsl(28 26% 78%); color:hsl(28 28% 30%)}
 
     @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
@@ -234,19 +265,24 @@
       <!-- PLANTA -->
       <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta">
         <div class="card">
-          <div class="card-h hdr-add"><h2>Añadir (Planta/Interconsulta)</h2><span class="subtitle">Habitación · Descripción · Pendientes</span></div>
+          <div class="card-h hdr-add">
+            <h2>Añadir (Planta/Interconsulta)</h2>
+            <span class="subtitle">Habitación · Descripción · Pendientes</span>
+          </div>
           <div class="card-b grid g3">
             <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
             <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
             <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
-            <div class="g2" style="grid-column:1/-1">
+
+            <div class="g2" style="grid-column:1/-1;align-items:end">
               <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
               <div>
                 <label>Grupo</label>
-                <span class="toolbar" role="group" aria-label="Grupo">
-                  <button id="p-group-planta" class="btn ghost" type="button" aria-pressed="true">Planta</button>
-                  <button id="p-group-inter"  class="btn ghost" type="button" aria-pressed="false">Interconsulta</button>
-                </span>
+                <div class="segmented" role="group" aria-label="Grupo">
+                  <button id="p-group-planta" type="button" class="active" aria-pressed="true">Planta</button>
+                  <button id="p-group-inter"  type="button" aria-pressed="false">Interconsulta</button>
+                </div>
+                <span id="addTarget" class="target-badge is-planta" aria-live="polite">Añadiendo a: Planta</span>
               </div>
             </div>
           </div>
@@ -396,7 +432,18 @@
     const todayISO = ()=> new Date().toISOString().slice(0,10);
     const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
     const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
+    const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
     const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
+
+    // Room key para orden numérico: "421-2" => 421.02
+    function roomSortKey(s){
+      if(!s) return Number.POSITIVE_INFINITY;
+      const m = String(s).match(/\d+/g);
+      if(!m) return Number.POSITIVE_INFINITY;
+      const first = parseInt(m[0],10);
+      const second = m[1] ? parseInt(m[1],10)/100 : 0;
+      return first + second;
+    }
 
     // ===== Online
     const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
@@ -454,8 +501,14 @@
 
     // ===== PLANTA
     let currentGroup='planta';
-    $('#p-group-planta').onclick=()=>{currentGroup='planta'; $('#p-group-planta').setAttribute('aria-pressed','true'); $('#p-group-inter').setAttribute('aria-pressed','false');};
-    $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; $('#p-group-planta').setAttribute('aria-pressed','false'); $('#p-group-inter').setAttribute('aria-pressed','true');};
+    function updateAddTarget(){
+      const t=$('#addTarget');
+      if(currentGroup==='planta'){ t.textContent='Añadiendo a: Planta'; t.className='target-badge is-planta'; }
+      else { t.textContent='Añadiendo a: Interconsulta'; t.className='target-badge is-inter'; }
+    }
+    $('#p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget(); $('#p-group-planta').classList.add('active'); $('#p-group-planta').setAttribute('aria-pressed','true'); $('#p-group-inter').classList.remove('active'); $('#p-group-inter').setAttribute('aria-pressed','false');};
+    $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget(); $('#p-group-inter').classList.add('active'); $('#p-group-inter').setAttribute('aria-pressed','true'); $('#p-group-planta').classList.remove('active'); $('#p-group-planta').setAttribute('aria-pressed','false');};
+    updateAddTarget();
 
     const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
       grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
@@ -464,9 +517,9 @@
 
     const docItemBase=(x,done=false)=>{
       const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill room">${(x.room||'—')}</span>
-        <div class="text">${done?`<div class="line strike">${(x.desc||'')}</div>`:`<div class="line">${(x.desc||'')}</div>`}
-        ${x.pendiente?`<div class="muted">${(x.pendiente)}</div>`:''}</div>
+      li.innerHTML=`<span class="pill room">${esc(x.room||'—')}</span>
+        <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
+        ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
         <div class="toolbar actions"></div>`;
       return li;
     };
@@ -474,9 +527,10 @@
       a.append(btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editPlanta(x),'btn icon'),btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon')); return li;};
     const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions');
       a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
+
     const openEdit=(fields,onOk)=>{
       const body=$('#modalBody'); body.innerHTML='';
-      for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${(f.v||'')}">`; body.append(w);}
+      for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
       const dlg=$('#modal'); $('#modalTitle').textContent='Editar'; $('#modalOk').textContent='Guardar'; $('#modalCancel').textContent='Cancelar';
       dlg.showModal(); dlg.setAttribute('aria-hidden','false'); // accesible
       $('#modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
@@ -496,35 +550,40 @@
       };
       const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
       const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
+
       const u1=fsMod.onSnapshot(qA,(s)=>{
-        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        arr.sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
+        const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
+        // Separar por grupo y ordenar por número de habitación
+        const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+        const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
         const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML='';
-        let np=0,ni=0; arr.forEach(x=>{ (x.grupo||'planta')==='planta' ? (lp.appendChild(renderPlantaItem(x)),np++) : (li.appendChild(renderPlantaItem(x)),ni++); });
-        $('#p-empty-planta').style.display=np?'none':'block'; $('#p-empty-inter').style.display=ni?'none':'block';
-        $('#p-count-planta').textContent=np; $('#p-count-inter').textContent=ni;
+        arrP.forEach(x=>lp.appendChild(renderPlantaItem(x)));
+        arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
+        $('#p-empty-planta').style.display=arrP.length?'none':'block'; $('#p-empty-inter').style.display=arrI.length?'none':'block';
+        $('#p-count-planta').textContent=arrP.length; $('#p-count-inter').textContent=arrI.length;
       });
+
       const u2=fsMod.onSnapshot(qD,(s)=>{
         const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
         arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
-        const l=$('#p-done'); l.innerHTML=''; let n=0; arr.forEach(x=>{l.appendChild(renderPlantaDone(x)); n++;});
-        $('#p-done-empty').style.display=n?'none':'block'; $('#p-done-count').textContent=n;
+        const l=$('#p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x)));
+        $('#p-done-empty').style.display=arr.length?'none':'block'; $('#p-done-count').textContent=arr.length;
       });
       unsubs.push(u1,u2);
     }
 
-    // ===== TAREAS
+    // ===== TAREAS (sin cambios de lógica, solo UI suave)
     const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     const renderTareaItem=(x)=>{const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line">${(x.text||'')}</div></div><div class="toolbar actions"></div>`;
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
       const a=li.querySelector('.actions');
       a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'));
       return li;};
     const renderTareaDone=(x)=>{const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line strike">${(x.text||'')}</div></div><div class="toolbar actions"></div>`;
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line strike">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
       li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon')); return li;};
     const renderTareaTrash=(x)=>{const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text muted"><div class="line">${(x.text||'')}</div></div><div class="toolbar actions"></div>`;
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text muted"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
       li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon')); return li;};
     const editTarea=(x)=>openEdit(
       [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
@@ -605,8 +664,8 @@
       const l=document.getElementById('a-list'), empty=document.getElementById('a-empty'); if(!l||!empty) return; l.innerHTML=''; let n=0;
       alarms.forEach(x=>{
         const li=document.createElement('li'); li.className='item';
-        li.innerHTML=`<span class="pill date">⏰ ${(x.time||'')}</span>
-          <div class="text"><div class="line"><strong>${(x.title||'')}</strong></div><div class="muted">${x.repeat==='daily'?'Diaria':'Una vez'}</div></div>
+        li.innerHTML=`<span class="pill date">⏰ ${esc(x.time||'')}</span>
+          <div class="text"><div class="line"><strong>${esc(x.title||'')}</strong></div><div class="muted">${x.repeat==='daily'?'Diaria':'Una vez'}</div></div>
           <div class="toolbar actions"></div>`;
         const a=li.querySelector('.actions');
         a.append(btn(x.enabled?'⏸':'▶',()=>upd('alarmas',x.__id,{enabled:!x.enabled}),'btn icon'),
@@ -637,7 +696,7 @@
       }catch{ toast(`${title} · ${body}`); }
     }
 
-    // ===== DIRECTORIO
+    // ===== DIRECTORIO: chips de teléfono y sección suaves =====
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
     function setupDirectorio(uid){
@@ -650,6 +709,10 @@
       $('#d-q').addEventListener('input', renderDirList, {passive:true});
       unsubs.push(u);
     }
+    function phonesToChips(raw){
+      const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
+      return parts.map(p=>`<span class="phone-chip" dir="ltr">${esc(p)}</span>`).join(' ');
+    }
     function renderDirList(){
       const v=($('#d-q')?.value||'').toLowerCase(); const l=$('#d-list'); if(!l) return; l.innerHTML='';
       let arr=[...dirCache]; arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
@@ -659,11 +722,11 @@
     }
     function renderDir(x){
       const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill section">${(x.seccion||'—')}</span>
+      li.innerHTML=`<span class="pill section">${esc(x.seccion||'—')}</span>
         <div class="text">
-          <div class="line"><strong>${(x.nombre||'')}</strong></div>
-          <div class="muted">${(String(x.telefono||''))}</div>
-          ${x.notas?`<div class="muted">${(x.notas)}</div>`:''}
+          <div class="line"><strong>${esc(x.nombre||'')}</strong></div>
+          <div class="line">${phonesToChips(x.telefono)}</div>
+          ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
         </div>
         <div class="toolbar actions"></div>`;
       li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon')); return li;
@@ -689,7 +752,7 @@
     async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
     async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-    // ===== PWA install & updates (controlado, sin superponer UI)
+    // ===== PWA install & updates
     let deferredPrompt=null;
     addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').setAttribute('aria-hidden','false');});
     document.getElementById('installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').setAttribute('aria-hidden','true'); } };
