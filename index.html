@@ -53,7 +53,7 @@
       --pill-date-bg:hsl(205 80% 96%);  --pill-date-bd:hsl(205 68% 86%);
       --pill-section-bg:hsl(205 45% 96%);--pill-section-bd:hsl(205 35% 86%);
 
-      /* Píldoras de habitación — MÁS GRANDES y con color por grupo */
+      /* Píldoras de habitación — GRANDES y con color por grupo */
       --room-ink:#07111f;
       --room-planta-bg:hsl(156 75% 92%);  --room-planta-bd:hsl(156 52% 60%);
       --room-inter-bg:hsl(28 92% 92%);    --room-inter-bd:hsl(28 70% 62%);
@@ -85,16 +85,19 @@
       #title{font-size:clamp(18px,5vw,22px)}
     }
 
+    /* Marca: +tamaño +peso */
     .brand-chip{
-      display:inline-flex;align-items:center;gap:12px;padding:12px 20px;border-radius:999px;
+      display:inline-flex;align-items:center;gap:12px;
+      padding:13px 22px;border-radius:999px;
       color:var(--hdr-fg-1);border:1px solid rgba(255,255,255,.28);
       background-image:linear-gradient(179deg,var(--brand-hi),var(--brand-lo)), var(--sheen);
       text-shadow:0 1px 2px rgba(0,0,0,.35);
       box-shadow:0 10px 26px rgba(0,0,0,.18);
-      font-weight:950;letter-spacing:.35px;text-transform:uppercase
+      font-size:clamp(18px,2.8vw,24px);  /* ↑ tamaño */
+      font-weight:960;letter-spacing:.4px;text-transform:uppercase
     }
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
-    h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
+    .brand-dot{width:12px;height:12px;border-radius:50%;background:var(--accent-gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+    h1{margin:0;font-size:clamp(20px,2.6vw,28px);font-weight:900;letter-spacing:.2px}
     h2{margin:0;font-size:clamp(18px,2.2vw,22px)}
 
     .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.82rem;background:var(--surface-2)}
@@ -163,8 +166,8 @@
     .pill.room{
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
       font-weight:900; letter-spacing:.3px;
-      font-size:clamp(18px,2.4vw,22px);
-      padding:10px 14px; border-radius:12px; color:var(--room-ink);
+      font-size:clamp(18px,2.6vw,24px);    /* ↑ tamaño */
+      padding:11px 16px; border-radius:12px; color:var(--room-ink);
       box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
     }
     .pill.room.planta{ background:var(--room-planta-bg); border-color:var(--room-planta-bd) }
@@ -190,6 +193,19 @@
     /* Resaltado lateral por grupo en PLANTA */
     li.item.pl{ border-left:6px solid hsl(156 58% 44%) }
     li.item.ic{ border-left:6px solid hsl(28 86% 50%) }
+
+    /* ===== Encabezado de grupo (Directorio) ===== */
+    .group-li{border:0;background:transparent;padding:0}
+    .group-hdr{
+      margin:18px 0 6px;padding:8px 12px;border-radius:12px;color:var(--hdr-fg-1);
+      font-weight:900;letter-spacing:.3px;text-shadow:0 1px 2px rgba(0,0,0,.28);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .group-count{
+      color:var(--hdr-fg-3);border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.12);padding:4px 8px;border-radius:999px;font-weight:800
+    }
 
     .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
 
@@ -395,7 +411,7 @@
 
       <!-- ===== DIRECTORIO ===== -->
       <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio">
-        <div class="section-banner sb-dir"><span>DIRECTORIO</span><span class="sb-pill">Búsqueda rápida y JSON</span></div>
+        <div class="section-banner sb-dir"><span>DIRECTORIO</span><span class="sb-pill">Búsqueda por secciones + JSON</span></div>
 
         <div class="card">
           <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
@@ -491,7 +507,7 @@
     addEventListener('offline',()=>setOnline(false), {passive:true});
 
     /* Auth Google */
-    const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
+    const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname']);
     const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
 
     const doSignIn=async()=>{ try{
@@ -607,7 +623,7 @@
 
       const u1=fsMod.onSnapshot(qA,(s)=>{
         const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
-        // Ordena por número de habitación creciente (421-2 → 421.02)
+        // Orden por nº de habitación creciente (421-2 → 421.02)
         const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
         const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
         const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML='';
@@ -711,9 +727,10 @@
       unsubs.push(u1,u2,u3);
     }
 
-    /* ===== DIRECTORIO ===== */
+    /* ===== DIRECTORIO — agrupado por SECCIÓN con encabezado de color ===== */
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
+
     function setupDirectorio(uid){
       $('#d-add').onclick=async()=>{
         const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
@@ -728,13 +745,51 @@
       const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
       return parts.map(p=>`<span class="phone-chip" dir="ltr">${esc(p)}</span>`).join(' ');
     }
-    function renderDirList(){
-      const v=($('#d-q')?.value||'').toLowerCase(); const l=$('#d-list'); if(!l) return; l.innerHTML='';
-      let arr=[...dirCache]; arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
-      let n=0; idle(()=>{ arr.forEach(x=>{ if(!v || [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v))){ l.appendChild(renderDir(x)); n++; } });
-        $('#d-count').textContent=n+' registros'; $('#d-empty').style.display=n?'none':'block';
-      });
+
+    // Paleta fija de tonos premium para secciones (para consistencia)
+    const SEC_HUES = [205, 156, 28, 222, 10, 280, 190, 330];
+    function hueFromString(s){
+      let h=0; for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) & 0xffffffff;
+      return SEC_HUES[Math.abs(h) % SEC_HUES.length];
     }
+    function sectionHeaderStyle(sec, count){
+      const h = hueFromString(sec||'');
+      return {
+        style:`background-image:linear-gradient(179deg, hsl(${h} 62% 46%), hsl(${h} 58% 40%));`,
+        label:`${sec || 'Sin sección'}`,
+        count:String(count)
+      };
+    }
+
+    function renderDirList(){
+      const v=($('#d-q')?.value||'').toLowerCase();
+      const l=$('#d-list'); if(!l) return; l.innerHTML='';
+      // Filtrar y agrupar
+      let arr=[...dirCache].filter(x => {
+        if(!v) return true;
+        return [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v));
+      });
+      arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+
+      const groups = new Map();
+      for(const x of arr){ const k = x.seccion || 'Sin sección'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x); }
+
+      let total=0;
+      for(const [sec, items] of groups){
+        const meta = sectionHeaderStyle(sec, items.length);
+        const gLi=document.createElement('li'); gLi.className='group-li'; gLi.setAttribute('role','presentation');
+        gLi.innerHTML = `<div class="group-hdr" role="heading" aria-level="3" style="${meta.style}">
+            <span>${esc(meta.label)}</span>
+            <span class="group-count">${meta.count}</span>
+          </div>`;
+        l.appendChild(gLi);
+        items.forEach(x=> l.appendChild(renderDir(x)));
+        total += items.length;
+      }
+      $('#d-count').textContent = total + ' registros';
+      $('#d-empty').style.display = total ? 'none' : 'block';
+    }
+
     function renderDir(x){
       const li=document.createElement('li'); li.className='item';
       li.innerHTML=`<span class="pill section">${esc(x.seccion||'—')}</span>
@@ -744,7 +799,8 @@
           ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
         </div>
         <div class="toolbar actions"></div>`;
-      li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon')); return li;
+      li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon'));
+      return li;
     }
     const editDir=(x)=>openEdit(
       [{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}],
