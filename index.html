@@ -7,16 +7,26 @@
   <meta name="color-scheme" content="light" />
   <title>Infecciosas — Planta · Tareas · Directorio</title>
 
-  <!-- Se reescriben en runtime según BASE (raíz o /Planta/) -->
+  <!-- Se reescribe en runtime según BASE (raíz o /Planta/) -->
   <link rel="manifest" href="/Planta/manifest.webmanifest" />
   <link rel="icon" href="/Planta/icons/icon-192.png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/Planta/icons/icon-192.png" />
 
   <style>
-    /* ===== Sistema cromático “prestige vivo” (luminoso, profesional, no estridente) ===== */
+    /* ===== Utilidades ===== */
+    .hide{display:none !important}
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:#fff;color:#0b1220;
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.62;min-height:100dvh;-webkit-tap-highlight-color:transparent
+    }
+    :focus-visible{outline:3px solid color-mix(in oklab, hsl(43 84% 56%), #22c55e 18%);outline-offset:2px;border-radius:10px}
+
+    /* ===== Sistema cromático “prestige vivo” (luminoso y profesional) ===== */
     :root{
-      /* Bases */
-      --bg:#ffffff; --surface:#ffffff; --surface-2:#f6f8fb; --ink:#0b1220; --muted:#64748b; --border:#e5e7eb;
+      --surface:#ffffff; --surface-2:#f6f8fb; --ink:#0b1220; --muted:#64748b; --border:#e5e7eb;
       --radius:14px; --radius-xl:20px; --app-h:64px; --touch:44px;
       --shadow-1:0 1px 2px rgba(2,6,23,.05),0 8px 24px rgba(2,6,23,.06);
       --shadow-2:0 2px 6px rgba(2,6,23,.08),0 16px 36px rgba(2,6,23,.08);
@@ -26,79 +36,62 @@
       --hdr-fg-2:hsl(220 16% 92%);
       --hdr-fg-3:hsl(220 12% 86%);
 
-      /* Gradientes vivos y elegantes (claros) */
-      --brand-hi:hsl(205 85% 44%); --brand-lo:hsl(205 82% 40%); /* azul clínico vivo */
-      --planta-hi:hsl(156 58% 42%); --planta-lo:hsl(156 52% 38%); /* verde quirófano vivo */
-      --inter-hi:hsl(28 86% 52%);   --inter-lo:hsl(28 80% 46%);   /* ámbar tostado vivo */
-      --add-hi:hsl(222 70% 46%);    --add-lo:hsl(222 64% 40%);    /* azul acero vivo */
-      --active-hi:hsl(10 72% 48%);  --active-lo:hsl(10 66% 42%);  /* terracota vivo */
-      --done-hi:hsl(150 52% 40%);   --done-lo:hsl(150 46% 36%);   /* verde musgo vivo */
-      --trash-hi:hsl(220 20% 38%);  --trash-lo:hsl(220 18% 34%);  /* antracita */
+      /* Gradientes vivos (modo claro) */
+      --brand-hi:hsl(205 85% 44%); --brand-lo:hsl(205 82% 40%);
+      --planta-hi:hsl(156 58% 42%); --planta-lo:hsl(156 52% 38%);
+      --tareas-hi:hsl(10 72% 48%);  --tareas-lo:hsl(10 66% 42%);
+      --dir-hi:hsl(205 85% 44%);    --dir-lo:hsl(205 82% 40%);
+      --add-hi:hsl(222 70% 46%);    --add-lo:hsl(222 64% 40%);
+      --done-hi:hsl(150 52% 40%);   --done-lo:hsl(150 46% 36%);
+      --trash-hi:hsl(220 20% 38%);  --trash-lo:hsl(220 18% 34%);
+      --sheen:linear-gradient(92deg,rgba(255,255,255,.10),rgba(255,255,255,0) 50%);
 
-      --grad-brand:  linear-gradient(179deg,var(--brand-hi),var(--brand-lo));
-      --grad-planta: linear-gradient(179deg,var(--planta-hi),var(--planta-lo));
-      --grad-inter:  linear-gradient(179deg,var(--inter-hi),var(--inter-lo));
-      --grad-add:    linear-gradient(179deg,var(--add-hi),var(--add-lo));
-      --grad-active: linear-gradient(179deg,var(--active-hi),var(--active-lo));
-      --grad-done:   linear-gradient(179deg,var(--done-hi),var(--done-lo));
-      --grad-trash:  linear-gradient(179deg,var(--trash-hi),var(--trash-lo));
-      --sheen:linear-gradient(92deg,rgba(255,255,255,.08),rgba(255,255,255,0) 48%);
+      --accent-gold:hsl(43 84% 56%);
 
-      /* Acento elegante */
-      --accent-gold:hsl(43 84% 56%); /* oro más vivo pero sobrio */
-
-      /* Píldoras suaves (recuadros legibles) */
+      /* Píldoras / chips */
       --pill-ink:#0b1220;
       --pill-room-bg:hsl(205 85% 96%);  --pill-room-bd:hsl(205 70% 86%);
       --pill-date-bg:hsl(205 80% 96%);  --pill-date-bd:hsl(205 68% 86%);
       --pill-section-bg:hsl(205 45% 96%);--pill-section-bd:hsl(205 35% 86%);
 
-      /* Chips de teléfono */
       --phone-bg:#eef2f7; --phone-bd:#d8e0ea; --phone-ink:#0f172a;
 
-      /* Badges */
       --badge-bg:hsl(210 16% 18%); --badge-fg:#fff;
     }
-
-    *,*::before,*::after{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--ink);
-      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.62;min-height:100dvh;-webkit-tap-highlight-color:transparent
-    }
-    :focus-visible{outline:3px solid color-mix(in oklab, var(--accent-gold), #22c55e 18%);outline-offset:2px;border-radius:10px}
-
-    /* ===== App bar (menos apelotonado en Android) ===== */
     .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
+
+    /* ===== App bar ===== */
     header.appbar{
       position:sticky;top:0;z-index:50;min-height:var(--app-h);
-      background:linear-gradient(180deg,#ffffff 50%,#f9fbff 100%);border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg,#ffffff 50%,#f2f7ff 100%);border-bottom:1px solid var(--border);
       backdrop-filter:saturate(1.05) blur(6px)
     }
     .appbar .container{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .brandRow{display:flex;align-items:center;gap:10px;min-width:0}
+    .brandRow{display:flex;align-items:center;gap:12px;min-width:0}
     .grow{flex:1;min-width:0}
     .statusRow{display:flex;gap:8px;flex-wrap:wrap}
     .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .toolbar .btn{white-space:nowrap}
-
-    @media (max-width:480px){
+    @media (max-width:520px){
       .statusRow{order:3;width:100%}
       #userGroup{order:2;margin-left:auto}
       .toolbar{order:4;width:100%;justify-content:flex-start}
       #title{font-size:clamp(18px,5vw,22px)}
     }
 
-    h1{margin:0;font-size:clamp(20px,2.6vw,28px);font-weight:900;letter-spacing:.2px}
-    h2{margin:0;font-size:clamp(18px,2.2vw,22px)}
-
+    /* Marca muy visible */
     .brand-chip{
-      display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;
-      color:var(--hdr-fg-1);border:1px solid rgba(255,255,255,.24);
-      background-image:var(--grad-brand), var(--sheen);text-shadow:0 1px 2px rgba(0,0,0,.35);
-      box-shadow:0 6px 18px rgba(0,0,0,.18)
+      display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;
+      color:var(--hdr-fg-1);border:1px solid rgba(255,255,255,.28);
+      background-image:linear-gradient(179deg,var(--brand-hi),var(--brand-lo)), var(--sheen);
+      text-shadow:0 1px 2px rgba(0,0,0,.35);
+      box-shadow:0 8px 22px rgba(0,0,0,.18);
+      font-weight:900;letter-spacing:.3px;text-transform:uppercase
     }
+    .brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+
+    h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
+    h2{margin:0;font-size:clamp(18px,2.2vw,22px)}
 
     .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.82rem;background:var(--surface-2)}
     .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
@@ -106,7 +99,7 @@
 
     .btn{appearance:none;border:1px solid var(--border);background:#fff;color:#0b1220;padding:10px 12px;border-radius:12px;box-shadow:var(--shadow-1);min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
     .btn.primary{background:var(--accent-gold);color:#0E121A;border-color:transparent}
-    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--brand-lo)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:hsl(205 80% 34%)}
     .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
 
     .badge{
@@ -121,31 +114,42 @@
       color:var(--hdr-fg-1);display:flex;align-items:center;justify-content:space-between;gap:10px;
       text-shadow:0 1px 2px rgba(0,0,0,.35);overflow:hidden;isolation:isolate
     }
-    .card-h::before{content:"";position:absolute;inset:0;background-image:var(--grad-brand);z-index:-2}
     .card-h::after{content:"";position:absolute;inset:0;background-image:var(--sheen);pointer-events:none;z-index:-1}
     .card-b{padding:12px}
     .subtitle{color:var(--hdr-fg-2);font-weight:600}
-    .counter{color:var(--hdr-fg-3);border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.10);padding:6px 10px;border-radius:999px;font-weight:700}
+    .counter{color:var(--hdr-fg-3);border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-weight:700}
 
-    .hdr-brand::before{background-image:var(--grad-brand)}
-    .hdr-planta::before{background-image:var(--grad-planta)}
-    .hdr-inter::before{background-image:var(--grad-inter)}
-    .hdr-add::before{background-image:var(--grad-add)}
-    .hdr-active::before{background-image:var(--grad-active)}
-    .hdr-done::before{background-image:var(--grad-done)}
-    .hdr-trash::before{background-image:var(--grad-trash)}
+    .hdr-brand{background-image:linear-gradient(179deg,var(--brand-hi),var(--brand-lo))}
+    .hdr-add  {background-image:linear-gradient(179deg,var(--add-hi),var(--add-lo))}
+    .hdr-planta{background-image:linear-gradient(179deg,var(--planta-hi),var(--planta-lo))}
+    .hdr-tareas{background-image:linear-gradient(179deg,var(--tareas-hi),var(--tareas-lo))}
+    .hdr-dir{background-image:linear-gradient(179deg,var(--dir-hi),var(--dir-lo))}
+    .hdr-done {background-image:linear-gradient(179deg,var(--done-hi),var(--done-lo))}
+    .hdr-trash{background-image:linear-gradient(179deg,var(--trash-hi),var(--trash-lo))}
 
-    /* ===== Tablist superior (3 pestañas muy diferenciadas por color) ===== */
+    /* ===== Tablist superior y bottom bar: se sincronizan y colorean por sección ===== */
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .tab{
-      padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);
-      cursor:pointer;font-weight:700;letter-spacing:.2px
+      padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);
+      cursor:pointer;font-weight:800;letter-spacing:.2px
     }
+    /* Colores activos claros, muy visibles */
     #tab-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(156 58% 42%) 18%);border-color:color-mix(in oklab,hsl(156 58% 42%),transparent 60%)}
-    #tab-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 48%) 18%);border-color:color-mix(in oklab,hsl(10 72% 48%),transparent 60%)}
+    #tab-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 48%) 18%); border-color:color-mix(in oklab,hsl(10 72% 48%),transparent 60%)}
     #tab-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(205 85% 44%) 18%);border-color:color-mix(in oklab,hsl(205 85% 44%),transparent 60%)}
 
-    /* ===== Píldoras (recuadros legibles) ===== */
+    /* Banda superior de sección (se ve clarísimo el cambio de pestaña) */
+    .section-banner{
+      margin:10px 0 8px;border-radius:16px; padding:10px 14px; color:var(--hdr-fg-1);
+      font-weight:900; letter-spacing:.4px; text-shadow:0 1px 2px rgba(0,0,0,.3);
+      display:flex; align-items:center; justify-content:space-between; gap:12px
+    }
+    .sb-planta{background-image:linear-gradient(179deg,var(--planta-hi),var(--planta-lo))}
+    .sb-tareas{background-image:linear-gradient(179deg,var(--tareas-hi),var(--tareas-lo))}
+    .sb-dir   {background-image:linear-gradient(179deg,var(--dir-hi),var(--dir-lo))}
+    .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);font-weight:700}
+
+    /* Píldoras (recuadros legibles) */
     .pill{
       display:inline-flex;align-items:center;justify-content:center;
       font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;
@@ -156,7 +160,7 @@
     .pill.date{background:var(--pill-date-bg);border-color:var(--pill-date-bd)}
     .pill.section{background:var(--pill-section-bg);border-color:var(--pill-section-bd)}
 
-    /* Chips de teléfono sobrios */
+    /* Chips teléfono */
     .phone-chip{
       display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
       background:var(--phone-bg);border:1px solid var(--phone-bd);color:var(--phone-ink);
@@ -164,17 +168,11 @@
       font-variant-numeric: tabular-nums; line-height:1.2; margin:2px 6px 2px 0;
     }
 
-    /* Lista */
+    /* Lista base */
     ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
     li.item{
       display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;
       border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff
-    }
-    /* Banda de color para Tareas según proximidad (se aplica vía style inline --heat-h, --heat-bg) */
-    li.item.heat{
-      border-color:color-mix(in oklab, var(--heat-bg,#fff), #000 8%);
-      box-shadow:inset 4px 0 0 0 hsl(var(--heat-h,205) 70% 48% / .95);
-      background:color-mix(in oklab, #fff, var(--heat-bg,#fff) 26%);
     }
 
     .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
@@ -189,10 +187,10 @@
     @container (max-width:700px){.g3,.g2{grid-template-columns:1fr}}
     @media (max-width:680px){.g3,.g2{grid-template-columns:1fr}}
 
-    /* Barra inferior (apoyo a navegación una mano) */
+    /* Barra inferior */
     nav.bottom{position:sticky;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--border)}
     .tabs-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;padding:8px 12px}
-    .tab-bottom{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer}
+    .tab-bottom{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:800}
     #b-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(156 58% 42%) 14%);border-color:color-mix(in oklab,hsl(156 58% 42%),transparent 70%)}
     #b-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 48%) 14%); border-color:color-mix(in oklab,hsl(10 72% 48%),transparent 70%)}
     #b-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(205 85% 44%) 14%);border-color:color-mix(in oklab,hsl(205 85% 44%),transparent 70%)}
@@ -208,7 +206,7 @@
     .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(560px,92vw)}
     .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-    /* Selector segmentado + badge destino (Planta/Interconsulta) */
+    /* Selector segmentado */
     .segmented{
       display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1)
     }
@@ -231,8 +229,8 @@
 <body>
   <header class="appbar" role="banner">
     <div class="container">
-      <div class="brandRow">
-        <span class="brand-chip" aria-label="Infecciosas">Infecciosas</span>
+      <div class="brandRow" aria-label="Marca">
+        <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>Infecciosas</span>
         <h1 id="title">Planta · Tareas · Directorio</h1>
       </div>
 
@@ -277,7 +275,7 @@
       <div class="card" style="margin-bottom:12px">
         <div class="card-b">
           <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
-          <div role="tablist" class="tabs" aria-label="Secciones">
+          <div role="tablist" class="tabs" aria-label="Secciones" id="tablist">
             <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta">Planta</button>
             <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas">Tareas</button>
             <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio">Directorio</button>
@@ -285,8 +283,10 @@
         </div>
       </div>
 
-      <!-- PLANTA -->
+      <!-- ===== PLANTA ===== -->
       <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta">
+        <div class="section-banner sb-planta"><span>PLANTA</span><span class="sb-pill">Ingresos &amp; Interconsultas</span></div>
+
         <div class="card">
           <div class="card-h hdr-add">
             <h2>Añadir (Planta/Interconsulta)</h2>
@@ -320,7 +320,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="counter" aria-live="polite">0</span></div>
+          <div class="card-h hdr-planta"><h2>Interconsultas</h2><span id="p-count-inter" class="counter" aria-live="polite">0</span></div>
           <div class="card-b">
             <ul id="p-list-inter" class="list"></ul>
             <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
@@ -336,8 +336,10 @@
         </div>
       </div>
 
-      <!-- TAREAS -->
+      <!-- ===== TAREAS ===== -->
       <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas">
+        <div class="section-banner sb-tareas"><span>TAREAS</span><span class="sb-pill">Rojo → Verde según proximidad</span></div>
+
         <div class="card">
           <div class="card-h hdr-add"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
           <div class="card-b">
@@ -350,7 +352,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-active"><h2>Tareas activas</h2><span id="t-count" class="counter">0</span></div>
+          <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="counter">0</span></div>
           <div class="card-b" style="background:linear-gradient(180deg,#fff7ed,transparent)">
             <ul id="t-list" class="list"></ul>
             <p id="t-empty" class="muted">No hay tareas activas.</p>
@@ -375,10 +377,12 @@
         </div>
       </div>
 
-      <!-- DIRECTORIO -->
+      <!-- ===== DIRECTORIO ===== -->
       <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio">
+        <div class="section-banner sb-dir"><span>DIRECTORIO</span><span class="sb-pill">Búsqueda rápida y JSON</span></div>
+
         <div class="card">
-          <div class="card-h hdr-brand"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
+          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
           <div class="card-b grid g2">
             <div><label for="d-q">Buscar</label><input id="d-q" type="search" placeholder="Buscar por sección, nombre o teléfono…"></div>
             <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
@@ -418,25 +422,25 @@
   <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    // === BasePath autodetect ===
+    /* ===== BasePath autodetect ===== */
     const BASE = (()=> {
       const p = location.pathname;
       const i = p.indexOf('/Planta/');
       return i >= 0 ? '/Planta/' : '/';
     })();
 
-    // Reescribe manifest e iconos si servimos en otra base
+    /* Reescritura de rutas si el repo no está en raíz */
     for (const link of document.querySelectorAll('link[rel="manifest"],link[rel="icon"],link[rel="apple-touch-icon"]')) {
       const href = link.getAttribute('href')||'';
       if (href.startsWith('/Planta/')) link.setAttribute('href', href.replace('/Planta/', BASE));
     }
 
-    // ===== Firebase SDK (CDN) =====
+    /* ===== Firebase SDK (CDN) ===== */
     const appMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
     const authMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
     const fsMod    = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
 
-    // Config del usuario (archivo aparte en el repo)
+    /* Config del usuario (archivo en el repo) */
     const { firebaseConfig } = await import(BASE + 'firebase-config.js');
 
     const fbApp = appMod.initializeApp(firebaseConfig);
@@ -446,7 +450,7 @@
     });
     const serverTS = fsMod.serverTimestamp;
 
-    // ===== Utils =====
+    /* ===== Utils ===== */
     const $ = (s, r=document)=>r.querySelector(s);
     const todayISO = ()=> new Date().toISOString().slice(0,10);
     const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
@@ -454,7 +458,7 @@
     const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
     const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
 
-    // Room key para orden numérico: "421-2" => 421.02
+    /* Room key para orden numérico: "421-2" => 421.02 */
     function roomSortKey(s){
       if(!s) return Number.POSITIVE_INFINITY;
       const m = String(s).match(/\d+/g);
@@ -464,13 +468,13 @@
       return first + second;
     }
 
-    // ===== Online
+    /* Online */
     const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
     setOnline(navigator.onLine);
     addEventListener('online', ()=>setOnline(true), {passive:true});
     addEventListener('offline',()=>setOnline(false), {passive:true});
 
-    // ===== Auth Google
+    /* Auth Google */
     const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
     const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
 
@@ -494,31 +498,44 @@
       }
     });
 
-    // ===== Firestore collections
+    /* Firestore collections */
     const col = {
       planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
       tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
       dir     : (uid)=> fsMod.collection(db,'users',uid,'directorio'),
-      alarmas : (uid)=> fsMod.collection(db,'users',uid,'alarmas')
     };
     let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
     function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
 
-    // ===== Tabs (superior y barra inferior sincronizadas) =====
-    function selectTab(id){
+    /* ===== Tabs (superior y barra inferior sincronizadas + teclado) ===== */
+    const tabOrder=['planta','tareas','directorio'];
+    function selectTab(id, focusPanel=false){
       const map={planta:['panel-planta','tab-planta','b-planta','Planta'],tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],directorio:['panel-directorio','tab-directorio','b-directorio','Directorio']};
       for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id);
         $('#'+p).classList.toggle('hide',!sel); $('#'+t).setAttribute('aria-selected',sel); $('#'+b).setAttribute('aria-selected',sel);
-        if(sel) $('#title').textContent=l;
+        if(sel){ $('#title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) $('#'+p).focus?.(); }
       }
     }
-    $('#tab-planta').onclick=()=>selectTab('planta'); $('#tab-tareas').onclick=()=>selectTab('tareas'); $('#tab-directorio').onclick=()=>selectTab('directorio');
-    $('#b-planta').onclick=()=>selectTab('planta'); $('#b-tareas').onclick=()=>selectTab('tareas'); $('#b-directorio').onclick=()=>selectTab('directorio');
+    $('#tab-planta').onclick =()=>selectTab('planta',true);
+    $('#tab-tareas').onclick =()=>selectTab('tareas',true);
+    $('#tab-directorio').onclick=()=>selectTab('directorio',true);
+    $('#b-planta').onclick =()=>selectTab('planta');
+    $('#b-tareas').onclick =()=>selectTab('tareas');
+    $('#b-directorio').onclick=()=>selectTab('directorio');
 
-    // ===== Notif badge (tareas activas)
+    /* Accesibilidad teclado para tablist */
+    $('#tablist').addEventListener('keydown', (e)=>{
+      const cur = tabOrder.findIndex(k => $('#tab-'+k).getAttribute('aria-selected')==='true');
+      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; $('#tab-'+tabOrder[n]).focus(); $('#tab-'+tabOrder[n]).click(); }
+      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; $('#tab-'+tabOrder[n]).focus(); $('#tab-'+tabOrder[n]).click(); }
+      if(e.key==='Home'){ e.preventDefault(); $('#tab-'+tabOrder[0]).focus(); $('#tab-'+tabOrder[0]).click(); }
+      if(e.key==='End'){ e.preventDefault(); $('#tab-'+tabOrder.at(-1)).focus(); $('#tab-'+tabOrder.at(-1)).click(); }
+    });
+
+    /* Notif badge (nº tareas activas) */
     const setNotif = (n)=>{ const el=$('#notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
 
-    // ===== PLANTA
+    /* ===== PLANTA ===== */
     let currentGroup='planta';
     function updateAddTarget(){
       const t=$('#addTarget');
@@ -552,7 +569,7 @@
       const body=$('#modalBody'); body.innerHTML='';
       for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
       const dlg=$('#modal'); $('#modalTitle').textContent='Editar'; $('#modalOk').textContent='Guardar'; $('#modalCancel').textContent='Cancelar';
-      dlg.showModal(); dlg.setAttribute('aria-hidden','false'); // accesible
+      dlg.showModal(); dlg.setAttribute('aria-hidden','false');
       $('#modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
       $('#modalCancel').onclick=e=>{e.preventDefault(); dlg.close();};
       dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
@@ -591,7 +608,7 @@
       unsubs.push(u1,u2);
     }
 
-    // ===== TAREAS (con color dinámico por proximidad: rojo → verde) =====
+    /* ===== TAREAS (color dinámico: rojo → verde por proximidad) ===== */
     const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
 
     function daysFromToday(iso){
@@ -600,22 +617,21 @@
         return Math.round((d - t)/(1000*60*60*24)); // futuro +, pasado -
       }catch{return 0}
     }
-    // Mapear días → HSL (0=rojo, 120=verde). Rango: [-7 … 30]
     function hueForDays(diff){
       if(isNaN(diff)) return 205;
-      if(diff <= -7) return 0;       // muy vencido → rojo
-      if(diff < 0)   return 10;      // vencido reciente → rojo-anaranjado
+      if(diff <= -7) return 0;
+      if(diff < 0)   return 10;
       const max=30; const h = Math.round(10 + (Math.min(diff,max)/max)*120);
-      return h; // 10→130 aprox.
+      return h;
     }
-    function bgForHue(h){ return `hsl(${h} 90% 92%)`; } // pastel legible
+    function bgForHue(h){ return `hsl(${h} 90% 92%)`; }
+
     function renderTareaItem(x){
       const diff = daysFromToday(x.date);
       const h = hueForDays(diff);
       const bg = bgForHue(h);
-      const li=document.createElement('li'); li.className='item heat';
-      li.style.setProperty('--heat-h', h);
-      li.style.setProperty('--heat-bg', bg);
+      const li=document.createElement('li'); li.className='item';
+      li.style.borderLeft = `6px solid hsl(${h} 72% 46%)`;
       li.innerHTML=`<span class="pill date" style="background:${bg};border-color:hsl(${h} 70% 72%)">${pillForDate(x.date)}</span>
         <div class="text"><div class="line">${esc(x.text||'')}</div></div>
         <div class="toolbar actions"></div>`;
@@ -625,6 +641,7 @@
     }
     function renderTareaDone(x){
       const li=document.createElement('li'); li.className='item';
+      li.style.borderLeft = `6px solid hsl(150 50% 38%)`;
       li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
         <div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
         <div class="toolbar actions"></div>`;
@@ -656,7 +673,6 @@
 
       const u1=fsMod.onSnapshot(qA,(snap)=>{
         const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        // Orden: primero por proximidad (más urgente primero), luego por creación
         arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
         const list=$('#t-list'); list.innerHTML=''; let n=0;
         idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); $('#t-count').textContent=n; $('#t-empty').style.display=n?'none':'block'; setNotif(n);});
@@ -677,7 +693,7 @@
       unsubs.push(u1,u2,u3);
     }
 
-    // ===== DIRECTORIO: chips de teléfono y sección suaves =====
+    /* ===== DIRECTORIO ===== */
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
     function setupDirectorio(uid){
@@ -724,8 +740,12 @@
     }catch(e){ toast(e.message||String(e)); }}};    
     function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
 
-    // ===== Shared helpers
-    function mountApp(uid){ setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); selectTab('planta'); }
+    /* ===== Shared helpers ===== */
+    function mountApp(uid){
+      setupPlanta(uid); setupTareas(uid); setupDirectorio(uid);
+      const last = localStorage.getItem('tab') || 'planta';
+      selectTab(last);
+    }
     async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',currentUid(),kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
     async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',currentUid(),kind,id)); }
     async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
@@ -733,7 +753,7 @@
     async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
     async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-    // ===== PWA install & updates
+    /* ===== PWA install & updates ===== */
     let deferredPrompt=null;
     addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').setAttribute('aria-hidden','false');});
     document.getElementById('installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').setAttribute('aria-hidden','true'); } };
@@ -747,7 +767,7 @@
       reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
     }
 
-    // Inicio
+    /* Inicio */
     selectTab('planta');
   </script>
 </body>
