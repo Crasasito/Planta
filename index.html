@@ -36,11 +36,11 @@
       --hdr-fg-2:hsl(220 16% 92%);
       --hdr-fg-3:hsl(220 12% 86%);
 
-      /* Gradientes vivos elegantes (no estridentes) */
-      --brand-hi:hsl(205 85% 44%); --brand-lo:hsl(205 82% 40%);   /* Azul clínico */
-      --planta-hi:hsl(156 58% 44%); --planta-lo:hsl(156 52% 38%); /* Verde quirófano */
-      --tareas-hi:hsl(10 72% 50%);  --tareas-lo:hsl(10 66% 44%);  /* Terracota */
-      --dir-hi:hsl(205 85% 44%);    --dir-lo:hsl(205 82% 40%);    /* Azul directorio */
+      /* Gradientes vivos elegantes */
+      --brand-hi:hsl(205 85% 44%); --brand-lo:hsl(205 82% 40%);
+      --planta-hi:hsl(156 58% 44%); --planta-lo:hsl(156 52% 38%);
+      --tareas-hi:hsl(10 72% 50%);  --tareas-lo:hsl(10 66% 44%);
+      --dir-hi:hsl(205 85% 44%);    --dir-lo:hsl(205 82% 40%);
       --add-hi:hsl(222 70% 46%);    --add-lo:hsl(222 64% 40%);
       --done-hi:hsl(150 52% 40%);   --done-lo:hsl(150 46% 36%);
       --trash-hi:hsl(220 20% 38%);  --trash-lo:hsl(220 18% 34%);
@@ -53,10 +53,10 @@
       --pill-date-bg:hsl(205 80% 96%);  --pill-date-bd:hsl(205 68% 86%);
       --pill-section-bg:hsl(205 45% 96%);--pill-section-bd:hsl(205 35% 86%);
 
-      /* Píldoras de habitación — GRANDES y con color por grupo */
-      --room-ink:#07111f;
-      --room-planta-bg:hsl(156 75% 92%);  --room-planta-bd:hsl(156 52% 60%);
-      --room-inter-bg:hsl(28 92% 92%);    --room-inter-bd:hsl(28 70% 62%);
+      /* Píldoras de habitación — MAYOR CONTRASTE + MÁS GRANDES */
+      --room-ink:#06111e;
+      --room-planta-bg:hsl(156 78% 95%);  --room-planta-bd:hsl(156 58% 44%);
+      --room-inter-bg:hsl(28  94% 95%);   --room-inter-bd:hsl(28  70% 50%);
 
       /* Chips teléfono */
       --phone-bg:#eef2f7; --phone-bd:#d8e0ea; --phone-ink:#0f172a;
@@ -85,16 +85,16 @@
       #title{font-size:clamp(18px,5vw,22px)}
     }
 
-    /* Marca: +tamaño +peso */
+    /* Marca: +tamaño */
     .brand-chip{
       display:inline-flex;align-items:center;gap:12px;
-      padding:13px 22px;border-radius:999px;
+      padding:14px 24px;border-radius:999px;
       color:var(--hdr-fg-1);border:1px solid rgba(255,255,255,.28);
       background-image:linear-gradient(179deg,var(--brand-hi),var(--brand-lo)), var(--sheen);
       text-shadow:0 1px 2px rgba(0,0,0,.35);
       box-shadow:0 10px 26px rgba(0,0,0,.18);
-      font-size:clamp(18px,2.8vw,24px);  /* ↑ tamaño */
-      font-weight:960;letter-spacing:.4px;text-transform:uppercase
+      font-size:clamp(20px,3.4vw,26px);  /* ↑ tamaño Infecciosas */
+      font-weight:960;letter-spacing:.44px;text-transform:uppercase
     }
     .brand-dot{width:12px;height:12px;border-radius:50%;background:var(--accent-gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
     h1{margin:0;font-size:clamp(20px,2.6vw,28px);font-weight:900;letter-spacing:.2px}
@@ -134,7 +134,7 @@
     .hdr-done {background-image:linear-gradient(179deg,var(--done-hi),var(--done-lo))}
     .hdr-trash{background-image:linear-gradient(179deg,var(--trash-hi),var(--trash-lo))}
 
-    /* ===== Tabs superiores y barra inferior (claramente diferenciadas) ===== */
+    /* ===== Tabs superiores y barra inferior ===== */
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .tab{
       padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);
@@ -144,7 +144,7 @@
     #tab-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 50%) 20%); border-color:color-mix(in oklab,hsl(10 72% 50%),transparent 60%)}
     #tab-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(205 85% 44%) 20%);border-color:color-mix(in oklab,hsl(205 85% 44%),transparent 60%)}
 
-    /* Banda superior de sección (remarca cambio de pestaña) */
+    /* Banda superior de sección */
     .section-banner{
       margin:10px 0 8px;border-radius:16px; padding:10px 14px; color:var(--hdr-fg-1);
       font-weight:950; letter-spacing:.4px; text-shadow:0 1px 2px rgba(0,0,0,.3);
@@ -162,13 +162,16 @@
       color:var(--pill-ink);background:var(--surface-2);
       font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1;
     }
-    /* HABITACIÓN — grande, monoespaciado, color por grupo */
+    /* HABITACIÓN — MUY GRANDE + CONTRASTE ALTO */
     .pill.room{
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-weight:900; letter-spacing:.3px;
-      font-size:clamp(18px,2.6vw,24px);    /* ↑ tamaño */
-      padding:11px 16px; border-radius:12px; color:var(--room-ink);
-      box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
+      font-weight:900; letter-spacing:.35px;
+      font-size:clamp(24px,3.8vw,32px);     /* ↑↑ tamaño */
+      padding:12px 18px;
+      border-radius:14px;
+      color:var(--room-ink);
+      border:2px solid transparent;         /* ↑ borde para definir contorno */
+      box-shadow:inset 0 -1px 0 rgba(0,0,0,.06), 0 1px 0 rgba(255,255,255,.7);
     }
     .pill.room.planta{ background:var(--room-planta-bg); border-color:var(--room-planta-bd) }
     .pill.room.inter { background:var(--room-inter-bg);  border-color:var(--room-inter-bd)  }
@@ -187,14 +190,16 @@
     /* ===== Lista base ===== */
     ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
     li.item{
-      display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;
+      display:grid;
+      grid-template-columns:max-content minmax(160px,1fr) auto; /* deja respirar al Nº habitación */
+      gap:12px;align-items:center;
       border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff
     }
     /* Resaltado lateral por grupo en PLANTA */
     li.item.pl{ border-left:6px solid hsl(156 58% 44%) }
     li.item.ic{ border-left:6px solid hsl(28 86% 50%) }
 
-    /* ===== Encabezado de grupo (Directorio) ===== */
+    /* ===== Encabezado/separador de grupo (Directorio) ===== */
     .group-li{border:0;background:transparent;padding:0}
     .group-hdr{
       margin:18px 0 6px;padding:8px 12px;border-radius:12px;color:var(--hdr-fg-1);
@@ -205,6 +210,10 @@
     .group-count{
       color:var(--hdr-fg-3);border:1px solid rgba(255,255,255,.25);
       background:rgba(255,255,255,.12);padding:4px 8px;border-radius:999px;font-weight:800
+    }
+    .group-sep{
+      height:4px;border-radius:999px;margin:10px 0 12px;background:linear-gradient(90deg,#0003,#0000);
+      opacity:.95
     }
 
     .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
@@ -727,7 +736,7 @@
       unsubs.push(u1,u2,u3);
     }
 
-    /* ===== DIRECTORIO — agrupado por SECCIÓN con encabezado de color ===== */
+    /* ===== DIRECTORIO — agrupado por SECCIÓN con línea separadora de color ===== */
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
 
@@ -746,7 +755,7 @@
       return parts.map(p=>`<span class="phone-chip" dir="ltr">${esc(p)}</span>`).join(' ');
     }
 
-    // Paleta fija de tonos premium para secciones (para consistencia)
+    // Paleta fija de tonos premium para secciones (consistencia)
     const SEC_HUES = [205, 156, 28, 222, 10, 280, 190, 330];
     function hueFromString(s){
       let h=0; for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) & 0xffffffff;
@@ -755,7 +764,8 @@
     function sectionHeaderStyle(sec, count){
       const h = hueFromString(sec||'');
       return {
-        style:`background-image:linear-gradient(179deg, hsl(${h} 62% 46%), hsl(${h} 58% 40%));`,
+        hdr:`background-image:linear-gradient(179deg, hsl(${h} 62% 46%), hsl(${h} 58% 40%));`,
+        sep:`background-image:linear-gradient(90deg, hsl(${h} 70% 52%), hsl(${h} 60% 46%));`,
         label:`${sec || 'Sin sección'}`,
         count:String(count)
       };
@@ -774,15 +784,27 @@
       const groups = new Map();
       for(const x of arr){ const k = x.seccion || 'Sin sección'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x); }
 
-      let total=0;
+      let total=0; let first=true;
       for(const [sec, items] of groups){
         const meta = sectionHeaderStyle(sec, items.length);
+
+        // Separador de color entre grupos (no antes del primero)
+        if(!first){
+          const sep=document.createElement('div');
+          sep.className='group-sep';
+          sep.setAttribute('aria-hidden','true');
+          sep.style = meta.sep;
+          l.appendChild(sep);
+        }
+        first=false;
+
         const gLi=document.createElement('li'); gLi.className='group-li'; gLi.setAttribute('role','presentation');
-        gLi.innerHTML = `<div class="group-hdr" role="heading" aria-level="3" style="${meta.style}">
+        gLi.innerHTML = `<div class="group-hdr" role="heading" aria-level="3" style="${meta.hdr}">
             <span>${esc(meta.label)}</span>
             <span class="group-count">${meta.count}</span>
           </div>`;
         l.appendChild(gLi);
+
         items.forEach(x=> l.appendChild(renderDir(x)));
         total += items.length;
       }
