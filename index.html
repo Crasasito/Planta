@@ -12,151 +12,203 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
 
 <style>
-  /* ===== Aurora UI · Legibilidad Premium ===== */
+  /* ===== Aurora UI — Final premium pass (legibilidad + cromatismo inteligente) ===== */
   *,*::before,*::after{box-sizing:border-box}
   html,body{height:100%}
   :root{
-    /* Paleta */
+    /* Paleta base */
     --ivory:#F8FFE5; --mint:#06D6A0; --teal:#1B9AAA; --coral:#EF476F; --gold:#FFC43D;
-    --mint-10:hsl(160 90% 94%); --teal-10:hsl(190 80% 94%); --coral-10:hsl(350 90% 95%); --gold-10:hsl(45 100% 95%);
-    --ink:#0B1220; --muted:#5b6475; --border:#e5e7eb; --plate:#ffffff;
+    /* Derivados suaves para placas / fondos */
+    --mint-plate:color-mix(in oklab,#fff,var(--mint) 18%);
+    --teal-plate:color-mix(in oklab,#fff,var(--teal) 18%);
+    --coral-plate:color-mix(in oklab,#fff,var(--coral) 20%);
+    --gold-plate:color-mix(in oklab,#fff,var(--gold) 22%);
+
+    --ink:#0b1220; --muted:#5b6475; --border:#e6eaf0; --plate:#ffffff;
     --radius:14px; --radius-xl:20px; --app-h:64px; --touch:44px;
+    --blur:10px;
     --shadow-1:0 1px 2px rgba(2,6,23,.05),0 8px 24px rgba(2,6,23,.06);
     --shadow-2:0 2px 6px rgba(2,6,23,.08),0 16px 36px rgba(2,6,23,.10);
-    --g-planta:linear-gradient(180deg, color-mix(in oklab, #fff, var(--mint) 18%), color-mix(in oklab, #fff, var(--teal) 12%));
-    --g-tareas:linear-gradient(180deg, color-mix(in oklab, #fff, var(--coral) 22%), #fff);
-    --g-dir:linear-gradient(180deg, color-mix(in oklab, #fff, var(--gold) 24%), #fff);
-    --g-biblio:linear-gradient(180deg, color-mix(in oklab, #fff, var(--teal) 16%), color-mix(in oklab, #fff, var(--gold) 10%));
-    --sheen:linear-gradient(92deg,rgba(255,255,255,.18),rgba(255,255,255,0) 54%);
-    --room-planta-bg: color-mix(in oklab, #fff, var(--mint) 18%); --room-planta-bd: color-mix(in oklab, #cfe, var(--mint) 60%);
-    --room-inter-bg:  color-mix(in oklab, #fff, var(--teal) 18%); --room-inter-bd:  color-mix(in oklab, #def, var(--teal) 60%);
-    --title: clamp(21px, 2.8vw, 30px); --h2: clamp(18px, 2.2vw, 22px); --base: clamp(15px, 1vw + .3vh, 18px);
+
+    /* Gradientes de encabezado (mapeo cromático por sección) */
+    --hdr-planta:linear-gradient(180deg, color-mix(in oklab,#fff,var(--mint) 22%), color-mix(in oklab,#fff,var(--teal) 14%));
+    --hdr-tareas:linear-gradient(180deg, color-mix(in oklab,#fff,var(--coral) 26%), #fff);
+    --hdr-dir:   linear-gradient(180deg, color-mix(in oklab,#fff,var(--gold) 28%), #fff);
+    --hdr-biblio:linear-gradient(180deg, color-mix(in oklab,#fff,var(--teal) 18%), color-mix(in oklab,#fff,var(--gold) 14%));
+
+    /* Aurora background global (sutil) */
+    --bg-aur1: radial-gradient(1200px 600px at 10% -10%, rgba(27,154,170,.09), transparent 60%);
+    --bg-aur2: radial-gradient(900px 600px at 110% -20%, rgba(239,71,111,.07), transparent 60%);
+    --bg-aur3: radial-gradient(1000px 800px at 50% 120%, rgba(255,196,61,.08), transparent 60%);
+
+    /* Píldoras de habitación */
+    --room-planta-bg: var(--mint-plate); --room-planta-bd: color-mix(in oklab,#cfe,var(--mint) 60%);
+    --room-inter-bg:  var(--teal-plate); --room-inter-bd:  color-mix(in oklab,#def,var(--teal) 60%);
+
+    /* Tipografía fluida */
+    --title: clamp(22px, 3vw, 32px); --h2: clamp(18px, 2.2vw, 22px); --base: clamp(15px, 1vw + .3vh, 18px);
   }
   body{
-    margin:0; color:var(--ink); background:#fff;
-    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    margin:0; color:var(--ink); background:#fff; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
     font-size:var(--base); line-height:1.68; min-height:100dvh; -webkit-tap-highlight-color:transparent;
-    background-image:
-      radial-gradient(1200px 600px at 10% -10%, rgba(27,154,170,.08), transparent 60%),
-      radial-gradient(900px 600px at 110% -20%, rgba(239,71,111,.06), transparent 60%),
-      radial-gradient(1000px 800px at 50% 120%, rgba(255,196,61,.08), transparent 60%);
+    background-image:var(--bg-aur1),var(--bg-aur2),var(--bg-aur3);
   }
-  :focus-visible{outline:3px solid color-mix(in oklab, var(--gold), var(--mint) 20%); outline-offset:2px; border-radius:10px}
-  .container{max-width:min(1160px,98vw);margin:0 auto;padding:10px clamp(12px,4vw,20px);container-type:inline-size}
+  :focus-visible{outline:3px solid color-mix(in oklab,var(--gold),var(--mint) 22%); outline-offset:2px; border-radius:10px}
+  .container{max-width:min(1160px,98vw); margin:0 auto; padding:10px clamp(12px,4vw,20px); container-type:inline-size}
   .hide{display:none !important} .muted{color:var(--muted)} .line{overflow-wrap:anywhere}
 
-  /* Appbar */
+  /* ===== AppBar glass ===== */
   header.appbar{
-    position:sticky;top:0;z-index:70;min-height:var(--app-h);
-    background:linear-gradient(180deg,#ffffff 60%,#f7fafc 100%); border-bottom:1px solid var(--border);
-    backdrop-filter:saturate(1.05) blur(6px)
+    position:sticky; top:0; z-index:70; min-height:var(--app-h);
+    background:
+      linear-gradient(180deg,#ffffff 65%,#f7fafc 100%);
+    border-bottom:1px solid var(--border);
+    backdrop-filter:saturate(1.05) blur(var(--blur));
   }
   .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .brandRow{display:flex;align-items:center;gap:14px;min-width:0}
   h1{margin:0;font-size:var(--title);font-weight:900;letter-spacing:.2px}
   h2{margin:0;font-size:var(--h2);font-weight:900}
 
-  .brand-chip{display:inline-flex;align-items:center;gap:12px;padding:10px 16px;border-radius:999px;color:#0b1220;
-    background:linear-gradient(180deg,#fff,#f9fafb); border:1px solid var(--border);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), var(--shadow-1); font-weight:900; letter-spacing:.35px}
+  /* Chips y botones (rim-light + glass suave) */
+  .brand-chip,.chip,.btn{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.75), /* rim-light */
+      0 6px 16px rgba(10,20,40,.08);
+  }
+  .brand-chip{
+    display:inline-flex;align-items:center;gap:12px;padding:10px 16px;border-radius:999px;
+    color:#0b1220;background:linear-gradient(180deg,#fff,#f9fafb); border:1px solid var(--border); font-weight:900;letter-spacing:.35px
+  }
   .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
 
   .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:.82rem;
-    background:linear-gradient(180deg,#fff,#fafafa); border:1px solid var(--border);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.6), var(--shadow-1); font-weight:700; color:#0f172a}
-  .chip.ok{border-color: color-mix(in oklab, var(--mint), #fff 70%); box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 6px 12px rgba(6,214,160,.12)}
-  .chip.bad{border-color: color-mix(in oklab, var(--coral), #fff 70%); box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 6px 12px rgba(239,71,111,.12)}
+    background:linear-gradient(180deg,#fff,#fafafa); border:1px solid var(--border); font-weight:800; color:#0f172a}
+  .chip.ok{border-color: color-mix(in oklab, var(--mint), #fff 70%); box-shadow:inset 0 1px 0 rgba(255,255,255,.85), 0 8px 22px rgba(6,214,160,.14)}
+  .chip.bad{border-color: color-mix(in oklab, var(--coral), #fff 70%); box-shadow:inset 0 1px 0 rgba(255,255,255,.85), 0 8px 22px rgba(239,71,111,.14)}
 
   .btn{appearance:none;border:1px solid var(--border);background:linear-gradient(180deg,#fff,#f7fafc);color:#0b1220;
-    padding:10px 12px;border-radius:12px;box-shadow:var(--shadow-1);min-height:var(--touch);min-width:44px;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:800}
-  .btn.primary{background:linear-gradient(180deg, color-mix(in oklab, #fff, var(--gold) 30%), #fff);border-color:transparent}
-  .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:color-mix(in oklab, var(--teal), #0b1220 20%)}
+    padding:10px 12px;border-radius:12px;min-height:var(--touch);min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:900;letter-spacing:.2px}
+  .btn.primary{background:linear-gradient(180deg, color-mix(in oklab,#fff,var(--gold) 30%), #fff);border-color:transparent}
+  .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:color-mix(in oklab,var(--teal),#0b1220 20%)}
   .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
 
+  /* Tarjetas + encabezados con glassmorphism y aurora */
   .card{background:var(--plate);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-1);overflow:hidden;contain:content}
-  .card-h{position:relative;padding:14px 16px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;overflow:hidden;isolation:isolate}
-  .card-h .titlePlate{
-    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;
-    background:linear-gradient(180deg,#fff,#f7fafc);
-    border:1px solid color-mix(in oklab, var(--border), #fff 20%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 6px 12px rgba(0,0,0,.06)
+  .card-h{
+    position:relative;padding:14px 16px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;overflow:hidden;isolation:isolate;
+    backdrop-filter:saturate(1.05) blur(calc(var(--blur) * .6));
   }
-  .card-h::after{content:"";position:absolute;inset:0;background-image:var(--sheen);pointer-events:none;z-index:-1}
+  .card-h::before{
+    /* aurora overlay por sección (controlado por clase hdr-*) */
+    content:""; position:absolute; inset:-2px;
+    background:
+      radial-gradient(50% 100% at 0% 0%, rgba(255,255,255,.28), transparent 60%),
+      radial-gradient(60% 120% at 100% -10%, rgba(255,255,255,.18), transparent 60%);
+    pointer-events:none; z-index:0
+  }
+  .titlePlate{
+    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px; position:relative; z-index:1;
+    background:linear-gradient(180deg,#fff,#f7fafc);
+    border:1px solid color-mix(in oklab,var(--border),#fff 20%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.8), /* rim-light */
+      0 6px 12px rgba(0,0,0,.06)
+  }
   .card-b{padding:12px}
 
-  .hdr-planta{background:var(--g-planta)} .hdr-tareas{background:var(--g-tareas)}
-  .hdr-dir{background:var(--g-dir)}     .hdr-biblio{background:var(--g-biblio)}
-  .hdr-add{background:linear-gradient(180deg, #fff, #f7fafc)}
+  /* Encabezados mapeados por color */
+  .hdr-planta{background:var(--hdr-planta)}
+  .hdr-tareas{background:var(--hdr-tareas)}
+  .hdr-dir{background:var(--hdr-dir)}
+  .hdr-biblio{background:var(--hdr-biblio)}
+  .hdr-add{background:linear-gradient(180deg,#fff,#f7fafc)}
 
+  /* Tabs superiores */
   .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .tab{padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:linear-gradient(180deg,#fff,#f7fafc);
-    cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;gap:8px;align-items:center;justify-content:center}
-  .tab[aria-selected="true"]{box-shadow:0 6px 14px rgba(0,0,0,.06);border-color:color-mix(in oklab,var(--teal),#fff 60%)}
+  .tab{
+    padding:10px 12px;border-radius:14px;border:1px solid var(--border);
+    background:linear-gradient(180deg,#fff,#f7fafc); cursor:pointer;font-weight:900;letter-spacing:.2px;
+    display:flex;gap:8px;align-items:center;justify-content:center;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75)
+  }
+  .tab[aria-selected="true"]{box-shadow:0 8px 18px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.85); border-color: color-mix(in oklab,var(--teal),#fff 60%)}
 
-  .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;color:#0b1220;background:linear-gradient(180deg,#fff,#f8fafc)}
-  .pill.date{border-color:#dbe2ea} .pill.section{border-color:#dbe2ea}
+  /* Píldoras y lista */
+  .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid #dbe2ea;color:#0b1220;background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
   .pill.room{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-weight:900;letter-spacing:.3px;
     font-size:clamp(18px,2.2vw,22px);padding:10px 14px;border-radius:12px;box-shadow:inset 0 -1px 0 rgba(0,0,0,.06), var(--shadow-1)}
   .pill.room.planta{background:var(--room-planta-bg);border-color:var(--room-planta-bd)}
   .pill.room.inter{ background:var(--room-inter-bg); border-color:var(--room-inter-bd)}
 
   ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
-  li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
-  li.item.pl{border-left:6px solid color-mix(in oklab, var(--mint), #0b1220 10%)} 
-  li.item.ic{border-left:6px solid color-mix(in oklab, var(--teal), #0b1220 10%)}
+  li.item{
+    display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;
+    border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75), 0 6px 14px rgba(0,0,0,.04)
+  }
+  li.item.pl{border-left:6px solid color-mix(in oklab,var(--mint),#0b1220 10%)} 
+  li.item.ic{border-left:6px solid color-mix(in oklab,var(--teal),#0b1220 10%)}
 
   label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 40%)}
-  input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:#0b1220;font:inherit;min-height:var(--touch)}
+  input,textarea,select{
+    width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:#0b1220;font:inherit;min-height:var(--touch);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75)
+  }
   textarea{min-height:90px;resize:vertical}
-  input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 20%)}
+  input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 18%)}
 
   .grid{display:grid;gap:12px}
   .g3{grid-template-columns:1fr 2fr auto} .g2{grid-template-columns:1fr 1fr}
   @container (max-width:820px){.g3,.g2{grid-template-columns:1fr}} @media (max-width:820px){.g3,.g2{grid-template-columns:1fr}}
 
+  /* Bottom nav con selección teñida por sección */
   nav.bottom{position:sticky;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--border)}
   .tabs-bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:center;padding:8px 12px}
-  .tab-bottom{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:12px;
-    border:1px solid var(--border);background:linear-gradient(180deg,#fff,#f7fafc);font-weight:900; cursor:pointer}
-  .tab-bottom[aria-selected="true"]{border-color:color-mix(in oklab, var(--teal), #fff 60%); box-shadow:0 8px 16px rgba(0,0,0,.06)}
+  .tab-bottom{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:12px;
+    border:1px solid var(--border);background:linear-gradient(180deg,#fff,#f7fafc);font-weight:900; cursor:pointer;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75)
+  }
+  #b-planta[aria-selected="true"]{border-color: color-mix(in oklab,var(--mint),#fff 60%); box-shadow:0 8px 16px rgba(6,214,160,.16)}
+  #b-tareas[aria-selected="true"]{border-color: color-mix(in oklab,var(--coral),#fff 60%); box-shadow:0 8px 16px rgba(239,71,111,.16)}
+  #b-directorio[aria-selected="true"]{border-color: color-mix(in oklab,var(--gold),#fff 60%); box-shadow:0 8px 16px rgba(255,196,61,.18)}
+  #b-biblio[aria-selected="true"]{border-color: color-mix(in oklab,var(--teal),#fff 60%); box-shadow:0 8px 16px rgba(27,154,170,.16)}
 
+  /* Banners, diálogos, etc. */
   .banner{display:none;margin:10px 0;padding:10px 12px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px}
   .banner[aria-hidden="false"]{display:flex;gap:10px;align-items:center}
-
   .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:80}
   .modal[open]{display:grid}
   .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(620px,92vw)}
   .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-  .segmented{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1)}
-  .segmented button{border:0;background:transparent;border-radius:999px;padding:8px 12px;cursor:pointer;color:#334155;min-height:36px;font-weight:800}
-  .segmented button.active{background:color-mix(in oklab,#fff,var(--gold) 20%);color:#111827;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--gold),transparent 60%)}
+  .segmented{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.75), var(--shadow-1)}
+  .segmented button{border:0;background:transparent;border-radius:999px;padding:8px 12px;cursor:pointer;color:#334155;min-height:36px;font-weight:900}
+  .segmented button.active{background:color-mix(in oklab,#fff,var(--gold) 22%);color:#111827;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--gold),transparent 60%)}
 
-  .section-banner{margin:10px 0 8px;border-radius:16px; padding:10px 14px; font-weight:950; letter-spacing:.4px;display:flex; align-items:center; justify-content:space-between; gap:12px}
-  .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,#fff,#f7fafc);border:1px solid rgba(0,0,0,.08);font-weight:800}
+  .section-banner{margin:10px 0 8px;border-radius:16px; padding:10px 14px; font-weight:950; letter-spacing:.4px;display:flex; align-items:center; justify-content:space-between; gap:12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 8px 18px rgba(0,0,0,.06)}
+  .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:linear-gradient(180deg,#fff,#f7fafc);border:1px solid rgba(0,0,0,.08);font-weight:900}
   .phone-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2f7;border:1px solid #d8e0ea;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-variant-numeric:tabular-nums;line-height:1.2;margin:2px 6px 2px 0;}
 
-  .strike{text-decoration:line-through;opacity:.9}
+  .strike{text-decoration:line-through;opacity:.92}
   #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-2);z-index:90}
   #toast[hidden]{display:none}
 
+  /* FAB Emergencias con glow coral */
   #fab-emer{position:fixed; right:16px; bottom:calc(20px + env(safe-area-inset-bottom));
     display:inline-flex; align-items:center; justify-content:center; gap:10px;
     padding:12px 16px; border-radius:999px; color:#111; font-weight:900;
-    background:linear-gradient(180deg, color-mix(in oklab, #fff, var(--coral) 30%), #fff);
-    border:1px solid color-mix(in oklab, var(--coral), #fff 30%); box-shadow:0 14px 26px rgba(239,71,111,.26); z-index:75; cursor:pointer;}
+    background:linear-gradient(180deg, color-mix(in oklab,#fff,var(--coral) 34%), #fff);
+    border:1px solid color-mix(in oklab,var(--coral),#fff 30%); box-shadow:0 16px 30px rgba(239,71,111,.26); z-index:75; cursor:pointer;}
   #fab-emer .ico{width:22px;height:22px}
 
   /* Visor embebido */
-  .viewer{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .viewer{border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
   .viewer object{width:100%;height:min(70vh,720px);display:block;background:#fff}
-
-  /* Acciones menú */
-  .kebab{min-width:44px;aspect-ratio:1/1}
-  .menu-list{display:grid;gap:8px}
-  .menu-item{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
   /* Print */
   @media print{
@@ -166,19 +218,19 @@
     .pill.room{border:1px solid #000!important;background:#fff!important}
     body{background:#fff!important}
   }
-
-  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 
 <body>
-<!-- ===== SVG Sprite: iconos premium ===== -->
+<!-- ===== SVG Sprite (iconos premium con gradientes) ===== -->
 <svg width="0" height="0" style="position:absolute;opacity:0;pointer-events:none" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="grad-mint" x1="0" x2="1"><stop offset="0%" stop-color="#06D6A0"/><stop offset="100%" stop-color="#1B9AAA"/></linearGradient>
     <linearGradient id="grad-coral" x1="0" x2="1"><stop offset="0%" stop-color="#EF476F"/><stop offset="100%" stop-color="#FFC43D"/></linearGradient>
     <linearGradient id="grad-teal" x1="0" x2="1"><stop offset="0%" stop-color="#1B9AAA"/><stop offset="100%" stop-color="#06D6A0"/></linearGradient>
     <linearGradient id="grad-gold" x1="0" x2="1"><stop offset="0%" stop-color="#FFC43D"/><stop offset="100%" stop-color="#F8FFE5"/></linearGradient>
+
     <symbol id="sym-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#fff"/></symbol>
     <symbol id="sym-fonendo" viewBox="0 0 24 24" aria-label="Planta">
       <path fill="url(#grad-mint)" d="M7 4a1 1 0 0 1 1 1v4c0 2.76 2.24 5 5 5s5-2.24 5-5V5a1 1 0 1 1 2 0v4c0 3.87-3.13 7-7 7s-7-3.13-7-7V5a1 1 0 0 1 1-1z"/>
@@ -239,7 +291,7 @@
         <span id="notifBadge" class="chip">0</span>
       </div>
       <button id="installBtn" class="btn ghost" aria-label="Instalar">➕ Instalar</button>
-      <button id="kebabBtn" class="btn kebab" title="Acciones">⋯</button>
+      <button id="kebabBtn" class="btn icon" title="Acciones">⋯</button>
       <button id="signin" class="btn primary">Acceder</button>
       <button id="signout" class="btn hide">Salir</button>
     </div>
@@ -248,20 +300,20 @@
 
 <main class="container">
   <div id="updateBanner" class="banner" aria-hidden="true">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
-  <div id="installBanner" class="banner" aria-hidden="true">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
+  <div id="installBanner" class="banner" aria-hidden="false" hidden>Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
 
   <!-- Gate -->
   <section id="gate" class="card" role="region" aria-live="polite">
     <div class="card-h hdr-planta">
       <div class="titlePlate">
         <svg width="20" height="20" aria-hidden="true"><use href="#sym-circle"/></svg>
-        <svg width="20" height="20" aria-hidden="true" style="margin-left:-20px"><use href="#sym-fonendo"/></svg>
+        <svg width="20" height="20" aria-hidden="true" style="margin-left:-20px;filter:drop-shadow(0 2px 6px rgba(6,214,160,.22))"><use href="#sym-fonendo"/></svg>
         <h2>Bienvenido</h2>
       </div>
       <span class="sb-pill">Sincroniza con Google</span>
     </div>
     <div class="card-b">
-      <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+      <p class="muted">Tras la primera carga funciona offline. Accede para sincronizar entre Android y PC.</p>
       <div><button id="signin2" class="btn primary">Acceder con Google</button></div>
       <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
     </div>
@@ -272,23 +324,23 @@
     <!-- Tabs -->
     <div class="card" style="margin-bottom:12px">
       <div class="card-b">
-        <div id="tabsLabel" class="muted" style="font-weight:800; margin-bottom:8px">Secciones</div>
+        <div id="tabsLabel" class="muted" style="font-weight:900; margin-bottom:8px">Secciones</div>
         <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
           <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
             <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-fonendo"/></svg>Planta
+            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.18))"><use href="#sym-fonendo"/></svg>Planta
           </button>
           <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
             <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-postit"/></svg>Tareas
+            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(239,71,111,.20))"><use href="#sym-postit"/></svg>Tareas
           </button>
           <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
             <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-directory"/></svg>Directorio
+            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(255,196,61,.22))"><use href="#sym-directory"/></svg>Directorio
           </button>
           <button id="tab-biblio" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblio" tabindex="-1">
             <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-books"/></svg>Biblioteca
+            <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.18))"><use href="#sym-books"/></svg>Biblioteca
           </button>
         </div>
       </div>
@@ -296,10 +348,10 @@
 
     <!-- PLANTA -->
     <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
-      <div class="section-banner" style="background:var(--g-planta)">
-        <span class="sb-pill" style="font-weight:900;display:flex;align-items:center;gap:8px">
+      <div class="section-banner" style="background:var(--hdr-planta)">
+        <span class="sb-pill" style="font-weight:950;display:flex;align-items:center;gap:8px">
           <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-hospital"/></svg>
+          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(6,214,160,.22))"><use href="#sym-hospital"/></svg>
           PLANTA
         </span>
         <span class="sb-pill">Ingresos &amp; Interconsultas</span>
@@ -322,7 +374,7 @@
                 <button id="p-group-planta" type="button" class="active" aria-pressed="true">Planta</button>
                 <button id="p-group-inter"  type="button" aria-pressed="false">Interconsulta</button>
               </div>
-              <span id="addTarget" class="sb-pill" aria-live="polite" style="margin-left:8px;font-weight:800">Añadiendo a: Planta</span>
+              <span id="addTarget" class="sb-pill" aria-live="polite" style="margin-left:8px;font-weight:900">Añadiendo a: Planta</span>
             </div>
           </div>
         </div>
@@ -332,7 +384,7 @@
         <div class="card-h hdr-planta">
           <div class="titlePlate">
             <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-hospital"/></svg>
+            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(6,214,160,.22))"><use href="#sym-hospital"/></svg>
             <h2>Planta</h2>
           </div>
           <span id="p-count-planta" class="chip">0</span>
@@ -347,7 +399,7 @@
         <div class="card-h hdr-planta">
           <div class="titlePlate">
             <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-message"/></svg>
+            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.20))"><use href="#sym-message"/></svg>
             <h2>Interconsultas</h2>
           </div>
           <span id="p-count-inter" class="chip">0</span>
@@ -368,10 +420,10 @@
 
     <!-- TAREAS -->
     <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
-      <div class="section-banner" style="background:var(--g-tareas)">
-        <span class="sb-pill" style="font-weight:900;display:flex;align-items:center;gap:8px">
+      <div class="section-banner" style="background:var(--hdr-tareas)">
+        <span class="sb-pill" style="font-weight:950;display:flex;align-items:center;gap:8px">
           <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-postit"/></svg>
+          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(239,71,111,.22))"><use href="#sym-postit"/></svg>
           TAREAS
         </span>
         <span class="sb-pill">Rojo → Verde según proximidad</span>
@@ -392,7 +444,7 @@
         <div class="card-h hdr-tareas">
           <div class="titlePlate">
             <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-postit"/></svg>
+            <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(239,71,111,.22))"><use href="#sym-postit"/></svg>
             <h2>Tareas activas</h2>
           </div>
           <span id="t-count" class="chip">0</span>
@@ -423,10 +475,10 @@
 
     <!-- DIRECTORIO -->
     <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-      <div class="section-banner" style="background:var(--g-dir)">
-        <span class="sb-pill" style="font-weight:900;display:flex;align-items:center;gap:8px">
+      <div class="section-banner" style="background:var(--hdr-dir)">
+        <span class="sb-pill" style="font-weight:950;display:flex;align-items:center;gap:8px">
           <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-directory"/></svg>
+          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(255,196,61,.22))"><use href="#sym-directory"/></svg>
           DIRECTORIO
         </span>
         <span class="sb-pill">Búsqueda, JSON y Dedupe</span>
@@ -454,10 +506,10 @@
 
     <!-- BIBLIOTECA -->
     <div id="panel-biblio" class="hide" role="tabpanel" aria-labelledby="tab-biblio" tabindex="-1">
-      <div class="section-banner" style="background:var(--g-biblio)">
-        <span class="sb-pill" style="font-weight:900;display:flex;align-items:center;gap:8px">
+      <div class="section-banner" style="background:var(--hdr-biblio)">
+        <span class="sb-pill" style="font-weight:950;display:flex;align-items:center;gap:8px">
           <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-books"/></svg>
+          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.20))"><use href="#sym-books"/></svg>
           BIBLIOTECA
         </span>
         <span class="sb-pill">Guías · Algoritmos · Formación</span>
@@ -508,12 +560,12 @@
       </div>
     </div>
 
-    <!-- LIBRE / NOTAS (opcional, activable desde ⋯ Acciones) -->
+    <!-- LIBRE / NOTAS (opcional) -->
     <div id="panel-libre" class="hide" role="tabpanel" aria-labelledby="tab-libre" tabindex="-1">
       <div class="section-banner" style="background:linear-gradient(180deg,color-mix(in oklab,#fff,var(--teal) 14%),#fff)">
-        <span class="sb-pill" style="font-weight:900;display:flex;align-items:center;gap:8px">
+        <span class="sb-pill" style="font-weight:950;display:flex;align-items:center;gap:8px">
           <svg width="18" height="18" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px"><use href="#sym-note"/></svg>
+          <svg width="18" height="18" aria-hidden="true" style="margin-left:-18px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.20))"><use href="#sym-note"/></svg>
           LIBRE / NOTAS
         </span>
         <span class="sb-pill">Plantillas personalizables</span>
@@ -539,26 +591,26 @@
       <div class="tabs-bottom" id="bottomTabs">
         <button class="tab-bottom" id="b-planta" aria-selected="true">
           <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-fonendo"/></svg><span>Planta</span>
+          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(6,214,160,.22))"><use href="#sym-fonendo"/></svg><span>Planta</span>
         </button>
         <button class="tab-bottom" id="b-tareas" aria-selected="false">
           <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-postit"/></svg><span>Tareas</span>
+          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(239,71,111,.22))"><use href="#sym-postit"/></svg><span>Tareas</span>
         </button>
         <button class="tab-bottom" id="b-directorio" aria-selected="false">
           <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-directory"/></svg><span>Directorio</span>
+          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(255,196,61,.24))"><use href="#sym-directory"/></svg><span>Directorio</span>
         </button>
         <button class="tab-bottom" id="b-biblio" aria-selected="false">
           <svg width="22" height="22" aria-hidden="true"><use href="#sym-circle"/></svg>
-          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px"><use href="#sym-books"/></svg><span>Biblioteca</span>
+          <svg width="22" height="22" aria-hidden="true" style="margin-left:-22px;filter:drop-shadow(0 2px 6px rgba(27,154,170,.22))"><use href="#sym-books"/></svg><span>Biblioteca</span>
         </button>
       </div>
     </nav>
   </section>
 </main>
 
-<!-- FAB Emer -->
+<!-- FAB Emergencias -->
 <button id="fab-emer" aria-haspopup="dialog" aria-controls="emerDialog" title="Emergencias">
   <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#sym-bell"/></svg> Emergencias
 </button>
@@ -589,11 +641,11 @@
 <dialog id="menuDialog" class="modal" aria-modal="true">
   <form class="dialog" method="dialog">
     <h3 style="margin:0 0 8px 0">Acciones</h3>
-    <div class="menu-list">
-      <div class="menu-item"><span>Imprimir Planta/Interconsulta</span><button id="act-print-planta" class="btn">🖨️</button></div>
-      <div class="menu-item"><span>Imprimir Tareas</span><button id="act-print-tareas" class="btn">🖨️</button></div>
-      <div class="menu-item"><span>Mostrar/Ocultar sección Libre/Notas</span><button id="act-toggle-libre" class="btn">🧩</button></div>
-      <div class="menu-item"><span>Quitar duplicados (Directorio)</span><button id="act-dedupe" class="btn">🧹</button></div>
+    <div class="menu-list" style="display:grid;gap:8px">
+      <div class="menu-item" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Imprimir Planta/Interconsulta</span><button id="act-print-planta" class="btn">🖨️</button></div>
+      <div class="menu-item" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Imprimir Tareas</span><button id="act-print-tareas" class="btn">🖨️</button></div>
+      <div class="menu-item" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Mostrar/Ocultar sección Libre/Notas</span><button id="act-toggle-libre" class="btn">🧩</button></div>
+      <div class="menu-item" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>Quitar duplicados (Directorio)</span><button id="act-dedupe" class="btn">🧹</button></div>
     </div>
     <div class="row"><button class="btn primary" value="cancel">Cerrar</button></div>
   </form>
@@ -602,7 +654,7 @@
 <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script type="module">
-  /* ===== Helpers seguros ===== */
+  /* ===== Helpers ===== */
   const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
   const ENT={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}; const esc=v=>String(v??'').replace(/[&<>"]/g,m=>ENT[m]);
   const todayISO=()=>new Date().toISOString().slice(0,10);
@@ -664,7 +716,7 @@
   function unmountApp(){unsubs.forEach(u=>u&&u()); unsubs=[];}
 
   /* ===== Tabs ===== */
-  const tabOrder=['planta','tareas','directorio','biblio','libre']; // libre opcional
+  const tabOrder=['planta','tareas','directorio','biblio','libre'];
   function selectTab(id,focusPanel=false){
     const map={planta:['panel-planta','tab-planta','b-planta','Planta'],
                tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],
@@ -694,7 +746,7 @@
     if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();const n=(cur+1)%tabOrder.length; $('#tab-'+tabOrder[n])?.focus(); $('#tab-'+tabOrder[n])?.click();}
     if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();const n=(cur-1+tabOrder.length)%tabOrder.length; $('#tab-'+tabOrder[n])?.focus(); $('#tab-'+tabOrder[n])?.click();}
     if(e.key==='Home'){e.preventDefault();$('#tab-'+tabOrder[0])?.focus();$('#tab-'+tabOrder[0])?.click();}
-    if(e.key==='End'){e.preventDefault();$('#tab-'+tabOrder.at(-1))?.focus();$('#tab-'+tabOrder.at(-1))?.click();}
+    if(e.key==='End'){e.preventDefault();$('#tab-'+tabOrder.at(-1))?.focus();$('#tab-'+tabOrder.at(-1])?.click();}
   });
 
   /* ===== Utilidades UI ===== */
@@ -783,7 +835,7 @@
   function renderTareaItem(x){
     const diff=daysFromToday(x.date), h=hueForDays(diff);
     const li=document.createElement('li'); li.className='item'; li.style.borderLeft=`6px solid hsl(${h} 72% 46%)`;
-    li.innerHTML=`<span class="pill date" style="background:${bgForHue(h)};border-color:hsl(${h} 70% 72%)">${pillForDate(x.date)}</span>
+    li.innerHTML=`<span class="pill" style="background:${bgForHue(h)};border-color:hsl(${h} 70% 72%)">${pillForDate(x.date)}</span>
       <div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     li.querySelector('.actions')?.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),
                                          btn('✎',()=>openEdit([{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
@@ -793,14 +845,14 @@
   }
   function renderTareaDone(x){
     const li=document.createElement('li'); li.className='item'; li.style.borderLeft='6px solid hsl(150 50% 38%)';
-    li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
+    li.innerHTML=`<span class="pill">${pillForDate(x.date)}</span><div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
       <div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     li.querySelector('.actions')?.append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'), btn('✖',()=>del('tareas',x.__id),'btn icon'));
     return li;
   }
   function renderTareaTrash(x){
     const li=document.createElement('li'); li.className='item';
-    li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
+    li.innerHTML=`<span class="pill">${pillForDate(x.date)}</span><div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
       <div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     li.querySelector('.actions')?.append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'), btn('✖',()=>del('tareas',x.__id),'btn icon'));
     return li;
@@ -834,7 +886,7 @@
   const phonesToChips=raw=>String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean).map(p=>{const href=telHref(p); const label=esc(p); return href?`<a class="phone-chip" href="${href}" dir="ltr">${label}</a>`:`<span class="phone-chip" dir="ltr">${label}</span>`;}).join(' ');
   function renderDir(x){
     const li=document.createElement('li'); li.className='item';
-    li.innerHTML=`<span class="pill section">${esc(x.seccion||'—')}</span>
+    li.innerHTML=`<span class="pill">${esc(x.seccion||'—')}</span>
       <div class="text"><div class="line"><strong>${esc(x.nombre||'')}</strong></div><div class="line">${phonesToChips(x.telefono)}</div>${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}</div>
       <div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     li.querySelector('.actions')?.append(btn('✎',()=>openEdit(
@@ -880,9 +932,9 @@
   function renderBItem(x){
     const li=document.createElement('li'); li.className='item'; const icon = x.tipo==='file' ? '#sym-file' : '#sym-books';
     const local = x.localOnly ? `<span class="pill" title="Guardado solo en este dispositivo">Local</span>` : '';
-    li.innerHTML=`<span class="pill section" title="${x.tipo}"><svg width="16" height="16" aria-hidden="true" style="margin-right:6px"><use href="${icon}"/></svg>${esc(x.tipo==='file'?'Archivo':'Enlace')}</span>
+    li.innerHTML=`<span class="pill" title="${x.tipo}"><svg width="16" height="16" aria-hidden="true" style="margin-right:6px"><use href="${icon}"/></svg>${esc(x.tipo==='file'?'Archivo':'Enlace')}</span>
       <div class="text"><div class="line"><strong>${esc(x.titulo||'')}</strong> ${local}</div>
-      <div class="line">${chipTags(x.tags)}${x.desc?`<span class="muted">${esc(x.desc)}</span>`:''}</div></div>
+      <div class="line">${chipTags(x.tags)}${x.desc?` <span class="muted">${esc(x.desc)}</span>`:''}</div></div>
       <div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     const a=li.querySelector('.actions');
     const openFn=()=>openB(x);
@@ -908,12 +960,10 @@
   async function openB(x){
     const viewer=$('#b-viewer'), obj=$('#b-object'); if(!viewer||!obj) return;
     if(x.tipo==='link'){
-      // Prioriza URL directa; si la desc contiene una URL, úsala
       const urls=(x.desc||'').match(/https?:\/\/\S+/g); const target=isUrl(x.url)?x.url:(urls?urls[0]:null);
       if(target){ window.open(target,'_blank','noopener'); return; }
       toast('Sin URL válida'); return;
     }else{
-      // Archivo local embebido (data URL guardado en localStorage por id)
       const key='__lib_'+x.__id;
       const data=localStorage.getItem(key);
       if(!data){ toast('Archivo no disponible en este dispositivo'); return; }
@@ -931,12 +981,9 @@
     });
   }
   function setupBiblio(uid){
-    // añadir etiquetas rápidas
     $$('#panel-biblio .btn[data-tag]').forEach(b=>b.addEventListener('click',()=>{const v=$('#b-desc').value; const t=b.dataset.tag; $('#b-desc').value=v? (v+' #'+t):('#'+t);}));
-    // filtros
     $$('#b-filters .btn[data-filter]').forEach(b=>b.addEventListener('click',()=>{bFilter=b.dataset.filter||''; renderBList();}));
     $('#b-show-pins')?.addEventListener('click',()=>{bShowPins=!bShowPins; renderBList();});
-    // añadir enlace
     $('#b-add-link')?.addEventListener('click', async ()=>{
       const titulo=$('#b-title').value.trim(); const desc=$('#b-desc').value.trim();
       const urlMatch = desc.match(/https?:\/\/\S+/)?.[0] || prompt('URL del recurso (https://...)') || '';
@@ -944,35 +991,32 @@
       if(!titulo) return; await fsMod.addDoc(col.biblio(uid), bDoc({titulo,desc,url:urlMatch,tipo:'link',tags}));
       $('#b-title').value=''; $('#b-desc').value='';
     });
-    // añadir archivo (local embebido)
     $('#b-add-file')?.addEventListener('click', async ()=>{
       try{
         const titulo=$('#b-title').value.trim()||'Archivo';
         const desc=$('#b-desc').value.trim();
         const tags=[...new Set((desc.match(/#(\w+)/g)||[]).map(s=>s.slice(1)))].slice(0,6);
         const ref = await fsMod.addDoc(col.biblio(uid), bDoc({titulo,desc,tipo:'file',localOnly:true}));
-        const picked = await pickLocalFile(); // <= ~900 KB
+        const picked = await pickLocalFile();
         localStorage.setItem('__lib_'+ref.id, picked.dataUrl);
         toast('Archivo guardado en este dispositivo'); $('#b-title').value=''; $('#b-desc').value='';
       }catch(e){ toast(e.message||String(e)); }
     });
-    // import/export (sin binarios locales)
     $('#b-import')?.addEventListener('click', importJSON(async arr=>{
       const ops=[]; for(const o of arr){ ops.push(fsMod.addDoc(col.biblio(uid), bDoc(o))); } await Promise.all(ops);
     }));
     $('#b-export')?.addEventListener('click', exportJSON(async ()=>{
       const snap=await fsMod.getDocs(fsMod.query(col.biblio(uid))); return snap.docs.map(d=>({id:d.id,...d.data()}));
     },'biblioteca'));
-    // live
     const u=fsMod.onSnapshot(fsMod.query(col.biblio(uid)),(s)=>{bCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; bCache.push(x);}); renderBList();});
     unsubs.push(u);
   }
 
-  /* ===== Notas / Libre (opcional) ===== */
+  /* ===== Notas / Libre ===== */
   function noteDoc(d){return {titulo:esc(d.titulo||''), cuerpo:esc(d.cuerpo||''), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64)}}
   function renderNote(x){
     const li=document.createElement('li'); li.className='item';
-    li.innerHTML=`<span class="pill section">Nota</span><div class="text"><div class="line"><strong>${esc(x.titulo||'')}</strong></div><div class="line">${esc(x.cuerpo||'')}</div></div><div class="toolbar actions" style="display:flex;gap:6px"></div>`;
+    li.innerHTML=`<span class="pill">Nota</span><div class="text"><div class="line"><strong>${esc(x.titulo||'')}</strong></div><div class="line">${esc(x.cuerpo||'')}</div></div><div class="toolbar actions" style="display:flex;gap:6px"></div>`;
     li.querySelector('.actions')?.append(btn('✎',()=>openEdit([{l:'Título',id:'n_t',v:x.titulo||''},{l:'Contenido',id:'n_c',v:x.cuerpo||''}],async()=>upd('notas',x.__id,{titulo:$('#n_t').value,cuerpo:$('#n_c').value}),'Editar nota'),'btn icon'),
                                         btn('🗑️',()=>del('notas',x.__id),'btn icon'));
     return li;
@@ -987,7 +1031,6 @@
   }
   function ensureLibreTab(){
     if($('#tab-libre')) return true;
-    // añadir tab topo y bottom
     const tl=document.getElementById('tablist');
     const btnTop=document.createElement('button');
     btnTop.id='tab-libre'; btnTop.className='tab'; btnTop.setAttribute('role','tab'); btnTop.setAttribute('aria-selected','false'); btnTop.setAttribute('aria-controls','panel-libre'); btnTop.setAttribute('tabindex','-1');
@@ -1013,7 +1056,7 @@
   $('#act-print-tareas')?.addEventListener('click',(e)=>{e.preventDefault(); $('#menuDialog')?.close?.(); printTareas();});
   $('#act-dedupe')?.addEventListener('click',async (e)=>{e.preventDefault(); $('#menuDialog')?.close?.(); const uid=currentUid(); if(uid) await dedupeDir(uid);});
 
-  /* ===== Emergencias (localStorage) ===== */
+  /* ===== Emergencias (local) ===== */
   const EMER_KEY='__emer_numbers';
   const readEmer=()=>{try{return JSON.parse(localStorage.getItem(EMER_KEY)||'[]')}catch{return []}};
   const writeEmer=arr=>localStorage.setItem(EMER_KEY,JSON.stringify(arr));
@@ -1070,8 +1113,8 @@
   }
   function printTareas(){
     const win=window.open('','_blank','noopener,width=900,height=1200'); if(!win) return;
-    const act=[...$('#t-list').children].map(li=>({date:li.querySelector('.pill.date')?.textContent.trim()||'', text:li.querySelector('.text .line')?.textContent.trim()||''}));
-    const done=[...$('#t-done').children].map(li=>({date:li.querySelector('.pill.date')?.textContent.trim()||'', text:li.querySelector('.text .line')?.textContent.trim()||''}));
+    const act=[...$('#t-list').children].map(li=>({date:li.querySelector('.pill')?.textContent.trim()||'', text:li.querySelector('.text .line')?.textContent.trim()||''}));
+    const done=[...$('#t-done').children].map(li=>({date:li.querySelector('.pill')?.textContent.trim()||'', text:li.querySelector('.text .line')?.textContent.trim()||''}));
     win.document.write(`<!doctype html><title>Tareas</title><style>
       body{font:14px/1.5 ui-sans-serif,system-ui;-webkit-print-color-adjust:exact}
       h2{margin:0 0 6px 0;font:700 18px/1.2 ui-sans-serif}
@@ -1094,8 +1137,8 @@
 
   /* ===== SW & Install ===== */
   let deferredPrompt=null;
-  addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e; $('#installBanner')?.setAttribute('aria-hidden','false');});
-  $('#installAction')?.addEventListener('click', async()=>{if(deferredPrompt){await deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner')?.setAttribute('aria-hidden','true');}});
+  addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e; $('#installBanner')?.removeAttribute('hidden');});
+  $('#installAction')?.addEventListener('click', async()=>{if(deferredPrompt){await deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner')?.setAttribute('hidden','');}});
   $('#installBtn')?.addEventListener('click',()=>$('#installAction')?.click());
 
   if('serviceWorker' in navigator){
