@@ -21,6 +21,7 @@
     --sh-2: 0 4px 12px rgba(2,6,23,.08), 0 28px 62px rgba(2,6,23,.10);
     --glass: rgba(255,255,255,.42); --rim: rgba(255,255,255,.62);
 
+    /* pills y colores funcionales */
     --pill-ink:#0b1220;
     --pill-date-bg:hsl(205 80% 96%);  --pill-date-bd:hsl(205 68% 86%);
     --pill-section-bg:hsl(205 45% 96%);--pill-section-bd:hsl(205 35% 86%);
@@ -56,7 +57,7 @@
     background:var(--glass); border-bottom:1px solid var(--rim);
     -webkit-backdrop-filter: blur(16px) saturate(1.05); backdrop-filter: blur(16px) saturate(1.05);
   }
-  .appbar .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .grow{flex:1;min-width:0}
   .brand-chip{
     display:inline-flex;align-items:center;gap:12px;padding:10px 16px;border-radius:999px;
@@ -83,19 +84,18 @@
   .subtitle{color:#334155;font-weight:600}
   .counter{color:#0E121A;border:1px solid var(--rim);background:rgba(255,255,255,.6);padding:6px 10px;border-radius:999px;font-weight:700}
 
-  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .tab{padding:12px 14px;border-radius:999px;border:1px solid var(--rim);background:rgba(255,255,255,.6);cursor:pointer;font-weight:900;letter-spacing:.2px;box-shadow:var(--sh-1)}
-  #tab-planta[aria-selected="true"]{background:linear-gradient(180deg,#E6FFF5,#FFFFFF)}
-  #tab-tareas[aria-selected="true"]{background:linear-gradient(180deg,#FFF0EA,#FFFFFF)}
-  #tab-directorio[aria-selected="true"]{background:linear-gradient(180deg,#EAF4FF,#FFFFFF)}
-
-  .section-banner{margin:10px 0 8px;border-radius:16px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#0E121A;font-weight:950;letter-spacing:.4px;background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.5));border:1px solid var(--rim)}
+  /* Encabezados con cromática (divisores visuales) */
+  .sb{margin:10px 0 8px;border-radius:16px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#0E121A;font-weight:950;letter-spacing:.4px;border:1px solid var(--rim)}
   .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--rim);font-weight:700}
+  .sb-planta{background:linear-gradient(180deg,#E6FFF5,#FFFFFF)}
+  .sb-tareas{background:linear-gradient(180deg,#FFF0EA,#FFFFFF)}
+  .sb-dir{   background:linear-gradient(180deg,#EAF4FF,#FFFFFF)}
 
+  /* Pills */
   .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;color:var(--pill-ink);background:var(--canvas-2);font-variant-numeric:tabular-nums}
   .pill.room{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:900;letter-spacing:.3px;font-size:clamp(22px,3vw,28px);padding:10px 14px;border-radius:12px;color:var(--room-ink);box-shadow:inset 0 -1px 0 rgba(0,0,0,.06)}
   .pill.room.planta{background:var(--room-planta-bg);border-color:var(--room-planta-bd)}
-  .pill.room.inter{background:var(--room-inter-bg);border-color:var(--room-inter-bd)}
+  .pill.room.inter{ background:var(--room-inter-bg); border-color:var(--room-inter-bd)}
   .pill.date{background:var(--pill-date-bg);border-color:var(--pill-date-bd)}
   .pill.section{background:var(--pill-section-bg);border-color:var(--pill-section-bd)}
 
@@ -142,16 +142,25 @@
   .target-badge.is-planta{color:hsl(156 44% 28%)}
   .target-badge.is-inter{color:hsl(28 64% 28%)}
 
+  /* Directorio: búsqueda y secciones */
   .search-wrap{position:relative}
   .search-input{padding-left:42px}
   .search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px}
   .dir-tabs{display:flex;gap:8px;margin-top:8px}
   .dir-tabs button{border:1px solid var(--rim);background:rgba(255,255,255,.7);border-radius:10px;padding:8px 12px;cursor:pointer}
   .dir-tabs button[aria-selected="true"]{background:#fff;font-weight:800}
+  .alpha-index{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+  .alpha-index .chip{cursor:pointer}
+  .alpha-index .chip[disabled]{opacity:.45;cursor:default}
 
   .alpha-group{margin:12px 0}
-  .alpha-head{font-weight:900;font-size:14px;letter-spacing:.24em;color:#334155;margin:16px 0 6px 6px}
+  .alpha-head{position:sticky; top:6px; z-index:1; padding:6px 10px; border-radius:8px;
+    background:rgba(255,255,255,.82); border:1px solid var(--rim); box-shadow:var(--sh-1);
+    font-weight:900;font-size:14px;letter-spacing:.24em;color:#334155;margin:0 0 6px 0; display:inline-block}
   .alpha-divider{height:1px;background:var(--rim);border:0;margin:6px 0 4px}
+
+  /* Resaltado de búsqueda */
+  mark{background:linear-gradient(180deg,#fff7b2,#ffe380);padding:0 .12em;border-radius:4px}
 
   .fab{
     position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom));
@@ -214,7 +223,7 @@
       </div>
 
       <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
-        <div class="section-banner"><span>PLANTA</span><span class="sb-pill">Ingresos &amp; Interconsultas</span></div>
+        <div class="sb sb-planta"><span>PLANTA</span><span class="sb-pill">Ingresos &amp; Interconsultas</span></div>
 
         <div class="card">
           <div class="card-h"><h2>Añadir (Planta/Interconsulta)</h2><span class="subtitle">Habitación · Descripción · Pendientes</span></div>
@@ -263,7 +272,7 @@
       </div>
 
       <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
-        <div class="section-banner"><span>TAREAS</span><span class="sb-pill">Rojo → Verde según proximidad</span></div>
+        <div class="sb sb-tareas"><span>TAREAS</span><span class="sb-pill">Rojo → Verde según proximidad</span></div>
 
         <div class="card">
           <div class="card-h"><h2>Añadir tarea</h2><span class="subtitle">Fecha → Descripción</span></div>
@@ -272,6 +281,12 @@
               <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
               <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
               <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+            </div>
+            <!-- Leyenda rojo→verde -->
+            <div class="row" aria-hidden="true" style="margin-top:10px; gap:10px">
+              <span class="muted" style="font-weight:700">Leyenda:</span>
+              <div style="height:10px; width:160px; border-radius:999px; background:linear-gradient(90deg,hsl(10 80% 52%), hsl(40 85% 55%), hsl(90 70% 48%), hsl(150 50% 42%)); border:1px solid var(--rim)"></div>
+              <span class="muted" style="font-size:12px">Urgente → Lejana</span>
             </div>
           </div>
         </div>
@@ -303,7 +318,7 @@
       </div>
 
       <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-        <div class="section-banner"><span>DIRECTORIO</span><span class="sb-pill">Búsqueda inteligente · Emergencias</span></div>
+        <div class="sb sb-dir"><span>DIRECTORIO</span><span class="sb-pill">Búsqueda inteligente · Secciones A–Z</span></div>
 
         <div class="card">
           <div class="card-h"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
@@ -332,7 +347,10 @@
         </div>
 
         <div class="card hide" id="d-view-sections" role="region" aria-live="polite" style="margin-top:12px">
-          <div class="card-b" id="d-sections"></div>
+          <div class="card-b">
+            <div id="alphaIndex" class="alpha-index"></div>
+            <div id="d-sections"></div>
+          </div>
         </div>
       </div>
 
@@ -362,21 +380,31 @@
   <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script type="module">
+/* ---------- Utilidades ---------- */
 const $  = (s, r=document)=>r.querySelector(s);
 const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
 const todayISO = ()=> new Date().toISOString().slice(0,10);
 const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
 const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
 const enc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
 const norm = (s)=> String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const onlyDigits = (s)=> String(s||'').replace(/\D+/g,'');
+const escRe = (s)=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/** Resalta coincidencias del query (simple; sobre texto ya escapado) */
+function markHTML(text, q){
+  const t = String(text||'');
+  if(!q) return enc(t);
+  const re = new RegExp(escRe(q), 'gi');
+  const escaped = enc(t);
+  return escaped.replace(re, m=>`<mark>${m}</mark>`);
+}
 
 const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
 setOnline(navigator.onLine);
 addEventListener('online', ()=>setOnline(true), {passive:true});
 addEventListener('offline',()=>setOnline(false), {passive:true});
 
+/* ---------- Tabs ---------- */
 const tabOrder=['planta','tareas','directorio'];
 function setTabA11y(id){
   for(const k of tabOrder){
@@ -407,12 +435,35 @@ $('#b-directorio').onclick=()=>selectTab('directorio');
 
 $('#tablist').addEventListener('keydown', (e)=>{
   const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-  if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-  if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-  if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
-  if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
+  if(e.key==='ArrowRight' || e.key==='ArrowDown'){
+    e.preventDefault();
+    const n=(cur+1)%tabOrder.length;
+    const id='tab-'+tabOrder[n];
+    document.getElementById(id).focus();
+    document.getElementById(id).click();
+  }
+  if(e.key==='ArrowLeft' || e.key==='ArrowUp'){
+    e.preventDefault();
+    const n=(cur-1+tabOrder.length)%tabOrder.length;
+    const id='tab-'+tabOrder[n];
+    document.getElementById(id).focus();
+    document.getElementById(id).click();
+  }
+  if(e.key==='Home'){
+    e.preventDefault();
+    const id='tab-'+tabOrder[0];
+    document.getElementById(id).focus();
+    document.getElementById(id).click();
+  }
+  if(e.key==='End'){
+    e.preventDefault();
+    const id='tab-'+tabOrder.at(-1);
+    document.getElementById(id).focus();
+    document.getElementById(id).click();
+  }
 });
 
+/* ---------- Firebase ---------- */
 const BASE = new URL('./', location).pathname;
 const appMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
 const authMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
@@ -424,9 +475,8 @@ const auth  = authMod.getAuth(fbApp);
 const db    = fsMod.initializeFirestore(fbApp, { localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() }) });
 const serverTS = fsMod.serverTimestamp;
 
-const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
+const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname']);
 const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
-
 const doSignIn=async()=>{ try{
   if(matchMedia('(display-mode: standalone)').matches) await authMod.signInWithRedirect(auth,provider);
   else await authMod.signInWithPopup(auth,provider);
@@ -451,9 +501,9 @@ const col = {
   tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
   dir     : (uid)=> fsMod.collection(db,'users',uid,'directorio'),
 };
-let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
-function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
+let unsubs=[]; function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
 
+/* ---------- Planta ---------- */
 let currentGroup='planta';
 function updateAddTarget(){
   const t=$('#addTarget');
@@ -478,7 +528,6 @@ function roomSortKey(s){
   const second = m[1] ? parseInt(m[1],10)/100 : 0;
   return first + second;
 }
-
 const renderPlantaItem=(x,done=false)=>{
   const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl');
   const pill=document.createElement('span'); pill.className='pill room ' + (x.grupo==='interconsulta'?'inter':'planta'); pill.innerHTML=enc(x.room||'—');
@@ -496,7 +545,6 @@ const renderPlantaItem=(x,done=false)=>{
   }
   li.append(pill,text,act); return li;
 };
-
 const openEdit=(fields,onOk)=>{
   const body=$('#modalBody'); body.innerHTML='';
   for(const f of fields){
@@ -516,7 +564,6 @@ const editPlanta=(x)=>openEdit(
   [{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}],
   async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')})
 );
-
 function setupPlanta(uid){
   $('#p-add').onclick=async()=>{
     const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup});
@@ -545,15 +592,19 @@ function setupPlanta(uid){
   unsubs.push(u1,u2);
 }
 
+/* ---------- Tareas (gradiente continuo rojo→verde) ---------- */
 const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
 function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
-function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
+/* Hue de 10 (rojo) → 150 (verde). 0 o negativos muy lejanos a pasado = rojo intenso. */
+function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 10; if(diff < 0) return 18; const max=30; return Math.round(18 + (Math.min(diff,max)/max)*(150-18)); }
+const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
 function renderTareaItem(x,mode){
   const li=document.createElement('li'); li.className='item';
   const diff = daysFromToday(x.date);
   const h = mode==='active' ? hueForDays(diff) : 150;
   if(mode==='active') li.style.borderLeft = `6px solid hsl(${h} 72% 46%)`; else li.style.borderLeft = `6px solid hsl(150 50% 38%)`;
-  const pill=document.createElement('span'); pill.className='pill date'; if(mode==='active'){ pill.style.background=`hsl(${h} 90% 92%)`; pill.style.borderColor=`hsl(${h} 70% 72%)`; } pill.textContent=pillForDate(x.date);
+  const pill=document.createElement('span'); pill.className='pill date'; if(mode==='active'){ pill.style.background=`hsl(${h} 90% 92%)`; pill.style.borderColor=`hsl(${h} 70% 72%)`; }
+  pill.textContent = (x.date? `${pillForDate(x.date)}` : '');
   const text=document.createElement('div'); text.className='text';
   const d1=document.createElement('div'); d1.className='line'+(mode==='done'?' strike':''); d1.innerHTML=enc(x.text||''); text.appendChild(d1);
   const act=document.createElement('div'); act.className='row'; act.style.gap='8px';
@@ -574,7 +625,6 @@ const editTarea=(x)=>openEdit(
   [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
   async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')})
 );
-
 function setupTareas(uid){
   $('#t-date').value=todayISO();
   $('#t-add').onclick=async ()=>{
@@ -607,6 +657,7 @@ function setupTareas(uid){
   unsubs.push(u1,u2,u3);
 }
 
+/* ---------- Directorio: búsqueda resaltada + secciones A–Z ---------- */
 const ROLE_LEX = {
   "cardiologia":["cardio","cardiologo","cardiologa","ucic","hemodinamica"],
   "urgencias":["er","emergencias","suap","puerta"],
@@ -616,7 +667,6 @@ const ROLE_LEX = {
   "infectiosas":["infecciosas","id","proa"]
 };
 let dirCache=[];
-
 function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
 function createPhoneChips(raw){
   const frag=document.createDocumentFragment();
@@ -637,7 +687,7 @@ function scoreDirItem(x, q){
   if(parts[1].includes(Q)) score += 4;
   if(parts[0].includes(Q)) score += 3;
   if(parts[3].includes(Q)) score += 3;
-  if(onlyDigits(q) && digits.includes(onlyDigits(q))) score += 3;
+  if(onlyDigits(q) and digits.includes(onlyDigits(q))) score += 3;
   for(const k in ROLE_LEX){
     if(ROLE_LEX[k].some(alias => Q.includes(alias)) || Q.includes(k)){
       if(parts[0].includes(k) || parts[1].includes(k)) score += 2;
@@ -646,14 +696,14 @@ function scoreDirItem(x, q){
   if(parts[2].includes(Q)) score += 1;
   return score;
 }
-function renderDir(x){
+function renderDir(x, q){
   const li=document.createElement('li'); li.className='item';
-  const pill=document.createElement('span'); pill.className='pill section'; pill.textContent = x.seccion || '—';
+  const pill=document.createElement('span'); pill.className='pill section'; pill.innerHTML = markHTML(x.seccion || '—', q);
   const text=document.createElement('div'); text.className='text';
-  const l1=document.createElement('div'); l1.className='line'; const strong=document.createElement('strong'); strong.textContent = x.nombre || ''; l1.appendChild(strong);
+  const l1=document.createElement('div'); l1.className='line'; const strong=document.createElement('strong'); strong.innerHTML = markHTML(x.nombre || '', q); l1.appendChild(strong);
   const l2=document.createElement('div'); l2.className='line'; l2.appendChild(createPhoneChips(x.telefono));
   text.append(l1,l2);
-  if(x.notas){ const l3=document.createElement('div'); l3.className='muted'; l3.textContent=x.notas; text.appendChild(l3); }
+  if(x.notas){ const l3=document.createElement('div'); l3.className='muted'; l3.innerHTML = markHTML(x.notas, q); text.appendChild(l3); }
   const act=document.createElement('div'); act.className='row'; act.style.gap='8px';
   act.append(btn('✎',()=>editDir(x),'btn icon'), btn('🗑️',()=>del('directorio',x.__id),'btn icon')); 
   li.append(pill,text,act); return li;
@@ -690,7 +740,7 @@ function renderDirList(){
     if(db!==da) return db-da;
     return (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||'');
   });
-  let n=0; idle(()=>{ arr.forEach(x=>{ if(!v || scoreDirItem(x,v)>0){ list.appendChild(renderDir(x)); n++; } });
+  let n=0; idle(()=>{ arr.forEach(x=>{ if(!v || scoreDirItem(x,v)>0){ list.appendChild(renderDir(x,v)); n++; } });
     $('#d-count').textContent=n+' registros'; $('#d-empty').style.display=n?'none':'block';
   });
 }
@@ -706,13 +756,28 @@ function renderSections(){
   const letters = Array.from(groups.keys()).sort((a,b)=>a.localeCompare(b));
   for(const L of letters){
     const list = groups.get(L).sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
-    const wrap = document.createElement('div'); wrap.className='alpha-group';
+    const anchorId = 'sec-'+L.charCodeAt(0);
+    const wrap = document.createElement('div'); wrap.className='alpha-group'; wrap.id = anchorId;
     const head = document.createElement('div'); head.className='alpha-head'; head.textContent=L; wrap.appendChild(head);
     const hr = document.createElement('hr'); hr.className='alpha-divider'; wrap.appendChild(hr);
     const ul = document.createElement('ul'); ul.className='list';
-    list.forEach(x=> ul.appendChild(renderDir(x)));
+    list.forEach(x=> ul.appendChild(renderDir(x,'')));
     wrap.appendChild(ul);
     host.appendChild(wrap);
+  }
+  renderAlphaIndex(letters);
+}
+function renderAlphaIndex(letters){
+  const idx = $('#alphaIndex'); idx.innerHTML='';
+  const all = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
+  for(const L of all){
+    const btn = document.createElement('button'); btn.className='chip'; btn.textContent=L;
+    if(!letters.includes(L)){ btn.disabled = true; btn.setAttribute('disabled',''); }
+    else{
+      const anchorId = 'sec-'+L.charCodeAt(0);
+      btn.onclick = ()=>{ const el=document.getElementById(anchorId); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); };
+    }
+    idx.appendChild(btn);
   }
 }
 function setupDirectorio(uid){
@@ -734,6 +799,7 @@ function setupDirectorio(uid){
   unsubs.push(u);
 }
 
+/* ---------- Emergencias (UI) ---------- */
 const DEFAULT_EMERG=[{nombre:"Equipo de Parada",telefono:"7777"},{nombre:"Seguridad",telefono:"5555"},{nombre:"Jefe de Enfermería",telefono:"3333"}];
 function getEmerg(){ try{ return JSON.parse(localStorage.getItem('emergencias')||'[]'); }catch{return []} }
 function setEmerg(arr){ localStorage.setItem('emergencias', JSON.stringify(arr)); }
@@ -773,6 +839,7 @@ function showEmergency(){
   dlg.addEventListener('close',()=>{ $('#modalOk').classList.remove('hide'); $('#modalCancel').textContent='Cancelar'; dlg.setAttribute('aria-hidden','true'); },{once:true});
 }
 
+/* ---------- Actualizaciones y PWA ---------- */
 async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
 async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
 async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
