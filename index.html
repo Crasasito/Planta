@@ -7,213 +7,207 @@
   <meta name="color-scheme" content="light" />
   <title>Infecciosas — Planta · Tareas · Directorio</title>
 
-  <!-- Rutas relativas: válidas en raíz o /Planta/ -->
+  <!-- Manifest + Favicon + iOS -->
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
-    /* ---------- Sistema cromático (paleta + derivados) ---------- */
+    /* =========================
+       AURORA PREMIUM — DESIGN SYSTEM
+       Enfocado en legibilidad, contraste y “quiet luxury”
+       ========================= */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
     :root{
-      /* Paleta base (tu propuesta) */
-      --c-cream:#F8FFE5;
-      --c-mint:#06D6A0;
-      --c-teal:#1B9AAA;
-      --c-rose:#EF476F;
-      --c-gold:#FFC43D;
+      /* Paleta principal (tu selección + ajustes para contraste) */
+      --mint-0:#F8FFE5; /* fondo sutil */
+      --mint-50:#EFFFF0;
+      --mint-400:#06D6A0; /* acción positiva */
+      --teal-500:#1B9AAA; /* info / directorio */
+      --coral-500:#EF476F;/* urgencia */
+      --gold-500:#FFC43D; /* marca/acento */
+      --ink:#0B1220;      /* texto principal */
+      --muted:#475569;    /* texto secundario */
+      --border:#E5E7EB;   /* líneas suaves */
+      --surface:#FFFFFF;  /* tarjetas */
+      --surface-2:#F7FAFE;
 
-      /* Neutros y tinta */
-      --ink:#0b1220;             /* Texto principal (AAA sobre blanco) */
-      --ink-2:#111827;           /* Titulares */
-      --muted:#4b5563;           /* Texto secundario */
-      --border:#e5e7eb;          /* Borde claro */
-      --surface:#ffffff;         /* Tarjetas */
-      --surface-2:#f8fafc;       /* Superficie suave */
+      /* Gradientes aurora sutiles (para headers/pastillas) */
+      --grad-brand:linear-gradient(160deg,#fff,#F8FFE5 30%, #EAFBF6 60%, #F7ECFF 100%);
+      --grad-planta:linear-gradient(160deg,#06D6A0 0%, #25BFA7 55%, #1B9AAA 100%);
+      --grad-tareas:linear-gradient(160deg,#FFC43D 0%, #FF9E3D 60%, #EF476F 100%);
+      --grad-dir:linear-gradient(160deg,#9EE6FF 0%, #6CC6DF 50%, #1B9AAA 100%);
+      --grad-emergency:linear-gradient(160deg,#FF9DAE 0%, #EF476F 50%, #C42553 100%);
 
-      /* Gradientes de marca (degradados suaves con rim light) */
-      --grad-brand:linear-gradient(120deg, color-mix(in oklab, var(--c-mint) 78%, white), color-mix(in oklab, var(--c-teal) 74%, white));
-      --grad-planta:linear-gradient(120deg, color-mix(in oklab, var(--c-mint) 88%, white), color-mix(in oklab, var(--c-teal) 60%, white));
-      --grad-tareas:linear-gradient(120deg, color-mix(in oklab, var(--c-rose) 82%, white), color-mix(in oklab, var(--c-gold) 62%, white));
-      --grad-dir:linear-gradient(120deg, color-mix(in oklab, var(--c-teal) 72%, white), color-mix(in oklab, var(--c-mint) 62%, white));
-      --grad-done:linear-gradient(120deg, color-mix(in oklab, var(--c-mint) 64%, white), color-mix(in oklab, #22c55e 42%, white));
+      /* Dimensiones */
+      --radius:16px;
+      --radius-xl:22px;
+      --touch:44px;
+      --appbar:64px;
 
-      /* Brillos y rim-light */
-      --rim:1px solid rgba(255,255,255,.65);
-      --glow:0 12px 40px rgba(27,154,170,.18);
-      --glow-soft:0 8px 28px rgba(2,6,23,.10);
-
-      /* Tipografía y radios */
-      --radius:16px; --radius-xl:22px; --touch:44px; --app-h:64px;
-
-      /* Tabs inferiores */
-      --tab-active: var(--grad-brand);
-      --tab-inactive:#f1f5f9;
-
-      /* Badges */
-      --badge-bg:#0f172a; --badge-fg:#fff;
+      /* Sombras (rim light + glow suave) */
+      --rim:0 0 0 1px rgba(255,255,255,.9) inset, 0 1px 0 rgba(255,255,255,.6) inset;
+      --shadow-1:0 1px 2px rgba(2,6,23,.04), 0 8px 24px rgba(2,6,23,.06);
+      --shadow-2:0 2px 6px rgba(2,6,23,.08), 0 16px 36px rgba(2,6,23,.08);
     }
 
-    /* ---------- Reset & base ---------- */
-    *,*::before,*::after{ box-sizing:border-box }
-    html,body{ height:100% }
     body{
-      margin:0;
+      margin:0;background:var(--surface);
       color:var(--ink);
-      background:#fff;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      font-size: clamp(15px, 0.88rem + 0.3vw, 18px);
-      line-height: 1.62;
-      min-height: 100dvh;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      -webkit-tap-highlight-color: transparent;
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      font-size:clamp(15px,1.1vw + .2vh,18px);
+      line-height:1.62; min-height:100dvh; -webkit-tap-highlight-color:transparent;
+      /* Aura de fondo muy leve, visible bajo “glass” */
+      background-image: radial-gradient(1200px 600px at 10% -10%, rgba(255,196,61,.08), transparent 60%),
+                        radial-gradient(900px 520px at 95% 10%, rgba(239,71,111,.08), transparent 55%),
+                        radial-gradient(1200px 600px at 20% 110%, rgba(27,154,170,.08), transparent 60%);
+      background-attachment: fixed;
     }
-    :focus-visible{ outline:3px solid color-mix(in oklab, var(--c-gold), var(--c-teal) 20%); outline-offset:2px; border-radius:10px }
+    :focus-visible{outline:3px solid color-mix(in oklab, var(--gold-500), white 30%); outline-offset:2px; border-radius:12px}
 
-    .container{ max-width:min(1160px,98vw); margin:0 auto; padding:8px clamp(12px,4vw,20px); container-type:inline-size }
-    .hide{ display:none !important }
-    .muted{ color:var(--muted) }
+    .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
 
-    /* ---------- Appbar ---------- */
+    /* ===== Appbar */
     header.appbar{
-      position:sticky; top:0; z-index:50; min-height:var(--app-h);
-      background:
-        radial-gradient(1200px 120px at 20% -40%, color-mix(in oklab, var(--c-cream) 60%, white), transparent 60%),
-        linear-gradient(180deg,#ffffff 60%,#f5fbff 100%);
+      position:sticky;top:0;z-index:50;min-height:var(--appbar);
+      background:linear-gradient(180deg,rgba(255,255,255,.86),#fff);
       border-bottom:1px solid var(--border);
-      backdrop-filter:saturate(1.05) blur(6px);
+      backdrop-filter:saturate(1.05) blur(8px)
     }
-    .appbar .container{ display:flex; align-items:center; gap:14px; flex-wrap:wrap }
+    .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
     .brand-chip{
-      display:inline-flex; align-items:center; gap:12px; padding:12px 18px; border-radius:999px;
-      color:#072018; background-image:var(--grad-brand);
-      border:var(--rim); box-shadow:var(--glow);
-      font-weight:950; letter-spacing:.35px; text-transform:uppercase
+      display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;
+      color:#0E121A;background:var(--grad-brand); box-shadow:var(--shadow-1), var(--rim); font-weight:900; letter-spacing:.3px;
     }
-    .brand-dot{ width:10px;height:10px;border-radius:50%; background:var(--c-gold); box-shadow:0 0 0 2px rgba(0,0,0,.05) }
-    h1{ margin:0; font-weight:900; letter-spacing:.2px; color:var(--ink-2); font-size: clamp(22px, 1.2rem + 0.9vw, 34px) }
-    h2{ margin:0; font-size: clamp(18px, 1rem + 0.5vw, 22px); font-weight: 850 }
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold-500);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+    h1{margin:0;font-size:clamp(22px,2.6vw,30px);font-weight:900;letter-spacing:.2px}
+    h2{margin:0;font-size:clamp(18px,2.2vw,22px)}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.85rem;background:var(--surface-2)}
+    .chip.ok{background:#ECFDF5;color:#065F46;border-color:#A7F3D0}
+    .chip.bad{background:#FEF2F2;color:#991B1B;border-color:#FECACA}
 
-    .chip{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:var(--surface-2); font-size:.84rem }
-    .chip.ok{ background:#ecfdf5; color:#065f46; border-color:#a7f3d0 }
-    .chip.bad{ background:#fef2f2; color:#991b1b; border-color:#fecaca }
+    /* ===== Botones */
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
+         padding:10px 12px;border-radius:14px;box-shadow:var(--shadow-1);min-height:var(--touch);
+         min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--gold-500);color:#221a00;border-color:transparent}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--teal-500)}
+    .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
 
-    .btn{ appearance:none; border:1px solid var(--border); background:#fff; color:var(--ink); padding:10px 12px; border-radius:12px; box-shadow:var(--glow-soft); min-height:var(--touch); min-width:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer }
-    .btn.primary{ background-image:var(--grad-brand); color:#082018; border-color:transparent }
-    .btn.ghost{ background:transparent; border-color:transparent; box-shadow:none; color:color-mix(in oklab, var(--c-teal), black 18%) }
-    .btn.icon{ min-width:var(--touch); aspect-ratio:1/1; padding:0 10px }
+    /* ===== Tarjetas y encabezados cromáticos */
+    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-1);overflow:hidden}
+    .card-h{position:relative;padding:14px 16px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;color:white;
+            display:flex;align-items:center;justify-content:space-between;gap:10px;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+    .card-b{padding:12px}
+    .hdr-add   {background:linear-gradient(160deg,#fff7d6,#ffe49a,#FFC43D)}
+    .hdr-planta{background:var(--grad-planta)}
+    .hdr-tareas{background:var(--grad-tareas)}
+    .hdr-dir   {background:var(--grad-dir)}
+    .hdr-done  {background:linear-gradient(160deg,#eafff2,#b9f2d0,#06D6A0)}
+    .hdr-trash {background:linear-gradient(160deg,#f6f7fb,#e8eaf3,#c7cede)}
 
-    .badge{ display:inline-flex; align-items:center; justify-content:center; min-width:1.6em; height:1.6em; padding:0 .5em; border-radius:999px; font-weight:800; background:var(--badge-bg); color:var(--badge-fg); box-shadow:0 0 0 1px rgba(0,0,0,.12), 0 6px 14px rgba(0,0,0,.15) }
+    .counter{color:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.32);
+             background:rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;font-weight:800}
 
-    /* ---------- Tarjetas ---------- */
-    .card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-xl); box-shadow:var(--glow-soft); overflow:hidden }
-    .card-h{ position:relative; padding:14px 16px; border-radius:var(--radius-xl) var(--radius-xl) 0 0; color:#082018; display:flex; align-items:center; justify-content:space-between; gap:10px; text-shadow:0 1px 0 rgba(255,255,255,.6) }
-    .card-b{ padding:12px }
-    .hdr-brand{ background-image:var(--grad-brand); border-bottom:var(--rim) }
-    .hdr-add{   background-image:var(--grad-brand) }
-    .hdr-planta{background-image:var(--grad-planta)}
-    .hdr-tareas{background-image:var(--grad-tareas)}
-    .hdr-dir{   background-image:var(--grad-dir)}
-    .hdr-done{  background-image:var(--grad-done)}
-
-    /* ---------- Tabs superiores ---------- */
-    .tabs{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px }
-    .tab{ padding:12px 14px; border-radius:14px; border:1px solid var(--border); background:var(--surface-2); cursor:pointer; font-weight:900; letter-spacing:.2px }
-    #tab-planta[aria-selected="true"]{ background:color-mix(in oklab,#fff,var(--c-mint) 18%); border-color:color-mix(in oklab,var(--c-mint), transparent 70%) }
-    #tab-tareas[aria-selected="true"]{ background:color-mix(in oklab,#fff,var(--c-rose) 18%); border-color:color-mix(in oklab,var(--c-rose), transparent 70%) }
-    #tab-directorio[aria-selected="true"]{ background:color-mix(in oklab,#fff,var(--c-teal) 18%); border-color:color-mix(in oklab,var(--c-teal), transparent 70%) }
-
-    /* ---------- Píldoras y chips ---------- */
-    .pill{ display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; padding:6px 10px; border-radius:10px; line-height:1; border:1px solid transparent; color:#082018; background:var(--surface-2) }
-    .pill.room{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; font-weight:900; letter-spacing:.3px; font-size:clamp(18px,2.4vw,22px); padding:10px 14px; border-radius:12px; color:#07111f; box-shadow:inset 0 -1px 0 rgba(0,0,0,.06) }
-    .pill.date{ background:color-mix(in oklab,#fff,var(--c-gold) 14%); border-color:color-mix(in oklab,var(--c-gold),#fff 60%) }
-    .phone-chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:#eef2f7; border:1px solid #d8e0ea; color:#0f172a; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; font-variant-numeric: tabular-nums; line-height:1.2; margin:2px 6px 2px 0; text-decoration:none }
-
-    /* ---------- Listas ---------- */
-    ul.list{ list-style:none; padding:0; margin:0; display:grid; gap:10px; content-visibility:auto; contain-intrinsic-size:600px }
-    li.item{ display:grid; grid-template-columns:auto minmax(140px,1fr) auto; gap:12px; align-items:center; border:1px solid var(--border); border-radius:14px; padding:12px; background:#fff }
-
-    /* ---------- Directorio premium ---------- */
-    .sec-group{ border:1px solid var(--border); border-radius:18px; overflow:hidden; background:#fff; box-shadow:var(--glow-soft) }
-    .sec-head{
-      display:flex; align-items:center; gap:12px; padding:14px 16px;
-      background: linear-gradient(180deg, color-mix(in oklab, var(--c-cream) 80%, #fff), #fff);
-      border-bottom:1px solid var(--border);
+    /* ===== Tabs superiores (accesibles) */
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .tab{
+      padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);
+      cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;gap:8px;align-items:center;justify-content:center
     }
-    .dropcap{
-      width:40px; height:40px; border-radius:12px;
-      background-image:var(--grad-dir); border:var(--rim); box-shadow:var(--glow);
-      color:#072018; font-weight:950; display:grid; place-items:center; font-size:20px; letter-spacing:.5px;
-      flex:0 0 auto;
-    }
-    .sec-title{ font-weight:900; color:var(--ink-2); letter-spacing:.2px; font-size: clamp(17px, 0.95rem + 0.5vw, 22px) }
+    .tab[aria-selected="true"]{box-shadow:0 0 0 1px rgba(0,0,0,.03) inset, 0 6px 18px rgba(27,154,170,.08)}
+    #tab-planta[aria-selected="true"]{background:color-mix(in oklab, #fff, var(--mint-400) 16%);border-color:color-mix(in oklab, var(--mint-400), transparent 60%)}
+    #tab-tareas[aria-selected="true"]{background:color-mix(in oklab, #fff, var(--gold-500) 18%);border-color:color-mix(in oklab, var(--gold-500), transparent 60%)}
+    #tab-directorio[aria-selected="true"]{background:color-mix(in oklab, #fff, var(--teal-500) 16%);border-color:color-mix(in oklab, var(--teal-500), transparent 60%)}
 
-    .c-row{ display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; padding:12px 16px; border-top:1px dashed color-mix(in oklab, var(--border), var(--c-teal) 16%) }
-    .c-name{ font-weight:750 }
-    .c-notes{ color:var(--muted) }
-
-    /* ---------- Búsqueda inteligente ---------- */
-    .smart-search{
-      display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:14px;
-      background:rgba(255,255,255,.45); border:var(--rim); box-shadow:var(--glow);
-      backdrop-filter: blur(14px) saturate(1.1);
+    /* ===== Pills, inputs, listas */
+    label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
+    input,textarea,select{
+      width:100%;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff;color:var(--ink);
+      font:inherit;min-height:var(--touch);box-shadow:inset 0 1px 0 rgba(0,0,0,.02)
     }
-    .smart-search input{
-      width:100%; border:0; outline:0; background:transparent; color:var(--ink);
-      font:inherit; min-height:var(--touch);
+    input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 20%)}
+    .pill{
+      display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;padding:6px 10px;border-radius:12px;
+      line-height:1;border:1px solid transparent;color:#0b1220;background:var(--surface-2);font-variant-numeric:tabular-nums
     }
+    .pill.room{font-family:ui-monospace,Consolas,Menlo,monospace;font-weight:900;letter-spacing:.3px;font-size:clamp(18px,2.4vw,22px);
+               padding:10px 14px;border-radius:12px;box-shadow:inset 0 -1px 0 rgba(0,0,0,.06)}
+    .pill.date{background:#fffbe6;border-color:#ffeaaa}
+    .phone-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#EEF2F7;border:1px solid #d8e0ea;color:#0f172a;margin:2px 6px 2px 0}
 
-    /* ---------- Navegación inferior (icono + texto) ---------- */
-    nav.bottom{ position:sticky; bottom:0; z-index:30; background:#fff; border-top:1px solid var(--border) }
-    .tabs-bottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; align-items:center; padding:8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom)) }
+    ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
+    li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
+    .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.9}
+
+    /* ===== Banners top + toast */
+    .banner{display:none;margin:10px 0;padding:10px 12px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px}
+    .banner[aria-hidden="false"]{display:flex;gap:10px;align-items:center}
+    #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;
+           padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-2);z-index:60}
+    #toast[hidden]{display:none}
+
+    /* ===== Navegación inferior (icono + texto) */
+    nav.bottom{position:sticky;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--border)}
+    .tabs-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;padding:8px 12px}
     .tab-bottom{
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-      padding:10px 8px; border-radius:16px; border:1px solid var(--border); background:var(--tab-inactive);
-      cursor:pointer; font-weight:800; color:#0b1220;
+      padding:8px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:900;
+      display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.82rem
     }
-    .tab-bottom[aria-selected="true"]{
-      background-image:var(--tab-active); color:#082018; border-color:transparent; box-shadow:var(--glow);
-    }
-    .tab-bottom svg{ width:22px; height:22px; fill:currentColor }
+    .tab-bottom svg{width:22px;height:22px;filter:drop-shadow(0 1px 0 rgba(255,255,255,.6))}
+    #b-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--mint-400) 16%);border-color:color-mix(in oklab,var(--mint-400),transparent 70%)}
+    #b-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--gold-500) 16%); border-color:color-mix(in oklab,var(--gold-500),transparent 70%)}
+    #b-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--teal-500) 16%);border-color:color-mix(in oklab,var(--teal-500),transparent 70%)}
 
-    /* ---------- FAB emergencias ---------- */
+    /* ===== FAB emergencias */
     .fab{
-      position:fixed; right:16px; bottom: calc(16px + env(safe-area-inset-bottom));
-      width:60px; height:60px; border-radius:20px; display:grid; place-items:center; cursor:pointer;
-      background:linear-gradient(135deg, color-mix(in oklab, var(--c-rose) 90%, white), color-mix(in oklab, var(--c-gold) 40%, white));
-      border:var(--rim); color:#fff; box-shadow:0 18px 50px rgba(239,71,111,.35); z-index:55;
+      position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));
+      background:var(--grad-emergency); color:#fff; border:0; border-radius:999px; height:56px; padding:0 18px;
+      display:inline-flex; align-items:center; gap:10px; box-shadow:0 8px 24px rgba(239,71,111,.35), var(--rim); font-weight:900; z-index:40;
     }
-    .fab svg{ width:28px; height:28px; stroke:white; stroke-width:1.4; fill:none }
+    .fab svg{width:22px;height:22px}
 
-    /* ---------- Banners y utilidades ---------- */
-    .banner{ display:none; margin:10px 0; padding:10px 12px; background:#eef2ff; border:1px solid #c7d2fe; border-radius:12px }
-    .banner[aria-hidden="false"]{ display:flex; gap:10px; align-items:center }
-    #toast{ position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom)); transform:translateX(-50%); background:#111827; color:#fff; padding:10px 14px; border-radius:12px; box-shadow:var(--glow); z-index:60 }
-    #toast[hidden]{ display:none }
+    /* ===== Directorio — encabezados de sección “Alfa” (letra líder) */
+    .alpha-section{
+      margin:18px 0 8px; padding:12px 14px; border-radius:14px; background:linear-gradient(180deg,#ffffff,#f7fbff);
+      border:1px solid var(--border); box-shadow:var(--shadow-1); display:flex; align-items:center; gap:12px;
+    }
+    .alpha-badge{
+      width:36px;height:36px;border-radius:999px;background:#fff;display:grid;place-items:center;
+      box-shadow:var(--shadow-1), var(--rim); font-weight:900; color:var(--teal-500)
+    }
+    .alpha-title{font-weight:900;font-size:18px;letter-spacing:.2px}
+    .alpha-sub{font-weight:700;color:var(--muted);margin-left:auto}
 
-    /* ---------- Grids ---------- */
-    .grid{ display:grid; gap:12px }
-    .g3{ grid-template-columns:1fr 2fr auto }
-    .g2{ grid-template-columns:1fr 1fr }
-    @container (max-width:700px){ .g3,.g2{ grid-template-columns:1fr } }
-    @media (max-width:680px){ .g3,.g2{ grid-template-columns:1fr } }
+    /* ===== Diálogo modal */
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:70}
+    .modal[open]{display:grid}
+    .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(560px,92vw)}
+    .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-    @media (prefers-reduced-motion:reduce){ *{ scroll-behavior:auto!important; animation:none!important; transition:none!important } }
+    /* ===== Grid helpers */
+    .grid{display:grid;gap:12px}
+    .g3{grid-template-columns:1fr 2fr auto}
+    .g2{grid-template-columns:1fr 1fr}
+    @container (max-width:700px){.g3,.g2{grid-template-columns:1fr}}
+    @media (max-width:680px){.g3,.g2{grid-template-columns:1fr}}
+
+    @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
   <header class="appbar" role="banner">
     <div class="container">
       <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
-      <h1 id="title">Planta · Tareas · Directorio</h1>
-      <div class="grow" style="flex:1"></div>
+      <h1 id="title" class="grow">Planta · Tareas · Directorio</h1>
       <div class="statusRow" aria-live="polite" style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="badge-online" class="chip bad">Offline</span>
         <span id="badge-auth" class="chip bad">Google: desconectado</span>
       </div>
-      <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
-          <img id="avatar" class="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--glow-soft)">
+      <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+        <div id="userchip" class="hide" style="display:none;align-items:center;gap:8px">
+          <img id="avatar" class="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
           <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
           <span id="notifBadge" class="badge" title="Notificaciones">0</span>
         </div>
@@ -225,43 +219,51 @@
   </header>
 
   <main class="container">
-    <div id="updateBanner" class="banner" aria-hidden="true">
-      Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button>
-    </div>
-    <div id="installBanner" class="banner" aria-hidden="true">
-      Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button>
-    </div>
+    <!-- Banners de actualización/instalación -->
+    <div id="updateBanner" class="banner" aria-hidden="true">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
+    <div id="installBanner" class="banner" aria-hidden="true">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
 
-    <!-- Gate -->
-    <section id="gate" class="card" role="region" aria-live="polite" style="margin-bottom:12px">
-      <div class="card-h hdr-brand"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
+    <!-- Gate de acceso -->
+    <section id="gate" class="card" role="region" aria-live="polite">
+      <div class="card-h hdr-dir"><h2>Bienvenido</h2><span class="counter">Sync con Google</span></div>
       <div class="card-b">
         <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
         <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
-        <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+        <div id="authErr" class="muted" style="margin-top:8px;min-height:1.2em"></div>
       </div>
     </section>
 
-    <!-- App UI -->
-    <section id="app" class="hide" aria-labelledby="tabsLabel">
+    <!-- App -->
+    <section id="app" class="hide" aria-labelledby="tabsLabel" style="display:none">
+      <!-- Tabs superiores -->
       <div class="card" style="margin-bottom:12px">
         <div class="card-b">
-          <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
+          <div id="tabsLabel" class="muted" style="font-weight:700;margin-bottom:8px">Secciones</div>
           <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
-            <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">Planta</button>
-            <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">Tareas</button>
-            <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">Directorio</button>
+            <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
+              <!-- círculo blanco + icono -->
+              <span style="width:24px;height:24px;border-radius:999px;background:white;display:inline-grid;place-items:center;box-shadow:var(--rim)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10a5 5 0 0 1 10 0v6M5 19h14"/><circle cx="8" cy="19" r="2"/><circle cx="16" cy="19" r="2"/></svg>
+              </span> Planta
+            </button>
+            <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
+              <span style="width:24px;height:24px;border-radius:999px;background:white;display:inline-grid;place-items:center;box-shadow:var(--rim)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7h11M9 12h11M9 17h11"/><path d="M4 7h.01M4 12h.01M4 17h.01"/></svg>
+              </span> Tareas
+            </button>
+            <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
+              <span style="width:24px;height:24px;border-radius:999px;background:white;display:inline-grid;place-items:center;box-shadow:var(--rim)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92V21a1 1 0 0 1-1.1 1A19.86 19.86 0 0 1 3 5.1 1 1 0 0 1 4 4h4.09a1 1 0 0 1 1 .75l1.13 4.52a1 1 0 0 1-.29.95l-2.2 2.2a16 16 0 0 0 6.32 6.32l2.2-2.2a1 1 0 0 1 .95-.29l4.52 1.13a1 1 0 0 1 .75 1.04z"/></svg>
+              </span> Directorio
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- PLANTA -->
+      <!-- Panel: PLANTA -->
       <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
         <div class="card">
-          <div class="card-h hdr-add">
-            <h2>Añadir (Planta/Interconsulta)</h2>
-            <span class="subtitle">Habitación · Descripción · Pendientes</span>
-          </div>
+          <div class="card-h hdr-add"><h2>Añadir (Planta/Interconsulta)</h2><span class="counter">Habitación · Descripción</span></div>
           <div class="card-b grid g3">
             <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
             <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
@@ -271,34 +273,28 @@
               <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
               <div>
                 <label>Grupo</label>
-                <div class="segmented" role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--glow-soft)">
-                  <button id="p-group-planta" type="button" class="active" aria-pressed="true" class="btn">Planta</button>
-                  <button id="p-group-inter"  type="button" aria-pressed="false" class="btn ghost">Interconsulta</button>
+                <div class="segmented" role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1)">
+                  <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;border-radius:999px;border:0;background:color-mix(in oklab,#fff,var(--mint-400) 16%);">Planta</button>
+                  <button id="p-group-inter"  type="button" class="btn ghost" style="min-height:36px;padding:8px 12px;border-radius:999px;">Interconsulta</button>
                 </div>
-                <span id="addTarget" class="pill" aria-live="polite" style="margin-left:8px;font-weight:800">Añadiendo a: Planta</span>
+                <span id="addTarget" class="pill" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="badge" aria-live="polite">0</span></div>
-          <div class="card-b">
-            <ul id="p-list-planta" class="list"></ul>
-            <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
-          </div>
+          <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="counter" aria-live="polite">0</span></div>
+          <div class="card-b"><ul id="p-list-planta" class="list"></ul><p id="p-empty-planta" class="muted">Sin elementos en Planta.</p></div>
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-planta"><h2>Interconsultas</h2><span id="p-count-inter" class="badge" aria-live="polite">0</span></div>
-          <div class="card-b">
-            <ul id="p-list-inter" class="list"></ul>
-            <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
-          </div>
+          <div class="card-h hdr-planta"><h2>Interconsultas</h2><span id="p-count-inter" class="counter" aria-live="polite">0</span></div>
+          <div class="card-b"><ul id="p-list-inter" class="list"></ul><p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p></div>
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-done"><h2>Completadas</h2><span id="p-done-count" class="badge" aria-live="polite">0</span></div>
+          <div class="card-h hdr-done"><h2>Completadas</h2><span id="p-done-count" class="counter" aria-live="polite">0</span></div>
           <div class="card-b" style="background:linear-gradient(180deg,#f0fdf4,transparent)">
             <ul id="p-done" class="list"></ul>
             <p id="p-done-empty" class="muted">Nada completado.</p>
@@ -306,10 +302,10 @@
         </div>
       </div>
 
-      <!-- TAREAS -->
-      <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
+      <!-- Panel: TAREAS -->
+      <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1" style="display:none">
         <div class="card">
-          <div class="card-h hdr-add"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
+          <div class="card-h hdr-tareas"><h2>Añadir tarea</h2><span class="counter" id="t-status">Fecha → Descripción</span></div>
           <div class="card-b">
             <div class="grid g3">
               <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
@@ -320,7 +316,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="badge">0</span></div>
+          <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="counter">0</span></div>
           <div class="card-b" style="background:linear-gradient(180deg,#fff7ed,transparent)">
             <ul id="t-list" class="list"></ul>
             <p id="t-empty" class="muted">No hay tareas activas.</p>
@@ -328,7 +324,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-done"><h2>Completadas</h2><span id="t-done-count" class="badge">0</span></div>
+          <div class="card-h hdr-done"><h2>Completadas</h2><span id="t-done-count" class="counter">0</span></div>
           <div class="card-b" style="background:linear-gradient(180deg,#f0fdf4,transparent)">
             <ul id="t-done" class="list"></ul>
             <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
@@ -336,8 +332,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h" style="background-image:linear-gradient(120deg, color-mix(in oklab, var(--c-rose) 60%, white), color-mix(in oklab, var(--c-rose) 30%, white))">
-            <h2>Papelera</h2><span id="t-trash-count" class="badge">0</span></div>
+          <div class="card-h hdr-trash"><h2>Papelera</h2><span id="t-trash-count" class="counter">0</span></div>
           <div class="card-b">
             <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
             <ul id="t-trash" class="list"></ul>
@@ -346,17 +341,15 @@
         </div>
       </div>
 
-      <!-- DIRECTORIO -->
-      <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="badge">0</span></div>
+      <!-- Panel: DIRECTORIO -->
+      <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1" style="display:none">
+        <div class="card">
+          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
           <div class="card-b grid g2">
-            <div class="smart-search">
-              <!-- Icono búsqueda -->
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14Zm9.5 17.5L16 17" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-              <input id="d-q" type="search" placeholder="Sección, nombre o extensión… (e.g., cardio, uci, parada)" autocomplete="off">
+            <div><label for="d-q">Búsqueda inteligente</label>
+              <input id="d-q" type="search" placeholder="Sección, nombre o extensión… (ej., cardio, uci, parada)">
             </div>
-            <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
+            <div class="toolbar" style="align-self:end;justify-content:flex-end;flex-wrap:wrap">
               <button id="d-add" class="btn primary">Añadir</button>
               <button id="d-import" class="btn">Importar JSON</button>
               <button id="d-export" class="btn">Exportar JSON</button>
@@ -364,73 +357,58 @@
           </div>
         </div>
 
-        <!-- Render dinámico por grupos -->
-        <div id="d-groups" class="grid" style="gap:14px"></div>
-        <p id="d-empty" class="muted">Sin registros.</p>
+        <div class="card" style="margin-top:12px">
+          <div class="card-b"><div id="d-list"></div><p id="d-empty" class="muted">Sin registros.</p></div>
+        </div>
       </div>
 
-      <!-- Bottom tabs (icono + texto) -->
+      <!-- Tabs inferiores (icono + texto) -->
       <nav class="bottom" aria-label="Secciones">
         <div class="tabs-bottom">
-          <button class="tab-bottom" id="b-planta" aria-selected="true" aria-label="Planta">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5a4 4 0 1 1 7 2.5l2 3a3 3 0 0 1-5 3.5l-2-3A4 4 0 0 1 8.5 4.5Z"/></svg>
+          <button class="tab-bottom" id="b-planta" aria-selected="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10a5 5 0 0 1 10 0v6M5 19h14"/><circle cx="8" cy="19" r="2"/><circle cx="16" cy="19" r="2"/></svg>
             <span>Planta</span>
           </button>
-          <button class="tab-bottom" id="b-tareas" aria-selected="false" aria-label="Tareas">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10M7 9h10M7 14h10M7 19h6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <button class="tab-bottom" id="b-tareas" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7h11M9 12h11M9 17h11"/><path d="M4 7h.01M4 12h.01M4 17h.01"/></svg>
             <span>Tareas</span>
           </button>
-          <button class="tab-bottom" id="b-directorio" aria-selected="false" aria-label="Directorio">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h8a3 3 0 0 1 3 3v10H7a3 3 0 0 1-3-3V6Zm11 0h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          <button class="tab-bottom" id="b-directorio" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92V21a1 1 0 0 1-1.1 1A19.86 19.86 0 0 1 3 5.1 1 1 0 0 1 4 4h4.09a1 1 0 0 1 1 .75l1.13 4.52a1 1 0 0 1-.29.95l-2.2 2.2a16 16 0 0 0 6.32 6.32l2.2-2.2a1 1 0 0 1 .95-.29l4.52 1.13a1 1 0 0 1 .75 1.04z"/></svg>
             <span>Directorio</span>
           </button>
         </div>
       </nav>
+
+      <!-- FAB de emergencias -->
+      <button id="fabEmergency" class="fab" title="Emergencias">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><path d="M5 3L2 6l3 3M19 3l3 3-3 3M5 21l-3-3 3-3M19 21l3-3-3-3"/></svg>
+        Emergencias
+      </button>
     </section>
   </main>
 
-  <!-- Modal edición (reutilizado) -->
-  <dialog id="modal" class="hide" aria-modal="true"></dialog>
+  <!-- Modal genérico -->
+  <dialog id="modal" class="modal" aria-modal="true">
+    <form id="modalForm" class="dialog" method="dialog">
+      <h3 id="modalTitle" style="margin:0 0 8px 0">Editar</h3>
+      <div id="modalBody" class="grid" style="grid-template-columns:1fr"></div>
+      <div class="row">
+        <button id="modalCancel" class="btn" value="cancel">Cancelar</button>
+        <button id="modalOk" class="btn primary" value="ok">Guardar</button>
+      </div>
+    </form>
+  </dialog>
 
-  <!-- Toast -->
   <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- FAB Emergencias -->
-  <button id="fab-emerg" class="fab" title="Emergencias" aria-label="Emergencias">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 6a6 6 0 0 1 6 6v3l1.5 2M6 15v-3a6 6 0 0 1 6-6" />
-      <circle cx="12" cy="19" r="1.6" fill="white" stroke="none"/>
-    </svg>
-  </button>
-
   <script type="module">
-    /* ========== Utilidades generales ========== */
+    // =========================
+    // CORE (mismo backend, UI mejorada)
+    // =========================
     const BASE = new URL('./', location).pathname;
 
-    // Evitar doble declaración (solución al error setVHVar)
-    if(!window.__setVHVar){
-      window.__setVHVar = function(){
-        const vh = (window.visualViewport ? visualViewport.height : window.innerHeight) * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-      };
-      window.__setVHVar();
-      addEventListener('resize', window.__setVHVar, {passive:true});
-      addEventListener('orientationchange', window.__setVHVar, {passive:true});
-    }
-
-    const $ = (s, r=document)=>r.querySelector(s);
-    const todayISO = ()=> new Date().toISOString().slice(0,10);
-    const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
-    const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
-    const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-    const norm = (s)=>String(s||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
-
-    const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
-    setOnline(navigator.onLine);
-    addEventListener('online', ()=>setOnline(true), {passive:true});
-    addEventListener('offline',()=>setOnline(false), {passive:true});
-
-    /* ========== Firebase (App/Auth/Firestore) ========== */
+    // Firebase (CDN oficial)
     const appMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
     const authMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
     const fsMod    = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
@@ -443,29 +421,46 @@
     });
     const serverTS = fsMod.serverTimestamp;
 
+    // Utilidades UI
+    const $ = (s, r=document)=>r.querySelector(s);
+    const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
+    const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
+    const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+    const todayISO = ()=> new Date().toISOString().slice(0,10);
+
+    // Viewport var (evita duplicados del error previo)
+    function setVHVar(){ document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); }
+    setVHVar(); addEventListener('resize', setVHVar, {passive:true});
+
+    // Estado online
+    const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
+    setOnline(navigator.onLine);
+    addEventListener('online', ()=>setOnline(true), {passive:true});
+    addEventListener('offline',()=>setOnline(false), {passive:true});
+
+    // Auth
     const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
     const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
     const doSignIn=async()=>{ try{
       if(matchMedia('(display-mode: standalone)').matches) await authMod.signInWithRedirect(auth,provider);
       else await authMod.signInWithPopup(auth,provider);
     }catch(e){ $('#authErr').textContent=e.message||String(e); } };
-
     $('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async()=>authMod.signOut(auth);
 
     authMod.onAuthStateChanged(auth, user=>{
       if(user){
         badgeAuth.textContent='Google: '+(user.displayName||user.email); badgeAuth.className='chip ok';
-        avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.classList.remove('hide');
-        $('#signout').classList.remove('hide'); $('#signin').classList.add('hide'); gate.classList.add('hide'); appUI.classList.remove('hide');
+        avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.style.display='flex';
+        $('#signout').classList.remove('hide'); $('#signin').classList.add('hide'); gate.style.display='none'; appUI.style.display='block';
         mountApp(user.uid);
       }else{
         badgeAuth.textContent='Google: desconectado'; badgeAuth.className='chip bad';
-        userchip.classList.add('hide'); $('#signout').classList.add('hide'); $('#signin').classList.remove('hide'); appUI.classList.add('hide'); gate.classList.remove('hide');
+        userchip.style.display='none'; $('#signout').classList.add('hide'); $('#signin').classList.remove('hide'); appUI.style.display='none'; gate.style.display='block';
         unmountApp();
       }
     });
 
-    /* ========== Colecciones y helpers ========== */
+    // Colecciones
     const col = {
       planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
       tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
@@ -474,42 +469,59 @@
     let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
     function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
 
-    /* ========== Navegación tabs (superior e inferior) ========== */
+    // Tabs + navegación inferior
     const tabOrder=['planta','tareas','directorio'];
-    function setTab(id, focus=false){
+    function setTabA11y(id){
+      for(const k of tabOrder){
+        const sel = (k===id);
+        const el = document.getElementById('tab-'+k);
+        el.setAttribute('aria-selected', sel);
+        el.setAttribute('tabindex', sel ? '0' : '-1');
+      }
+    }
+    function selectTab(id, focusPanel=false){
       const map={planta:['panel-planta','tab-planta','b-planta','Planta'],tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],directorio:['panel-directorio','tab-directorio','b-directorio','Directorio']};
       for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id);
-        document.getElementById(p).classList.toggle('hide',!sel);
+        document.getElementById(p).style.display = sel ? 'block':'none';
         document.getElementById(t).setAttribute('aria-selected',sel);
-        const bb=document.getElementById(b); bb.setAttribute('aria-selected',sel);
-        if(sel){ $('#title').textContent=l; localStorage.setItem('tab', k); if(focus) document.getElementById(p).focus?.(); }
+        document.getElementById(b).setAttribute('aria-selected',sel);
+        if(sel){ document.getElementById('title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) document.getElementById(p).focus?.(); }
       }
-      location.hash = id;
+      setTabA11y(id); location.hash = id;
     }
-    $('#tab-planta').onclick =()=>setTab('planta',true);
-    $('#tab-tareas').onclick =()=>setTab('tareas',true);
-    $('#tab-directorio').onclick=()=>setTab('directorio',true);
-    $('#b-planta').onclick =()=>setTab('planta');
-    $('#b-tareas').onclick =()=>setTab('tareas');
-    $('#b-directorio').onclick=()=>setTab('directorio');
-
+    $('#tab-planta').onclick =()=>selectTab('planta',true);
+    $('#tab-tareas').onclick =()=>selectTab('tareas',true);
+    $('#tab-directorio').onclick=()=>selectTab('directorio',true);
+    $('#b-planta').onclick =()=>selectTab('planta');
+    $('#b-tareas').onclick =()=>selectTab('tareas');
+    $('#b-directorio').onclick=()=>selectTab('directorio');
     $('#tablist').addEventListener('keydown', (e)=>{
       const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).click(); }
-      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).click(); }
-      if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).click(); }
-      if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
+      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+      if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
+      if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
     });
 
-    const setNotif = (n)=>{ const el=$('#notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
+    // Notificaciones (contador de tareas activas)
+    const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
 
-    /* ========== PLANTA ========== */
+    // ===== PLANTA
     let currentGroup='planta';
-    const setTarget=()=>{ const t=$('#addTarget'); t.textContent = currentGroup==='planta' ? 'Añadiendo a: Planta' : 'Añadiendo a: Interconsulta'; };
-    $('#p-group-planta').onclick=()=>{currentGroup='planta'; setTarget();};
-    $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; setTarget();};
-    setTarget();
+    function updateAddTarget(){
+      const t=$('#addTarget');
+      if(currentGroup==='planta'){ t.textContent='Añadiendo a: Planta'; }
+      else { t.textContent='Añadiendo a: Interconsulta'; }
+    }
+    $('#p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
+    $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
+    updateAddTarget();
 
+    function roomSortKey(s){
+      if(!s) return Number.POSITIVE_INFINITY;
+      const m = String(s).match(/\d+/g); if(!m) return Number.POSITIVE_INFINITY;
+      const first = parseInt(m[0],10); const second = m[1] ? parseInt(m[1],10)/100 : 0; return first + second;
+    }
     const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
       grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
 
@@ -517,9 +529,8 @@
 
     const docItemBase=(x,done=false)=>{
       const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl');
-      const roomClass = 'pill room ' + (x.grupo==='interconsulta'?'inter':'planta');
-      li.innerHTML=`<span class="${roomClass}">${esc(x.room||'—')}</span>
-        <div class="text">${done?`<div class="line" style="text-decoration:line-through;opacity:.9">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
+      li.innerHTML=`<span class="pill room">${esc(x.room||'—')}</span>
+        <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
         ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
         <div class="toolbar actions"></div>`;
       return li;
@@ -530,19 +541,13 @@
       a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
 
     const openEdit=(fields,onOk)=>{
-      const dlg=$('#modal'); dlg.classList.remove('hide');
-      dlg.innerHTML=`<form method="dialog" class="dialog" style="background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--glow);padding:16px;width:min(560px,92vw)">
-        <h3 style="margin:0 0 8px 0">Editar</h3>
-        <div class="grid" style="grid-template-columns:1fr">${fields.map(f=>`<div><label for="${esc(f.id)}">${esc(f.l)}</label><input id="${esc(f.id)}" value="${esc(f.v||'')}"></div>`).join('')}</div>
-        <div class="row" style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-          <button id="modalCancel" class="btn" value="cancel">Cancelar</button>
-          <button id="modalOk" class="btn primary" value="ok">Guardar</button>
-        </div>
-      </form>`;
-      dlg.showModal();
-      $('#modalOk').onclick=e=>{e.preventDefault(); onOk().then(()=>dlg.close());};
+      const body=$('#modalBody'); body.innerHTML='';
+      for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
+      const dlg=$('#modal'); $('#modalTitle').textContent='Editar'; $('#modalOk').textContent='Guardar'; $('#modalCancel').textContent='Cancelar';
+      dlg.showModal(); dlg.setAttribute('aria-hidden','false');
+      $('#modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
       $('#modalCancel').onclick=e=>{e.preventDefault(); dlg.close();};
-      dlg.addEventListener('close',()=>dlg.classList.add('hide'),{once:true});
+      dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
     };
     const val=(id)=>document.getElementById(id)?.value||'';
     const editPlanta=(x)=>openEdit(
@@ -560,8 +565,8 @@
 
       const u1=fsMod.onSnapshot(qA,(s)=>{
         const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
-        const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> (String(a.room||'')).localeCompare(String(b.room||''), 'es', {numeric:true}));
-        const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> (String(a.room||'')).localeCompare(String(b.room||''), 'es', {numeric:true}));
+        const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+        const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
         const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML='';
         arrP.forEach(x=>lp.appendChild(renderPlantaItem(x)));
         arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
@@ -578,38 +583,39 @@
       unsubs.push(u1,u2);
     }
 
-    /* ========== TAREAS (gradiente de urgencia) ========== */
+    // ===== TAREAS (urgencia por color: rojo->ámbar->verde)
     const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-    const daysFromToday=(iso)=>{ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} };
-    const hueForDays=(diff)=>{ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); };
-    const renderTareaItem=(x)=>{
-      const diff = daysFromToday(x.date), h = hueForDays(diff);
+    function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
+    function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
+    function renderTareaItem(x){
+      const diff = daysFromToday(x.date); const h = hueForDays(diff);
       const li=document.createElement('li'); li.className='item';
       li.style.borderLeft = `6px solid hsl(${h} 72% 46%)`;
-      li.innerHTML=`<span class="pill date" style="background:hsl(${h} 90% 92%);border-color:hsl(${h} 70% 72%)">${new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(new Date(x.date+'T00:00:00')).toUpperCase().replace(/\./g,'')}</span>
+      li.innerHTML=`<span class="pill date" style="background:hsl(${h} 90% 92%);border-color:hsl(${h} 70% 72%)">${pillForDate(x.date)}</span>
         <div class="text"><div class="line">${esc(x.text||'')}</div></div>
         <div class="toolbar actions"></div>`;
       const a=li.querySelector('.actions');
       a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'));
       return li;
-    };
-    const renderTareaDone=(x)=>{
+    }
+    function renderTareaDone(x){
       const li=document.createElement('li'); li.className='item';
       li.style.borderLeft = `6px solid hsl(150 50% 38%)`;
-      li.innerHTML=`<span class="pill date">${new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(new Date(x.date+'T00:00:00')).toUpperCase().replace(/\./g,'')}</span>
-        <div class="text"><div class="line" style="text-decoration:line-through;opacity:.9">${esc(x.text||'')}</div></div>
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
+        <div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
         <div class="toolbar actions"></div>`;
       li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
       return li;
-    };
-    const renderTareaTrash=(x)=>{
+    }
+    function renderTareaTrash(x){
       const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill date">${new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(new Date(x.date+'T00:00:00')).toUpperCase().replace(/\./g,'')}</span>
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
         <div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
         <div class="toolbar actions"></div>`;
       li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
       return li;
-    };
+    }
+    const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
     const editTarea=(x)=>openEdit(
       [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
       async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')})
@@ -627,95 +633,89 @@
       const u1=fsMod.onSnapshot(qA,(snap)=>{
         const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
         arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
-        const list=$('#t-list'); list.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); $('#t-count').textContent=n; $('#t-empty').style.display=n?'none':'block'; setNotif(n);});
+        const list=$('#t-list'); list.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); $('#t-count').textContent=n; $('#t-empty').style.display=n?'none':'block'; setNotif(n);});
       });
       const u2=fsMod.onSnapshot(qD,(s)=>{
         const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
         arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
-        const l=$('#t-done'); l.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); $('#t-done-empty').style.display=n?'none':'block'; $('#t-done-count').textContent=n;});
+        const l=$('#t-done'); l.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); $('#t-done-empty').style.display=n?'none':'block'; $('#t-done-count').textContent=n;});
       });
       const u3=fsMod.onSnapshot(qT,(s)=>{
         const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
         arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
-        const l=$('#t-trash'); l.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); $('#t-trash-empty').style.display=n?'none':'block'; $('#t-trash-count').textContent=n;});
+        const l=$('#t-trash'); l.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); $('#t-trash-empty').style.display=n?'none':'block'; $('#t-trash-count').textContent=n;});
       });
       $('#t-emptyTrash').onclick=()=>emptyTrash(uid,'tareas');
       unsubs.push(u1,u2,u3);
     }
 
-    /* ========== DIRECTORIO (agrupado premium + búsqueda inteligente) ========== */
+    // ===== DIRECTORIO (agrupado por sección con encabezado “Alfa”)
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
-    const ALIAS = {
-      cardio:['cardiologia','cardiología','cardio'],
-      uci:['cuidados intensivos','reanimacion','reanimación','uci'],
-      parada:['rcp','codigo','código','emergencias','parada','paro'],
-      urg:['urg','urgencias'],
-      micro:['microbiologia','microbiología','lab']
-    };
-    const phonesToChips=(raw)=>{
+    function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
+    function phonesToChips(raw){
       const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
-      return parts.map(p=>`<span class="phone-chip" dir="ltr">${esc(p)}</span>`).join(' ');
-    };
-    const renderGroups=(q='')=>{
-      const v=norm(q); const root=$('#d-groups'); root.innerHTML='';
-      if(!dirCache.length){ $('#d-empty').style.display='block'; return; }
-      $('#d-empty').style.display='none';
-
-      // Construir alias ampliados para búsqueda
-      const expand = (t)=>{ const w=norm(t).split(/\s+/).filter(Boolean); let bag=[...w]; for(const k in ALIAS){ if(w.some(x=>ALIAS[k].includes(x))) bag.push(k); } return bag.join(' '); };
-
-      // Filtrar y agrupar
-      const filtered = dirCache.filter(x=>{
-        if(!v) return true;
-        const hay = [x.seccion,x.nombre,String(x.telefono||''),x.notas].map(y=>norm(String(y||''))).join(' ');
-        return hay.includes(v) || norm(expand(hay)).includes(v);
-      });
-
-      const groups = new Map();
-      filtered.forEach(x=>{
-        const s = String(x.seccion||'Sin sección').trim();
-        if(!groups.has(s)) groups.set(s,[]);
-        groups.get(s).push(x);
-      });
-
-      // Ordenar por sección A→Z y contactos por nombre
-      const ordered = [...groups.entries()].sort((a,b)=> a[0].localeCompare(b[0],'es'));
-      let total=0;
-
-      for(const [sec, list] of ordered){
-        list.sort((a,b)=> (a.nombre||'').localeCompare(b.nombre||'','es'));
-        total += list.length;
-
-        const g=document.createElement('div'); g.className='sec-group';
-        const firstLetter = (sec||'')[0]?.toUpperCase() || '·';
-        g.innerHTML=`
-          <div class="sec-head">
-            <div class="dropcap" aria-hidden="true">${esc(firstLetter)}</div>
-            <div class="sec-title">${esc(sec)} <span class="muted">(${list.length})</span></div>
+      return parts.map(p=>{ const href = telHref(p); const txt=esc(p); return href?`<a class="phone-chip" href="${href}" dir="ltr">${txt}</a>`:`<span class="phone-chip" dir="ltr">${txt}</span>`; }).join(' ');
+    }
+    function alphaHeader(title,count){
+      const div=document.createElement('div'); const letter=(title||'')[0]?.toUpperCase()||'·';
+      div.className='alpha-section';
+      div.innerHTML=`<div class="alpha-badge">${esc(letter)}</div><div class="alpha-title">${esc(title)}</div><div class="alpha-sub">${count||0} contacto(s)</div>`;
+      return div;
+    }
+    function renderDirGroup(title, items){
+      const wrapper=document.createElement('div');
+      wrapper.appendChild(alphaHeader(title, items.length));
+      const ul=document.createElement('ul'); ul.className='list';
+      items.forEach(x=>{
+        const li=document.createElement('li'); li.className='item';
+        li.innerHTML=`
+          <div class="text">
+            <div class="line"><strong>${esc(x.nombre||'')}</strong></div>
+            <div class="line">${phonesToChips(x.telefono)}</div>
+            ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
           </div>
-          <div class="sec-body"></div>`;
-        const body = g.querySelector('.sec-body');
+          <div class="toolbar actions"></div>`;
+        li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon'));
+        ul.appendChild(li);
+      });
+      wrapper.appendChild(ul);
+      return wrapper;
+    }
+    const editDir=(x)=>openEdit(
+      [{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}],
+      async()=>upd('directorio',x.__id,{seccion:val('d_sec'),nombre:val('d_nom'),telefono:val('d_tel'),notas:val('d_not')})
+    );
 
-        list.forEach(x=>{
-          const row=document.createElement('div'); row.className='c-row';
-          row.innerHTML=`
-            <div>
-              <div class="c-name">${esc(x.nombre||'')}</div>
-              ${x.notas?`<div class="c-notes">${esc(x.notas)}</div>`:''}
-            </div>
-            <div class="phones">${phonesToChips(x.telefono)}</div>`;
-          body.appendChild(row);
-        });
-
-        root.appendChild(g);
-      }
-      $('#d-count').textContent=total;
-    };
-
+    function smartTokens(q){
+      const v=String(q||'').toLowerCase().trim(); if(!v) return [];
+      const map={cardio:['cardiología','cardio'],uci:['uci','cuidados intensivos'],parada:['parada','emergencias']};
+      let tokens=[v]; for(const k in map){ if(v.includes(k)) tokens=tokens.concat(map[k]); }
+      return Array.from(new Set(tokens));
+    }
+    function matchSmart(x,query){
+      if(!query) return true;
+      const toks=smartTokens(query); const hay=[x.seccion,x.nombre,String(x.telefono||''),x.notas].join(' ').toLowerCase();
+      return toks.every(t=>hay.includes(t));
+    }
+    function renderDirList(){
+      const q=($('#d-q')?.value||'').trim(); const list=$('#d-list'); if(!list) return; list.innerHTML='';
+      let arr=[...dirCache].sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+      const groups=new Map();
+      arr.forEach(x=>{ if(!matchSmart(x,q)) return; const s=x.seccion||'Sin sección'; if(!groups.has(s)) groups.set(s,[]); groups.get(s).push(x); });
+      let n=0; groups.forEach((items,title)=>{ list.appendChild(renderDirGroup(title,items)); n+=items.length; });
+      $('#d-count').textContent=n+' registro(s)'; $('#d-empty').style.display=n?'none':'block';
+    }
+    function setupDirectorio(uid){
+      $('#d-add').onclick=async()=>{
+        const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
+        await fsMod.addDoc(col.dir(uid),d);
+      };
+      $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
+      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); });
+      $('#d-q').addEventListener('input', renderDirList, {passive:true});
+      unsubs.push(u);
+    }
     function importDir(uid){return async()=>{try{
       const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
       const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase();
@@ -724,65 +724,16 @@
     }catch(e){ toast(e.message||String(e)); }}};
     function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
 
-    function setupDirectorio(uid){
-      $('#d-add').onclick=async()=>{
-        const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
-        await fsMod.addDoc(col.dir(uid),d);
-      };
-      $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
-      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderGroups($('#d-q').value||''); });
-      $('#d-q').addEventListener('input', (e)=>renderGroups(e.target.value), {passive:true});
-      unsubs.push(u);
-    }
-
-    /* ========== Emergencias (FAB) ========== */
-    function emergCandidates(){
-      const keys=['parada','codigo','código','emergencias','seguridad','jefe','uci','urgencias'];
-      const arr = dirCache.filter(x=>{
-        const h = norm([x.seccion,x.nombre,x.notas].join(' '));
-        return keys.some(k=>h.includes(k));
-      });
-      // Prioriza "parada" y "seguridad"
-      arr.sort((a,b)=> (norm(a.seccion).includes('parada')?-1:0) - (norm(b.seccion).includes('parada')?-1:0));
-      return arr.slice(0,6);
-    }
-    $('#fab-emerg').onclick=()=>{
-      const list = emergCandidates();
-      const dlg=$('#modal'); dlg.classList.remove('hide');
-      dlg.innerHTML=`<form method="dialog" class="dialog" style="background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--glow);padding:16px;width:min(560px,92vw)">
-        <h3 style="margin:0 0 12px 0">Emergencias</h3>
-        <div class="grid" style="gap:10px">
-          ${
-            list.length ? list.map(x=>
-              `<div class="c-row" style="border:1px solid var(--border);border-radius:12px">
-                <div><div class="c-name">${esc(x.seccion)} — ${esc(x.nombre||'')}</div>${x.notas?`<div class="c-notes">${esc(x.notas)}</div>`:''}</div>
-                <div>${phonesToChips(x.telefono)}</div>
-              </div>`
-            ).join('') : `<p class="muted">Configura tus emergencias añadiendo entradas con secciones como “Parada”, “Seguridad”, “UCI”…</p>`
-          }
-        </div>
-        <div class="row" style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-          <button class="btn primary" value="ok">Cerrar</button>
-        </div>
-      </form>`;
-      dlg.showModal();
-      dlg.addEventListener('close',()=>dlg.classList.add('hide'),{once:true});
-    };
-
-    /* ========== Montaje general ========== */
-    function mountApp(uid){
-      setupPlanta(uid); setupTareas(uid); setupDirectorio(uid);
-      const last = location.hash?.slice(1) || localStorage.getItem('tab') || 'planta';
-      setTab(last);
-    }
+    // ===== CRUD genéricos
     async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
     async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
     async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
 
+    // ===== File pickers (fallbacks) 
     async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
     async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-    /* ========== PWA (install + SW actualizable) ========== */
+    // ===== Instalación PWA + SW
     let deferredPrompt=null;
     addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;$('#installBanner').setAttribute('aria-hidden','false');});
     $('#installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').setAttribute('aria-hidden','true'); } };
@@ -796,7 +747,17 @@
       reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
     }
 
-    setTab((location.hash?.slice(1)) || 'planta');
+    // ===== Emergencias (popup simple)
+    $('#fabEmergency').onclick=()=>{ toast('Emergencias: 2222 · Seguridad: 2019 · Parada: 3333'); };
+
+    // ===== Montaje
+    function mountApp(uid){
+      setupPlanta(uid); setupTareas(uid); setupDirectorio(uid);
+      const last = location.hash?.slice(1) || localStorage.getItem('tab') || 'planta';
+      selectTab(last);
+    }
+    // Selección inicial (si no hay auth aún, cae en gate)
+    selectTab((location.hash?.slice(1)) || 'planta');
   </script>
 </body>
 </html>
