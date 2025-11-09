@@ -7,41 +7,32 @@
   <meta name="color-scheme" content="light" />
   <title>Infecciosas — Planta · Tareas · Directorio</title>
 
-  <!-- Rutas relativas: válidas en raíz o /Planta/ -->
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
-    /* =========================
-       AURORA UI — TOKENS
-       ========================= */
     :root{
-      /* Ink & surfaces */
       --ink:#0b1220; --muted:#64748b; --border:#e5e7eb;
       --surface:#ffffff; --surface-2:#f6f8fb;
 
-      /* Brand / funcional */
-      --brand:#2563eb;         /* azul */
-      --calm:#00ced1;          /* turquesa */
-      --coral:#ff7f50;         /* emergencia */
-      --lav:#c4b5fd;           /* lavanda */
-      --sky:#93c5fd;           /* celeste */
-      --mint:#10b981;          /* planta */
-      --amber:#f59e0b;         /* interconsulta */
+      --brand:#2563eb;
+      --calm:#00ced1;           /* turquesa (información) */
+      --coral:#ff7f50;          /* emergencias */
+      --lav:#c4b5fd;            /* lavanda (aura) */
+      --sky:#93c5fd;            /* celeste (aura) */
+      --mint:#10b981;           /* planta */
+      --amber:#f59e0b;          /* interconsulta */
 
-      /* Accents por secciones */
       --planta-hi:hsl(156 60% 44%); --planta-lo:hsl(156 52% 38%);
       --tareas-hi:hsl(10 72% 50%);  --tareas-lo:hsl(10 66% 44%);
       --dir-hi:hsl(205 85% 44%);    --dir-lo:hsl(205 82% 40%);
       --done-hi:hsl(150 52% 40%);   --trash-hi:hsl(220 20% 38%);
 
-      /* Radii & shadows */
       --radius:14px; --radius-xl:20px; --touch:44px;
       --sh-1:0 1px 2px rgba(2,6,23,.05),0 8px 24px rgba(2,6,23,.06);
       --sh-2:0 2px 6px rgba(2,6,23,.08),0 16px 36px rgba(2,6,23,.08);
 
-      /* Pills / chips */
       --pill-ink:#0b1220;
       --pill-date-bg:hsl(205 80% 96%);  --pill-date-bd:hsl(205 68% 86%);
       --pill-section-bg:hsl(205 45% 96%);--pill-section-bd:hsl(205 35% 86%);
@@ -53,26 +44,19 @@
       --accent-gold:hsl(43 84% 56%);
     }
 
-    /* =========================
-       BASE / RESET
-       ========================= */
     *,*::before,*::after{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;background:var(--surface);color:var(--ink);
       font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans";
       font-size:clamp(15px,1vw + .3vh,18px);line-height:1.62;
-      min-height:100dvh; /* modernos */
-      min-height:calc(var(--vh,1vh)*100); /* fallback Android */
-      -webkit-tap-highlight-color:transparent;
-      overflow-x:hidden;
+      min-height:100dvh; min-height:calc(var(--vh,1vh)*100);
+      -webkit-tap-highlight-color:transparent; overflow-x:hidden;
     }
     :focus-visible{outline:3px solid color-mix(in oklab, var(--accent-gold), #22c55e 18%);outline-offset:2px;border-radius:10px}
     .hide{display:none !important}
 
-    /* =========================
-       AURORA AURA (degradado etéreo)
-       ========================= */
+    /* AURA */
     body::before{
       content:""; position:fixed; inset:-20% -10% auto -10%; height:70vh; z-index:-1;
       background:
@@ -83,10 +67,8 @@
       pointer-events:none;
     }
 
-    /* =========================
-       LAYOUT
-       ========================= */
     .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
+
     header.appbar{
       position:sticky;top:0;z-index:50;min-height:64px;
       background:rgba(255,255,255,.55);
@@ -100,7 +82,6 @@
     .statusRow{display:flex;gap:8px;flex-wrap:wrap}
     .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .toolbar .btn{white-space:nowrap}
-
     @media (max-width:520px){
       .statusRow{order:3;width:100%}
       #userGroup{order:2;margin-left:auto}
@@ -108,7 +89,6 @@
       #title{font-size:clamp(18px,5vw,22px)}
     }
 
-    /* Marca */
     .brand-chip{
       display:inline-flex;align-items:center;gap:12px;padding:12px 20px;border-radius:999px;
       color:#f8fafc;border:1px solid rgba(255,255,255,.6);
@@ -121,20 +101,17 @@
     h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
     h2{margin:0;font-size:clamp(18px,2.2vw,22px)}
 
-    /* Chips */
     .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.82rem;background:var(--surface-2)}
     .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
     .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
     .badge{display:inline-flex;align-items:center;justify-content:center;min-width:1.6em;height:1.6em;padding:0 .5em;border-radius:999px;font-weight:800;background:var(--badge-bg); color:var(--badge-fg);box-shadow:0 0 0 1px rgba(0,0,0,.12), 0 6px 14px rgba(0,0,0,.15);}
 
-    /* Botones */
     .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);padding:10px 12px;border-radius:12px;box-shadow:var(--sh-1);min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
     .btn.primary{background:var(--accent-gold);color:#0E121A;border-color:transparent}
     .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:hsl(205 80% 34%)}
     .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
     .btn[disabled]{opacity:.6;cursor:not-allowed}
 
-    /* Tarjetas (glass controlado) */
     .card{
       background:rgba(255,255,255,.55);
       backdrop-filter: blur(12px) saturate(1.05);
@@ -150,7 +127,6 @@
     .subtitle{color:#e5e7eb;font-weight:600}
     .counter{color:#e5e7eb;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-weight:700}
 
-    /* Encabezados con gradiente */
     .hdr-brand{background-image:linear-gradient(179deg,var(--brand), color-mix(in oklab, var(--brand), black 12%))}
     .hdr-add  {background-image:linear-gradient(179deg,hsl(222 70% 46%), hsl(222 64% 40%))}
     .hdr-planta{background-image:linear-gradient(179deg,var(--planta-hi),var(--planta-lo))}
@@ -159,24 +135,20 @@
     .hdr-done {background-image:linear-gradient(179deg,var(--done-hi), color-mix(in oklab, var(--done-hi), black 8%))}
     .hdr-trash{background-image:linear-gradient(179deg,var(--trash-hi), color-mix(in oklab, var(--trash-hi), black 10%))}
 
-    /* Tabs */
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .tab{padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:900;letter-spacing:.2px}
     #tab-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(156 58% 44%) 20%);border-color:color-mix(in oklab,hsl(156 58% 44%),transparent 60%)}
     #tab-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 50%) 20%); border-color:color-mix(in oklab,hsl(10 72% 50%),transparent 60%)}
     #tab-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(205 85% 44%) 20%);border-color:color-mix(in oklab,hsl(205 85% 44%),transparent 60%)}
 
-    /* Banners */
     .banner{display:none;margin:10px 0;padding:10px 12px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px}
     .banner[aria-hidden="false"]{display:flex;gap:10px;align-items:center}
 
-    /* Lists & items */
     ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
     li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
-    li.item.pl{ border-left:6px solid hsl(156 58% 44%) }
-    li.item.ic{ border-left:6px solid hsl(28 86% 50%) }
+    li.item.pl{ border-left:6px solid hsl(156 58% 44%) }     /* Planta -> verde */
+    li.item.ic{ border-left:6px solid hsl(28 86% 50%) }      /* Interconsulta -> ámbar */
 
-    /* Pills */
     .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;line-height:1;border:1px solid transparent;color:var(--pill-ink);background:var(--surface-2);font-variant-numeric: tabular-nums; font-feature-settings:'tnum' 1;}
     .pill.kpi{background:#f8fafc;border:1px solid var(--border);font-weight:900}
     .pill.room{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;font-weight:900; letter-spacing:.3px;font-size:clamp(18px,2.6vw,24px);padding:10px 14px; border-radius:12px; color:var(--room-ink);box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);}
@@ -192,6 +164,7 @@
     input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch)}
     textarea{min-height:90px;resize:vertical}
     input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 20%)}
+    mark{background:color-mix(in oklab,var(--calm), white 70%); border-radius:4px; padding:0 2px}
 
     .grid{display:grid;gap:12px}
     .g3{grid-template-columns:1fr 2fr auto}
@@ -199,7 +172,6 @@
     @container (max-width:700px){.g3,.g2{grid-template-columns:1fr}}
     @media (max-width:680px){.g3,.g2{grid-template-columns:1fr}}
 
-    /* Bottom nav con safe-area */
     nav.bottom{position:sticky;bottom:0;z-index:30;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.6)}
     .tabs-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;padding:8px 12px; padding-bottom:calc(8px + env(safe-area-inset-bottom))}
     .tab-bottom{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:900}
@@ -207,21 +179,33 @@
     #b-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(10 72% 50%) 18%); border-color:color-mix(in oklab,hsl(10 72% 50%),transparent 70%)}
     #b-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,hsl(205 85% 44%) 18%);border-color:color-mix(in oklab,hsl(205 85% 44%),transparent 70%)}
 
-    /* Sticky AZ headers para Directorio */
-    .az-header{
-      position:sticky; top:calc(64px + 10px);
-      z-index:1; backdrop-filter:blur(8px); background:rgba(255,255,255,.7);
-      border:1px solid rgba(255,255,255,.6); border-radius:12px; padding:6px 10px; font-weight:900; color:#111827;
+    /* Títulos de sección (Directorio) con inicial grande */
+    .sec-title{
+      display:flex; align-items:center; gap:12px;
+      margin:14px 0 8px; padding:10px 12px;
+      background:rgba(255,255,255,.6);
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.65);
+      border-radius:16px; box-shadow:var(--sh-1);
     }
+    .sec-title .initial{
+      width:40px; height:40px; display:grid; place-items:center;
+      font-weight:950; font-size:22px; color:#0b1220;
+      border-radius:12px;
+      background:linear-gradient(180deg, color-mix(in oklab, var(--sky), white 20%), color-mix(in oklab, var(--lav), white 10%));
+      box-shadow:inset 0 -1px 0 rgba(0,0,0,.06);
+    }
+    .sec-title .name{font-weight:900; letter-spacing:.2px; font-size:clamp(16px,2.2vw,20px)}
+    .sec-title .count{margin-left:auto}
 
-    /* FAB Emergencias */
+    /* FAB emergencias */
     #fab-emergencias{
       position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom));
       background:var(--coral); color:#1f2937; border:0; border-radius:999px; padding:14px 16px; box-shadow:var(--sh-2); font-weight:900; cursor:pointer; display:none;
     }
     #fab-emergencias.show{display:flex; align-items:center; gap:8px}
 
-    /* Toast & modal */
+    /* Toast y modal */
     #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--sh-2);z-index:60}
     #toast[hidden]{display:none}
     .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:70}
@@ -229,9 +213,7 @@
     .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh-2);padding:16px;width:min(560px,92vw)}
     .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-    @media (prefers-reduced-motion:reduce){
-      *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
-    }
+    @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
@@ -271,10 +253,7 @@
       <div class="card-h hdr-brand"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
       <div class="card-b">
         <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
-        <div class="toolbar">
-          <button id="signin2" class="btn primary">Acceder con Google</button>
-          <span id="authSpinner" class="hide" aria-live="polite">Conectando…</span>
-        </div>
+        <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button><span id="authSpinner" class="hide" aria-live="polite">Conectando…</span></div>
         <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
       </div>
     </section>
@@ -294,10 +273,7 @@
       <!-- PLANTA -->
       <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
         <div class="card">
-          <div class="card-h hdr-add">
-            <h2>Añadir (Planta/Interconsulta)</h2>
-            <span class="subtitle">Habitación · Descripción · Pendientes</span>
-          </div>
+          <div class="card-h hdr-add"><h2>🩺 Añadir (Planta/Interconsulta)</h2><span class="subtitle">Habitación · Descripción · Pendientes</span></div>
           <div class="card-b grid g3">
             <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off" inputmode="numeric"></div>
             <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
@@ -318,7 +294,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="counter" aria-live="polite">0</span></div>
+          <div class="card-h hdr-planta"><h2>🩺 Planta</h2><span id="p-count-planta" class="counter" aria-live="polite">0</span></div>
           <div class="card-b">
             <ul id="p-list-planta" class="list"></ul>
             <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
@@ -326,7 +302,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-planta"><h2>Interconsultas</h2><span id="p-count-inter" class="counter" aria-live="polite">0</span></div>
+          <div class="card-h hdr-planta"><h2>💬 Interconsultas</h2><span id="p-count-inter" class="counter" aria-live="polite">0</span></div>
           <div class="card-b">
             <ul id="p-list-inter" class="list"></ul>
             <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
@@ -345,7 +321,7 @@
       <!-- TAREAS -->
       <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
         <div class="card">
-          <div class="card-h hdr-add"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
+          <div class="card-h hdr-add"><h2>📝 Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
           <div class="card-b">
             <div class="grid g3">
               <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
@@ -356,7 +332,7 @@
         </div>
 
         <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="counter">0</span></div>
+          <div class="card-h hdr-tareas"><h2>📝 Tareas activas</h2><span id="t-count" class="counter">0</span></div>
           <div class="card-b" style="background:linear-gradient(180deg,#fff7ed,transparent)">
             <ul id="t-list" class="list"></ul>
             <p id="t-empty" class="muted">No hay tareas activas.</p>
@@ -384,12 +360,9 @@
       <!-- DIRECTORIO -->
       <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
         <div class="card">
-          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
+          <div class="card-h hdr-dir"><h2>📞 Directorio telefónico</h2><span id="d-count" class="counter">0</span></div>
           <div class="card-b grid g2">
-            <div>
-              <label for="d-q">Búsqueda inteligente</label>
-              <input id="d-q" type="search" placeholder="Sección, nombre o extensión… (e.g., cardio, uci, parada)">
-            </div>
+            <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión… (e.g., cardio, uci, parada)"></div>
             <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
               <button id="d-add" class="btn primary">Añadir</button>
               <button id="d-import" class="btn">Importar JSON</button>
@@ -399,7 +372,6 @@
         </div>
         <div class="card" style="margin-top:12px">
           <div class="card-b">
-            <div id="d-az"></div>
             <ul id="d-list" class="list"></ul>
             <p id="d-empty" class="muted">Sin registros.</p>
           </div>
@@ -416,10 +388,8 @@
     </section>
   </main>
 
-  <!-- FAB emergencias (solo Directorio) -->
   <button id="fab-emergencias" title="Emergencias" aria-label="Emergencias">🚨 Emergencias</button>
 
-  <!-- Modal genérico -->
   <dialog id="modal" class="modal" aria-modal="true">
     <form id="modalForm" class="dialog" method="dialog">
       <h3 id="modalTitle" style="margin:0 0 8px 0">Editar</h3>
@@ -436,13 +406,11 @@
   <script type="module">
     const BASE = new URL('./', location).pathname;
 
-    // Firebase 10.x (mismas versiones)
     const appMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
     const authMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
     const fsMod    = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
     const { firebaseConfig } = await import(BASE + 'firebase-config.js');
 
-    // App & DB
     const fbApp = appMod.initializeApp(firebaseConfig);
     const auth  = authMod.getAuth(fbApp);
     const db    = fsMod.initializeFirestore(fbApp, {
@@ -450,7 +418,6 @@
     });
     const serverTS = fsMod.serverTimestamp;
 
-    // Utils
     const $ = (s, r=document)=>r.querySelector(s);
     const todayISO = ()=> new Date().toISOString().slice(0,10);
     const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
@@ -459,7 +426,6 @@
     const esc = (s)=>String(s??'').replace(/[&<>"']/g,m=>escMap[m]);
     const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/\s+/g,' ').trim();
 
-    // Android perfect-fit fallback (cuando dvh falla por barras de URL)
     function setVHVar(){
       const h = (window.visualViewport?.height || window.innerHeight) / 100;
       document.documentElement.style.setProperty('--vh', h + 'px');
@@ -468,13 +434,11 @@
     addEventListener('resize', setVHVar, {passive:true});
     addEventListener('orientationchange', setVHVar, {passive:true});
 
-    // Online/Offline
     const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
     setOnline(navigator.onLine);
     addEventListener('online', ()=>setOnline(true), {passive:true});
     addEventListener('offline',()=>setOnline(false), {passive:true});
 
-    // Auth
     const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
     const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
     const authSpinner = $('#authSpinner');
@@ -506,7 +470,6 @@
       }
     });
 
-    // Colecciones
     const col = {
       planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
       tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
@@ -515,7 +478,6 @@
     let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
     function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
 
-    // Tabs
     const tabOrder=['planta','tareas','directorio'];
     function setTabA11y(id){
       for(const k of tabOrder){
@@ -542,9 +504,8 @@
           if(focusPanel) document.getElementById(p).focus?.();
         }
       }
-      setTabA11y(id);
-      // FAB emergencias solo en Directorio
       document.getElementById('fab-emergencias').classList.toggle('show', id==='directorio');
+      setTabA11y(id);
       location.hash = id;
     }
     document.getElementById('tab-planta').addEventListener('click', ()=>selectTab('planta',true));
@@ -554,36 +515,18 @@
     document.getElementById('b-tareas').addEventListener('click', ()=>selectTab('tareas'));
     document.getElementById('b-directorio').addEventListener('click',()=>selectTab('directorio'));
 
-    document.getElementById('tablist').addEventListener('keydown', (e)=>{
-      const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-      if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
-      if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[tabOrder.length-1]).focus(); document.getElementById('tab-'+tabOrder[tabOrder.length-1]).click(); }
-    });
-
     const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
 
-    /* =========================
-       PLANTA
-       ========================= */
+    /* PLANTA */
     let currentGroup='planta';
-    function updateAddTarget(){
-      const t=document.getElementById('addTarget');
-      if(currentGroup==='planta'){ t.textContent='Añadiendo a: Planta'; }
-      else { t.textContent='Añadiendo a: Interconsulta'; }
-    }
+    function updateAddTarget(){ const t=document.getElementById('addTarget'); t.textContent = (currentGroup==='planta')?'Añadiendo a: Planta':'Añadiendo a: Interconsulta'; }
     document.getElementById('p-group-planta').addEventListener('click',()=>{currentGroup='planta'; updateAddTarget(); mkeActive('#p-group-planta','#p-group-inter');});
     document.getElementById('p-group-inter').addEventListener('click', ()=>{currentGroup='interconsulta'; updateAddTarget(); mkeActive('#p-group-inter','#p-group-planta');});
     function mkeActive(on,off){ const a=document.querySelector(on), b=document.querySelector(off); a.classList.add('active'); a.setAttribute('aria-pressed','true'); b.classList.remove('active'); b.setAttribute('aria-pressed','false'); }
     updateAddTarget();
 
-    const plantaDoc = (d)=>({
-      room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
-      grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(),
-      deviceId:navigator.userAgent.slice(0,64)
-    });
-    const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.type='button'; b.addEventListener('click', (e)=>{e.preventDefault(); fn?.(e);}); return b;};
+    const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(), grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+    const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.type='button'; b.addEventListener('click',(e)=>{e.preventDefault(); fn?.(e);}); return b;};
 
     function roomSortKey(s){
       if(!s) return Number.POSITIVE_INFINITY;
@@ -597,8 +540,7 @@
     const docItemBase=(x,done=false)=>{
       const li=document.createElement('li'); li.className='item ' + ((x.grupo||'planta')==='interconsulta'?'ic':'pl');
       const roomClass = 'pill room ' + ((x.grupo||'planta')==='interconsulta'?'inter':'planta');
-      const desc = esc(x.desc||'');
-      const pend = esc(x.pendiente||'');
+      const desc = esc(x.desc||''); const pend = esc(x.pendiente||'');
       li.innerHTML=
         '<span class="'+roomClass+'">'+esc(x.room||'—')+'</span>'+
         '<div class="text">'+
@@ -661,28 +603,19 @@
       unsubs.push(u1,u2);
     }
 
-    /* =========================
-       TAREAS (urgencia rojo→verde + chip D±n)
-       ========================= */
+    /* TAREAS */
     const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-    function daysFromToday(iso){
-      try{ const d = new Date(String(iso)+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0}
-    }
-    function hueForDays(diff){
-      if(isNaN(diff)) return 205;
-      if(diff < 0) return 0;         // vencida -> rojo
-      const max=30; const p=Math.min(diff,max)/max;
-      return Math.round(10 + p*120); // 10 ~ naranja -> 130 ~ verde
-    }
+    function daysFromToday(iso){ try{ const d = new Date(String(iso)+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
+    function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff < 0) return 0; const max=30; const p=Math.min(diff,max)/max; return Math.round(10 + p*120); }
     const pillForDate=(iso)=>{ try{const d=new Date(String(iso)+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
 
     function renderTareaItem(x){
       const diff = daysFromToday(x.date);
       const h = hueForDays(diff);
-      const bg = `hsl(${h} 90% 92%)`;
+      const bg = 'hsl('+h+' 90% 92%)';
       const label = diff<0 ? 'VENCIDA' : (diff===0 ? 'HOY' : (diff>0? ('D+'+diff): ('D'+diff)));
       const li=document.createElement('li'); li.className='item';
-      li.style.borderLeft = `6px solid hsl(${h} 72% 46%)`;
+      li.style.borderLeft = '6px solid hsl('+h+' 72% 46%)';
       li.innerHTML=
         '<span class="pill date" style="background:'+bg+';border-color:hsl('+h+' 70% 72%)">'+esc(pillForDate(x.date))+'</span>'+
         '<span class="pill kpi" title="Diferencia respecto a hoy">'+esc(label)+'</span>'+
@@ -747,33 +680,15 @@
       unsubs.push(u1,u2,u3);
     }
 
-    /* =========================
-       DIRECTORIO (búsqueda inteligente + A–Z + Emergencias)
-       ========================= */
-    const dirDoc=(d)=>({
-      seccion:String(d.seccion||'').trim()||'Sin sección',
-      nombre:String(d.nombre||'').trim()||'Sin nombre',
-      telefono:String(d.telefono||'').trim(),
-      notas:String(d.notas||'').trim(),
-      createdAt:d.createdAt||serverTS(), updatedAt:serverTS(),
-      deviceId:navigator.userAgent.slice(0,64)
-    });
+    /* DIRECTORIO */
+    const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
     let dirCache=[];
 
-    // Sinónimos hospitalarios básicos
-    const SYN = new Map(Object.entries({
-      'cardio':'cardiología','uci':'cuidados intensivos','urg':'urgencias','urgencias':'urgencias',
-      'parada':'parada cardiorrespiratoria','micro':'microbiología','nefro':'nefrología',
-      'hemo':'hematología','id':'infecciosas','proa':'antimicrobianos'
-    }));
+    const SYN = new Map(Object.entries({ 'cardio':'cardiología','uci':'cuidados intensivos','urg':'urgencias','urgencias':'urgencias','parada':'parada cardiorrespiratoria','micro':'microbiología','nefro':'nefrología','hemo':'hematología','id':'infecciosas','proa':'antimicrobianos' }));
 
     function telChips(raw){
       const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
-      return parts.map(p=>{
-        const safe = esc(p);
-        // No forzamos llamada: la mayoría son extensiones -> span
-        return '<span class="phone-chip" dir="ltr">'+safe+'</span>';
-      }).join(' ');
+      return parts.map(p=>'<span class="phone-chip" dir="ltr">'+esc(p)+'</span>').join(' ');
     }
 
     function importDir(uid){return async()=>{try{
@@ -787,16 +702,12 @@
     function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }}
 
     function markHighlight(text, query){
-      const t = String(text||'');
-      const qn = norm(query);
+      const t = String(text||''); const qn = norm(query);
       if(!qn) return esc(t);
-      // construir patrón simple por palabras (escape regex)
       const words = qn.split(' ').filter(Boolean).map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
       if(!words.length) return esc(t);
       const re = new RegExp('('+words.join('|')+')','gi');
-      // resaltado sobre versión sin diacríticos, pero conservando original
-      const base = t;
-      const normBase = norm(t);
+      const base = t; const normBase = norm(t);
       let out=''; let i=0; let m;
       while((m = re.exec(qn)) && i<base.length){
         const idx = normBase.indexOf(m[1], i);
@@ -808,6 +719,13 @@
       return out;
     }
 
+    function renderSectionTitle(name,count){
+      const d=document.createElement('div'); d.className='sec-title';
+      const initial = (String(name||'')[0]||'#').toUpperCase();
+      d.innerHTML='<span class="initial">'+esc(initial)+'</span><div class="name">'+esc(name||'Sin sección')+'</div><span class="pill kpi count">('+String(count)+')</span>';
+      return d;
+    }
+
     function renderDirItem(x, query){
       const li=document.createElement('li'); li.className='item';
       const nameHtml = markHighlight(x.nombre||'', query);
@@ -816,11 +734,7 @@
       const notas    = x.notas ? ('<div class="muted">'+esc(x.notas)+'</div>') : '';
       li.innerHTML =
         '<span class="pill section">'+secHtml+'</span>'+
-        '<div class="text">'+
-          '<div class="line"><strong>'+nameHtml+'</strong></div>'+
-          '<div class="line">'+phones+'</div>'+
-          notas+
-        '</div>'+
+        '<div class="text"><div class="line"><strong>'+nameHtml+'</strong></div><div class="line">'+phones+'</div>'+notas+'</div>'+
         '<div class="toolbar actions"></div>';
       li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon'));
       return li;
@@ -843,37 +757,34 @@
     function renderDirList(queryRaw){
       const q = applySynonyms(queryRaw||'');
       const v = norm(q);
-      const list=$('#d-list'); const az=$('#d-az');
-      list.innerHTML=''; az.innerHTML='';
+      const list=$('#d-list'); list.innerHTML='';
 
-      // A–Z por primera letra de la SECCIÓN (cuando no hay búsqueda) o bien lista plana filtrada
-      if(!v){
-        const groups = new Map(); // letra -> array
-        const sorted = [...dirCache].sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
-        for(const x of sorted){
-          const letter = (String(x.seccion||'').charAt(0) || '#').toUpperCase();
-          if(!groups.has(letter)) groups.set(letter, []);
-          groups.get(letter).push(x);
-        }
-        const frag = document.createDocumentFragment();
-        for(const [letter, items] of groups){
-          const h = document.createElement('div'); h.className='az-header'; h.textContent=letter; frag.append(h);
-          for(const x of items){ frag.append(renderDirItem(x, '')); }
-        }
-        list.append(frag);
-        $('#d-count').textContent = String(dirCache.length)+' registros';
-        $('#d-empty').style.display = dirCache.length ? 'none' : 'block';
-      }else{
-        const filtered = dirCache.filter(x=>{
-          const hay = [x.seccion,x.nombre,String(x.telefono||''),x.notas].map(y=>norm(y)).join(' | ');
-          return hay.includes(v);
-        }).sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
-        const frag = document.createDocumentFragment();
-        for(const x of filtered){ frag.append(renderDirItem(x, q)); }
-        list.append(frag);
-        $('#d-count').textContent = String(filtered.length)+' resultados';
-        $('#d-empty').style.display = filtered.length ? 'none' : 'block';
+      // agrupación por SECCIÓN con cabecera premium
+      const groups = new Map(); // seccion -> items
+      const baseArr = [...dirCache].sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+
+      const filtered = v
+        ? baseArr.filter(x=>{
+            const hay = [x.seccion,x.nombre,String(x.telefono||''),x.notas].map(y=>norm(y)).join(' | ');
+            return hay.includes(v);
+          })
+        : baseArr;
+
+      for(const x of filtered){
+        const key = x.seccion||'Sin sección';
+        if(!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(x);
       }
+
+      let total=0;
+      const frag=document.createDocumentFragment();
+      for(const [sec, items] of groups){
+        frag.append(renderSectionTitle(sec, items.length));
+        for(const it of items){ frag.append(renderDirItem(it, q)); total++; }
+      }
+      list.append(frag);
+      $('#d-count').textContent = v ? String(total)+' resultados' : String(dirCache.length)+' registros';
+      $('#d-empty').style.display = total ? 'none' : 'block';
     }
 
     function setupDirectorio(uid){
@@ -883,16 +794,11 @@
       });
       document.getElementById('d-import').addEventListener('click', importDir(uid));
       document.getElementById('d-export').addEventListener('click', exportDir(uid));
+      document.getElementById('d-q').addEventListener('input', ()=>renderDirList(String(document.getElementById('d-q').value||'')), {passive:true});
 
-      $('#d-q').addEventListener('input', ()=>renderDirList(String($('#d-q').value||'')), {passive:true});
-
-      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{
-        dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);});
-        renderDirList(String($('#d-q').value||''));
-      });
+      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(String(document.getElementById('d-q').value||'')); });
       unsubs.push(u);
 
-      // FAB Emergencias
       const emergencies = [
         { nombre:'Equipo de Parada', seccion:'Emergencias', telefono:'2222' },
         { nombre:'Seguridad',        seccion:'Emergencias', telefono:'99'   },
@@ -904,9 +810,7 @@
         const ul=document.createElement('ul'); ul.className='list';
         emergencies.forEach(x=>{
           const li=document.createElement('li'); li.className='item';
-          li.innerHTML =
-            '<span class="pill section">'+esc(x.seccion)+'</span>'+
-            '<div class="text"><div class="line"><strong>'+esc(x.nombre)+'</strong></div><div class="line">'+telChips(x.telefono)+'</div></div>';
+          li.innerHTML = '<span class="pill section">'+esc(x.seccion)+'</span><div class="text"><div class="line"><strong>'+esc(x.nombre)+'</strong></div><div class="line">'+telChips(x.telefono)+'</div></div>';
           ul.append(li);
         });
         body.append(ul);
@@ -920,9 +824,6 @@
       });
     }
 
-    /* =========================
-       MOUNT / FIRESTORE HELPERS
-       ========================= */
     function mountApp(uid){
       setupPlanta(uid); setupTareas(uid); setupDirectorio(uid);
       const last = (location.hash && location.hash.slice(1)) || localStorage.getItem('tab') || 'planta';
@@ -932,34 +833,12 @@
     async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
     async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
 
-    async function pickReadText(){
-      if('showOpenFilePicker' in window){
-        const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]});
-        const f=await h.getFile(); return await f.text();
-      }
-      return await new Promise((res,rej)=>{
-        const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json';
-        i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado'));
-          const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); };
-        i.click();
-      });
-    }
-    async function pickWriteBlob(blob,name){
-      if('showSaveFilePicker' in window){
-        const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]});
-        const w=await h.createWritable(); await w.write(blob); await w.close(); return;
-      }
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
-    }
+    async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
+    async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-    /* =========================
-       PWA install & updates
-       ========================= */
     let deferredPrompt=null;
     addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').setAttribute('aria-hidden','false');});
-    document.getElementById('installAction').addEventListener('click', async()=>{
-      if(deferredPrompt){ await deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').setAttribute('aria-hidden','true'); }
-    });
+    document.getElementById('installAction').addEventListener('click', async()=>{ if(deferredPrompt){ await deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').setAttribute('aria-hidden','true'); } });
     document.getElementById('installBtn').addEventListener('click',()=>document.getElementById('installAction').click());
 
     if('serviceWorker' in navigator){
@@ -970,7 +849,6 @@
       reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
     }
 
-    // Tab inicial
     selectTab((location.hash && location.hash.slice(1)) || 'planta');
   </script>
 </body>
