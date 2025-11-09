@@ -1,74 +1,114 @@
-// sw.js — v4.2.0 (PWA Premium)
-const VERSION = 'v4.2.0';
-const CACHE = `pwa-cache-${VERSION}`;
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/maskable192.png',
-  './icons/maskable512.png'
+/* sw.js — Aurora PWA (diagnóstico) */
+const VERSION = 'planta-v6'; // cambia en cada deploy para forzar update
+const SCOPE   = self.registration.scope; // e.g. https://usuario.github.io/Planta/
+
+// Rutas a precachear (Asegúrate de que EXISTEN)
+const PRECACHE_PATHS = [
+  '', 'index.html', 'manifest.webmanifest',
+  'icons/icon-192.png', 'icons/icon-512.png',
+  'icons/maskable192.png', 'icons/maskable512.png'
 ];
 
-// INSTALL: precache básico
-self.addEventListener('install', (event) => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE);
-    await cache.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })));
-    // Deja el SW listo para tomar control tras SKIP_WAITING
-  })());
-});
+// Normaliza a URLs absolutas bajo el scope
+const PRECACHE_URLS = PRECACHE_PATHS.map(p => new URL(p, SCOPE).toString());
 
-// ACTIVATE: limpia caches antiguos y reclama clientes
-self.addEventListener('activate', (event) => {
+// Utilidad de log (silenciable)
+const log = (...a) => console.log('[SW v' + VERSION + ']', ...a);
+
+self.addEventListener('install', event => {
   event.waitUntil((async () => {
-    // Navigation Preload mejora el TTFB cuando hay red
-    if (self.registration.navigationPreload) {
-      try { await self.registration.navigationPreload.enable(); } catch {}
+    log('install: precache start');
+    const cache = await caches.open(VERSION);
+    for (const url of PRECACHE_URLS) {
+      try {
+        // Usa no-cache para evitar versiones viejas en proxy
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        await cache.put(url, res.clone());
+        log('cached:', url);
+      } catch (e) {
+        // Importante: no abortar la instalación por un 404
+        log('WARN precache failed:', url, String(e));
+      }
     }
-    const keys = await caches.keys();
-    await Promise.all(keys.map(k => (k !== CACHE) && caches.delete(k)));
-    await self.clients.claim();
+    await self.skipWaiting();
+    log('install: precache done');
   })());
 });
 
-// FETCH: network-first con fallback a cache y offline a index
-self.addEventListener('fetch', (event) => {
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    log('activate: clear old caches');
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== VERSION).map(k => {
+      log('delete cache:', k);
+      return caches.delete(k);
+    }));
+    await self.clients.claim();
+    log('activate: ready');
+  })());
+});
+
+// Estrategia:
+// - HTML: network-first (para pillar nuevas versiones)
+// - Estáticos/PNG/JSON/etc: cache-first con actualización en background
+self.addEventListener('fetch', event => {
   const req = event.request;
-  // Solo GET
   if (req.method !== 'GET') return;
 
+  const url = new URL(req.url);
+
+  // Solo gestionamos nuestro mismo origen
+  const sameOrigin = url.origin === new URL(SCOPE).origin;
+
+  // Heurística simple para HTML
+  const isHTML = req.destination === 'document' || req.headers.get('accept')?.includes('text/html');
+
+  if (isHTML && sameOrigin) {
+    event.respondWith((async () => {
+      try {
+        const net = await fetch(req);
+        const cache = await caches.open(VERSION);
+        cache.put(req, net.clone());
+        return net;
+      } catch {
+        const cache = await caches.open(VERSION);
+        const hit = await cache.match(req);
+        return hit || new Response('<!doctype html><title>Offline</title><h1>Sin conexión</h1>', { headers: { 'Content-Type': 'text/html' } });
+      }
+    })());
+    return;
+  }
+
+  // Resto: cache-first
   event.respondWith((async () => {
-    const cache = await caches.open(CACHE);
-
-    // Intenta Navigation Preload si está disponible
-    const preload = event.preloadResponse ? await event.preloadResponse : null;
-    if (preload) {
-      // Actualiza cache en segundo plano
-      cache.put(req, preload.clone()).catch(()=>{});
-      return preload;
+    const cache = await caches.open(VERSION);
+    const hit = await cache.match(req);
+    if (hit) {
+      // Actualiza en background
+      event.waitUntil((async () => {
+        try {
+          const fresh = await fetch(req, { cache: 'no-cache' });
+          if (fresh.ok) await cache.put(req, fresh.clone());
+        } catch {}
+      })());
+      return hit;
     }
-
+    // Si no hay en cache, intenta red
     try {
       const net = await fetch(req);
-      // Cachea respuestas básicas 200 OK
-      if (net && net.ok && net.type === 'basic') cache.put(req, net.clone());
+      if (sameOrigin && net.ok) await cache.put(req, net.clone());
       return net;
     } catch {
-      const hit = await cache.match(req, { ignoreSearch: true });
-      if (hit) return hit;
-      // Fallback de navegación a la shell
-      if (req.mode === 'navigate') {
-        const shell = await cache.match('./index.html', { ignoreSearch: true });
-        if (shell) return shell;
-      }
-      return new Response('Offline', { status: 503, statusText: 'Offline' });
+      return new Response('', { status: 504, statusText: 'Gateway Timeout' });
     }
   })());
 });
 
-// Mensajes desde la página para activar la nueva versión
-self.addEventListener('message', (e) => {
-  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+// Soporte para skip waiting desde la app
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') {
+    log('skipWaiting by message');
+    self.skipWaiting();
+  }
 });
