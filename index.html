@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<meta name="color-scheme" content="light" />
+<title>Infecciosas — Planta · Tareas · Directorio</title>
+
+<!-- Manifest + Favicon (nombres estándar) -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+/* ---------- Design System: Aurora UI (legibilidad primero) ---------- */
+:root{
+  /* Paleta base */
+  --ivory:#F8FFE5; --mint:#06D6A0; --teal:#1B9AAA; --coral:#EF476F; --gold:#FFC43D;
+  /* Neutros + tinta */
+  --ink:#0b1220; --muted:#475569; --bd:#e5e7eb; --surface:#ffffff; --surface-2:#f6f8fb;
+  /* Radios / sombras */
+  --r:14px; --r-xl:20px; --touch:44px;
+  --sh1:0 1px 2px rgba(2,6,23,.06),0 8px 22px rgba(2,6,23,.06);
+  --sh2:0 2px 6px rgba(2,6,23,.08),0 16px 38px rgba(2,6,23,.10);
+  /* Gradientes aurora por sección */
+  --aur-mint:linear-gradient(135deg, color-mix(in oklab, var(--mint) 32%, #fff 68%), color-mix(in oklab, #7ef0c9 28%, #fff 72%));
+  --aur-teal:linear-gradient(135deg, color-mix(in oklab, var(--teal) 32%, #fff 68%), color-mix(in oklab, #57c0cf 28%, #fff 72%));
+  --aur-coral:linear-gradient(135deg, color-mix(in oklab, var(--coral) 32%, #fff 68%), color-mix(in oklab, #ff7ea1 28%, #fff 72%));
+  --aur-gold:linear-gradient(135deg, color-mix(in oklab, var(--gold) 32%, #fff 68%), color-mix(in oklab, #ffe188 28%, #fff 72%));
+  /* Placas claras para texto legible */
+  --plate:linear-gradient(180deg, #fff, #f9fbff);
+  --plate-bd:#e7eaf0;
+  /* Chips habitación */
+  --room-mint-bg:color-mix(in oklab, var(--mint), #fff 85%);
+  --room-mint-bd:color-mix(in oklab, var(--mint), #000 20%);
+  --room-teal-bg:color-mix(in oklab, var(--teal), #fff 85%);
+  --room-teal-bd:color-mix(in oklab, var(--teal), #000 20%);
+  /* Hints */
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:#fff;color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  font-size:clamp(15px,1vw + .3vh,18px);
+  line-height:1.65; -webkit-tap-highlight-color:transparent; min-height:100dvh;
+}
+:focus-visible{outline:3px solid color-mix(in oklab, var(--gold), #22c55e 25%); outline-offset:2px; border-radius:10px}
+
+/* Layout */
+.container{max-width:min(1180px,98vw);margin:0 auto;padding:10px clamp(12px,4vw,20px);container-type:inline-size}
+.grow{flex:1;min-width:0}
+.hide{display:none !important}
+
+/* AppBar */
+header.appbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--bd);backdrop-filter:saturate(1.05) blur(6px)}
+.appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand-chip{display:inline-flex;align-items:center;gap:12px;padding:10px 16px;border-radius:999px;
+  color:#0E121A;background:var(--plate);border:1px solid var(--plate-bd);
+  box-shadow:inset 0 1px 0 #fff, var(--sh1);font-weight:900;letter-spacing:.3px}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+h1{margin:0;font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:.2px}
+h2{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:800}
+
+/* Chips estado + botones */
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--plate-bd);border-radius:999px;background:var(--plate);box-shadow:inset 0 1px 0 #fff}
+.chip.ok{color:#0f5132;background:linear-gradient(180deg,#ecfdf5,#e8fff7);border-color:#a7f3d0}
+.chip.bad{color:#7f1d1d;background:linear-gradient(180deg,#fef2f2,#fff5f5);border-color:#fecaca}
+.btn{appearance:none;border:1px solid var(--bd);background:#fff;color:var(--ink);padding:10px 12px;border-radius:12px;box-shadow:var(--sh1);min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.btn.primary{background:linear-gradient(180deg,color-mix(in oklab, var(--gold), #fff 20%), #fff);border-color:color-mix(in oklab, var(--gold), #000 18%);font-weight:800}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:color-mix(in oklab, var(--teal), #000 20%)}
+.btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
+
+/* Cards + headers con Aurora */
+.card{background:#fff;border:1px solid var(--bd);border-radius:var(--r-xl);box-shadow:var(--sh1);overflow:hidden;contain:content}
+.card-h{position:relative;padding:14px 16px;border-radius:var(--r-xl) var(--r-xl) 0 0;
+  color:#0e121a;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  text-shadow:0 1px 0 rgba(255,255,255,.9)}
+.card-h::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 1px 0 #fff}
+.hdr-mint{background:var(--aur-mint)}
+.hdr-teal{background:var(--aur-teal)}
+.hdr-coral{background:var(--aur-coral)}
+.hdr-gold{background:var(--aur-gold)}
+.card-b{padding:12px}
+
+/* Plates para títulos secundarios / field labels */
+.plate{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--plate);border:1px solid var(--plate-bd);box-shadow:inset 0 1px 0 #fff}
+.subtitle{font-weight:700;color:#111}
+
+/* Tabs superiores e inferiores (icono + texto) */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{padding:10px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--surface-2);cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tab svg{width:20px;height:20px}
+#tab-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--mint) 18%);border-color:color-mix(in oklab,var(--mint),transparent 60%)}
+#tab-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--coral) 18%);border-color:color-mix(in oklab,var(--coral),transparent 60%)}
+#tab-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--gold) 18%);border-color:color-mix(in oklab,var(--gold),transparent 60%)}
+nav.bottom{position:sticky;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--bd)}
+.tabs-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;padding:8px 12px}
+.tab-bottom{padding:8px 10px;border-radius:999px;border:1px solid var(--bd);background:var(--surface-2);cursor:pointer;font-weight:800;display:flex;justify-content:center;align-items:center;gap:8px}
+.tab-bottom svg{width:18px;height:18px}
+#b-planta[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--mint) 18%);border-color:color-mix(in oklab,var(--mint),transparent 60%)}
+#b-tareas[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--coral) 18%);border-color:color-mix(in oklab,var(--coral),transparent 60%)}
+#b-directorio[aria-selected="true"]{background:color-mix(in oklab,#fff,var(--gold) 18%);border-color:color-mix(in oklab,var(--gold),transparent 60%)}
+
+/* Listas */
+ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
+li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--bd);border-radius:14px;padding:12px;background:#fff}
+.muted{color:#64748b}
+.text{min-width:0}.line{overflow-wrap:anywhere}
+.strike{text-decoration:line-through;opacity:.9}
+
+/* Inputs */
+label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
+input,textarea,select{width:100%;border:1px solid var(--bd);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch)}
+textarea{min-height:90px;resize:vertical}
+input::placeholder,textarea::placeholder{color:color-mix(in oklab,#64748b,transparent 20%)}
+
+/* Room pills diferenciadas (solo número) */
+.pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(18px,2.4vw,22px);padding:10px 14px;border-radius:12px;line-height:1;border:1px solid transparent;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;letter-spacing:.3px}
+.room-planta{background:var(--room-mint-bg);border-color:var(--room-mint-bd);color:#062a22;box-shadow:inset 0 1px 0 #fff}
+.room-inter{background:var(--room-teal-bg);border-color:var(--room-teal-bd);color:#06202a;box-shadow:inset 0 1px 0 #fff}
+
+/* Tareas por proximidad (hue 0→120) */
+.pill.date{background:var(--plate);border:1px solid var(--plate-bd);font-weight:800;font-size:13px;border-radius:10px;line-height:1}
+.borderHue{border-left:6px solid hsl(0 80% 46%)}
+
+/* Directorio: headers de sección con dropcap */
+.dir-sec{display:flex;align-items:center;gap:10px;margin:12px 10px 6px;border-radius:14px;padding:10px 12px;background:var(--plate);border:1px solid var(--plate-bd);box-shadow:inset 0 1px 0 #fff}
+.dropcap{width:36px;height:36px;border-radius:10px;display:inline-grid;place-items:center;font-weight:900;color:#0e121a;background:linear-gradient(180deg,#fff,#f1f5ff);border:1px solid #e6ebff;box-shadow:inset 0 1px 0 #fff}
+
+/* Emergencias FAB */
+.fab{position:fixed;right:16px;bottom:calc(16px + var(--safe-bottom));z-index:60;width:64px;height:64px;border-radius:999px;border:0;cursor:pointer;
+  background:linear-gradient(135deg, color-mix(in oklab, var(--coral), #fff 10%), color-mix(in oklab, #ff7090, #fff 10%));
+  box-shadow:0 10px 28px rgba(239,71,111,.45), inset 0 1px 0 #fff}
+.fab svg{width:28px;height:28px;filter:drop-shadow(0 1px 0 #fff)}
+.fab-panel{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;place-items:end center;z-index:59}
+.fab-panel[open]{display:grid}
+.fab-card{width:min(560px,94vw);margin-bottom:calc(10px + var(--safe-bottom));background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:var(--sh2);padding:12px}
+.fab-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.fab-nums{display:grid;gap:8px}
+.num-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--plate-bd);border-radius:12px;background:var(--plate);box-shadow:inset 0 1px 0 #fff}
+.num-chip a{font-weight:900;text-decoration:none;color:#0b1220}
+
+/* Utilidades */
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:1fr 2fr auto}
+.g2{grid-template-columns:1fr 1fr}
+@container (max-width:700px){.g3,.g2{grid-template-columns:1fr}}
+@media (max-width:680px){.g3,.g2{grid-template-columns:1fr}}
+.banner{display:none;margin:10px 0;padding:10px 12px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px}
+.banner[aria-hidden="false"]{display:flex;gap:10px;align-items:center}
+#toast{position:fixed;left:50%;bottom:calc(14px + var(--safe-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--sh2);z-index:60}
+#toast[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- SVG symbols (iconografía premium, con gradientes) -->
+<svg width="0" height="0" style="position:absolute;visibility:hidden">
+  <defs>
+    <linearGradient id="grad-mint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#b7f7df"/><stop offset="100%" stop-color="#06D6A0"/>
+    </linearGradient>
+    <linearGradient id="grad-teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a6e9f1"/><stop offset="100%" stop-color="#1B9AAA"/>
+    </linearGradient>
+    <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffc1d1"/><stop offset="100%" stop-color="#EF476F"/>
+    </linearGradient>
+    <linearGradient id="grad-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe8a0"/><stop offset="100%" stop-color="#FFC43D"/>
+    </linearGradient>
+
+    <!-- Fonendo -->
+    <symbol id="ico-stetho" viewBox="0 0 24 24" aria-label="Planta">
+      <path fill="url(#grad-mint)" d="M9 2a1 1 0 0 1 1 1v3a3 3 0 0 1-6 0V3a1 1 0 1 1 2 0v3a1 1 0 0 0 2 0V3a1 1 0 0 1 1-1z"/>
+      <path fill="url(#grad-mint)" d="M9 9a5 5 0 0 0 5 5h1a3 3 0 1 0 0 6h1a3 3 0 0 0 0-6h-1a7 7 0 0 1-7-7H9zM16 16a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2h1z"/>
+    </symbol>
+    <!-- Post-it -->
+    <symbol id="ico-note" viewBox="0 0 24 24" aria-label="Tareas">
+      <path fill="url(#grad-coral)" d="M6 3h9l4 4v11a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3z"/>
+      <path fill="#fff" opacity=".9" d="M9 8h6v2H9zm0 4h6v2H9z"/>
+      <path fill="url(#grad-gold)" d="M15 3v4a2 2 0 0 0 2 2h4l-6-6z"/>
+    </symbol>
+    <!-- Teléfono/libreta -->
+    <symbol id="ico-phone" viewBox="0 0 24 24" aria-label="Directorio">
+      <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-gold)"/>
+      <circle cx="11" cy="7" r="1" fill="#fff"/>
+      <rect x="8" y="10" width="6" height="1.6" fill="#fff" rx=".8"/>
+      <rect x="8" y="13" width="6" height="1.6" fill="#fff" rx=".8"/>
+      <rect x="8" y="16" width="6" height="1.6" fill="#fff" rx=".8"/>
+    </symbol>
+    <!-- Campana emergencias -->
+    <symbol id="ico-bell" viewBox="0 0 24 24" aria-label="Emergencias">
+      <path fill="#fff" d="M12 22a2.5 2.5 0 0 0 2.4-2H9.6a2.5 2.5 0 0 0 2.4 2z"/>
+      <path fill="#fff" d="M18 16V11a6 6 0 1 0-12 0v5l-1.6 1.6A1 1 0 0 0 5 20h14a1 1 0 0 0 .7-1.7L18 16z"/>
+    </symbol>
+    <!-- Ajustes -->
+    <symbol id="ico-gear" viewBox="0 0 24 24" aria-label="Ajustes">
+      <path fill="url(#grad-teal)" d="M13.6 2l.7 2.3a7.7 7.7 0 0 1 1.6.9l2.3-.8 1.7 2.9-1.8 1.6a7.9 7.9 0 0 1 0 1.8l1.8 1.6-1.7 2.9-2.3-.8a7.7 7.7 0 0 1-1.6.9l-.7 2.3h-3.2l-.7-2.3a7.7 7.7 0 0 1-1.6-.9l-2.3.8L3.1 12l1.8-1.6a7.9 7.9 0 0 1 0-1.8L3.1 7l1.7-2.9 2.3.8a7.7 7.7 0 0 1 1.6-.9L10.4 2h3.2zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="appbar" role="banner">
+  <div class="container">
+    <div class="brandRow" aria-label="Marca" style="display:flex;align-items:center;gap:14px;min-width:0">
+      <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>Infecciosas</span>
+      <h1 id="title">Planta · Tareas · Directorio</h1>
+    </div>
+    <div class="grow"></div>
+    <div class="statusRow" aria-live="polite" style="display:flex;gap:8px;flex-wrap:wrap">
+      <span id="badge-online" class="chip bad">Offline</span>
+      <span id="badge-auth" class="chip bad">Google: desconectado</span>
+    </div>
+    <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
+        <img id="avatar" class="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--sh1)">
+        <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+        <span id="notifBadge" class="chip" title="Notificaciones">0</span>
+      </div>
+      <button id="installBtn" class="btn ghost" aria-label="Instalar">➕ Instalar</button>
+      <button id="signin"  class="btn primary">Acceder</button>
+      <button id="signout" class="btn hide">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div id="updateBanner" class="banner" aria-hidden="true">
+    Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button>
+  </div>
+  <div id="installBanner" class="banner" aria-hidden="true">
+    Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button>
+  </div>
+
+  <!-- Gate -->
+  <section id="gate" class="card" role="region" aria-live="polite">
+    <div class="card-h hdr-teal"><h2>Bienvenido</h2><span class="plate">Sincroniza con Google</span></div>
+    <div class="card-b">
+      <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+      <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
+      <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+    </div>
+  </section>
+
+  <!-- App -->
+  <section id="app" class="hide" aria-labelledby="tabsLabel">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-b">
+        <div id="tabsLabel" class="plate">Secciones</div>
+        <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
+          <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
+            <svg><use href="#ico-stetho"/></svg>Planta
+          </button>
+          <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
+            <svg><use href="#ico-note"/></svg>Tareas
+          </button>
+          <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
+            <svg><use href="#ico-phone"/></svg>Directorio
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANTA -->
+    <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
+      <div class="card">
+        <div class="card-h hdr-mint">
+          <h2>Nuevo paciente</h2><span class="plate">Habitación · Descripción · Pendientes</span>
+        </div>
+        <div class="card-b grid g3">
+          <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
+          <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
+          <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
+          <div class="g2" style="grid-column:1/-1;align-items:end">
+            <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
+            <div>
+              <label>Grupo</label>
+              <div class="plate" role="group" aria-label="Grupo" style="gap:4px">
+                <button id="p-group-planta" type="button" class="btn" aria-pressed="true">Planta</button>
+                <button id="p-group-inter"  type="button" class="btn">Interconsulta</button>
+              </div>
+              <span id="addTarget" class="plate" aria-live="polite">Añadiendo a: Planta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-mint"><h2>Planta</h2><span id="p-count-planta" class="plate" aria-live="polite">0</span></div>
+        <div class="card-b"><ul id="p-list-planta" class="list"></ul><p id="p-empty-planta" class="muted">Sin elementos en Planta.</p></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-teal"><h2>Interconsultas</h2><span id="p-count-inter" class="plate" aria-live="polite">0</span></div>
+        <div class="card-b"><ul id="p-list-inter" class="list"></ul><p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-gold"><h2>Completadas</h2><span id="p-done-count" class="plate" aria-live="polite">0</span></div>
+        <div class="card-b" style="background:linear-gradient(180deg,#f0fdf4,transparent)">
+          <ul id="p-done" class="list"></ul><p id="p-done-empty" class="muted">Nada completado.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAREAS -->
+    <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
+      <div class="card">
+        <div class="card-h hdr-coral"><h2>Añadir tarea</h2><span class="plate" id="t-status">Fecha → Descripción</span></div>
+        <div class="card-b">
+          <div class="grid g3">
+            <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
+            <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+            <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-coral"><h2>Tareas activas</h2><span id="t-count" class="plate">0</span></div>
+        <div class="card-b"><ul id="t-list" class="list"></ul><p id="t-empty" class="muted">No hay tareas activas.</p></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-mint"><h2>Completadas</h2><span id="t-done-count" class="plate">0</span></div>
+        <div class="card-b"><ul id="t-done" class="list"></ul><p id="t-done-empty" class="muted">No hay tareas completadas.</p></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-h hdr-teal"><h2>Papelera</h2><span id="t-trash-count" class="plate">0</span></div>
+        <div class="card-b">
+          <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
+          <ul id="t-trash" class="list"></ul><p id="t-trash-empty" class="muted">Papelera vacía.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTORIO -->
+    <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
+      <div class="card">
+        <div class="card-h hdr-gold"><h2>Directorio telefónico</h2><span id="d-count" class="plate">0</span></div>
+        <div class="card-b grid g2">
+          <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión… (p. ej., cardio, uci, parada)"></div>
+          <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
+            <button id="d-add" class="btn primary">Añadir</button>
+            <button id="d-import" class="btn">Importar JSON</button>
+            <button id="d-export" class="btn">Exportar JSON</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-b" id="d-wrap">
+          <!-- Aquí renderizamos headers de sección (dropcap) y filas sin repetir la sección -->
+          <ul id="d-list" class="list"></ul>
+          <p id="d-empty" class="muted">Sin registros.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom tabs -->
+    <nav class="bottom" aria-label="Secciones">
+      <div class="tabs-bottom">
+        <button class="tab-bottom" id="b-planta" aria-selected="true"><svg><use href="#ico-stetho"/></svg>Planta</button>
+        <button class="tab-bottom" id="b-tareas" aria-selected="false"><svg><use href="#ico-note"/></svg>Tareas</button>
+        <button class="tab-bottom" id="b-directorio" aria-selected="false"><svg><use href="#ico-phone"/></svg>Directorio</button>
+      </div>
+    </nav>
+  </section>
+</main>
+
+<!-- Emergencias FAB -->
+<button class="fab" id="fab"><svg><use href="#ico-bell"/></svg></button>
+<div class="fab-panel" id="fabPanel" hidden>
+  <div class="fab-card">
+    <div class="fab-head">
+      <h3 style="margin:0;display:flex;align-items:center;gap:8px"><svg width="20" height="20"><use href="#ico-bell"/></svg> Emergencias</h3>
+      <div>
+        <button class="btn icon" id="fabClose" aria-label="Cerrar">✖</button>
+        <button class="btn icon" id="fabEdit" aria-label="Editar"><svg width="18" height="18"><use href="#ico-gear"/></svg></button>
+      </div>
+    </div>
+    <div class="fab-nums" id="fabNums"></div>
+  </div>
+</div>
+
+<!-- Modal genérico (ediciones) -->
+<dialog id="modal" class="hide" style="border:0;padding:0;background:transparent">
+  <form id="modalForm" class="card dialog" method="dialog" style="padding:16px;width:min(560px,92vw)">
+    <h3 id="modalTitle" style="margin:0 0 8px 0">Editar</h3>
+    <div id="modalBody" class="grid" style="grid-template-columns:1fr"></div>
+    <div class="row" style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button id="modalCancel" class="btn" value="cancel">Cancelar</button>
+      <button id="modalOk" class="btn primary" value="ok">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script type="module">
+/* -------------------------- BOOTSTRAP / FIREBASE -------------------------- */
+const BASE = new URL('./', location).pathname;
+
+// Firebase (10.12.4)
+const appMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
+const authMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
+const fsMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
+
+// Config externa
+const { firebaseConfig } = await import(BASE + 'firebase-config.js');
+
+const fbApp = appMod.initializeApp(firebaseConfig);
+const auth  = authMod.getAuth(fbApp);
+const db    = fsMod.initializeFirestore(fbApp, {
+  localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() })
+});
+const serverTS = fsMod.serverTimestamp;
+
+/* ----------------------------- UTILIDADES UI ------------------------------ */
+const $ = (s, r=document)=>r.querySelector(s);
+const todayISO = ()=> new Date().toISOString().slice(0,10);
+const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
+const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
+const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
+
+// Android viewport fix (guard para no duplicar)
+if(!window.__setVHVar){
+  window.__setVHVar = ()=>{ document.documentElement.style.setProperty('--vh', `${Math.max(innerHeight,document.documentElement.clientHeight)*0.01}px`); };
+  addEventListener('resize', window.__setVHVar,{passive:true});
+  window.__setVHVar();
+}
+
+// Online badge
+const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
+setOnline(navigator.onLine);
+addEventListener('online', ()=>setOnline(true), {passive:true});
+addEventListener('offline',()=>setOnline(false), {passive:true});
+
+/* ------------------------------ AUTH GOOGLE ------------------------------- */
+const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
+const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
+
+async function doSignIn(){ try{
+  // Intentar popup
+  await authMod.signInWithPopup(auth,provider);
+}catch(e){
+  // Fallback a redirect si popup bloqueado/cerrado
+  if(String(e.code||'').includes('popup')){ await authMod.signInWithRedirect(auth,provider); }
+  else { $('#authErr').textContent=e.message||String(e); }
+}}
+$('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async()=>authMod.signOut(auth);
+
+authMod.onAuthStateChanged(auth, user=>{
+  if(user){
+    badgeAuth.textContent='Google: '+(user.displayName||user.email); badgeAuth.className='chip ok';
+    avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.classList.remove('hide');
+    $('#signout').classList.remove('hide'); $('#signin').classList.add('hide'); gate.classList.add('hide'); appUI.classList.remove('hide');
+    mountApp(user.uid);
+  }else{
+    badgeAuth.textContent='Google: desconectado'; badgeAuth.className='chip bad';
+    userchip.classList.add('hide'); $('#signout').classList.add('hide'); $('#signin').classList.remove('hide'); appUI.classList.add('hide'); gate.classList.remove('hide');
+    unmountApp();
+  }
+});
+
+/* --------------------------- DATA LAYER (FS) ------------------------------ */
+const col = {
+  planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
+  tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
+  dir     : (uid)=> fsMod.collection(db,'users',uid,'directorio'),
+};
+let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
+function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
+
+/* ------------------------------- TABS/A11Y -------------------------------- */
+const tabOrder=['planta','tareas','directorio'];
+function setTabA11y(id){
+  for(const k of tabOrder){
+    const sel = (k===id);
+    const el = document.getElementById('tab-'+k);
+    el.setAttribute('aria-selected', sel);
+    el.setAttribute('tabindex', sel ? '0' : '-1');
+  }
+}
+function selectTab(id, focusPanel=false){
+  const map={planta:['panel-planta','tab-planta','b-planta','Planta'],tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],directorio:['panel-directorio','tab-directorio','b-directorio','Directorio']};
+  for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id);
+    document.getElementById(p).classList.toggle('hide',!sel);
+    document.getElementById(t).setAttribute('aria-selected',sel);
+    document.getElementById(b).setAttribute('aria-selected',sel);
+    if(sel){ document.getElementById('title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) document.getElementById(p).focus?.(); }
+  }
+  setTabA11y(id);
+  location.hash = id;
+}
+document.getElementById('tab-planta').onclick =()=>selectTab('planta',true);
+document.getElementById('tab-tareas').onclick =()=>selectTab('tareas',true);
+document.getElementById('tab-directorio').onclick=()=>selectTab('directorio',true);
+document.getElementById('b-planta').onclick =()=>selectTab('planta');
+document.getElementById('b-tareas').onclick =()=>selectTab('tareas');
+document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
+
+document.getElementById('tablist').addEventListener('keydown', (e)=>{
+  const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
+  if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+  if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+  if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
+  if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
+});
+
+/* ------------------------------- PLANTA ----------------------------------- */
+let currentGroup='planta';
+function updateAddTarget(){
+  const t=document.getElementById('addTarget');
+  if(currentGroup==='planta'){ t.textContent='Añadiendo a: Planta'; }
+  else { t.textContent='Añadiendo a: Interconsulta'; }
+}
+document.getElementById('p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
+document.getElementById('p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
+updateAddTarget();
+
+const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
+  grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+
+const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
+
+function roomOnlyNumber(s){ const m=String(s||'').match(/\d+(?:-\d+)?/); return m?m[0]:String(s||''); }
+
+const docItemBase=(x,done=false)=>{
+  const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl');
+  const pillClass = (x.grupo==='interconsulta'?'room-inter':'room-planta');
+  li.innerHTML=`<span class="pill ${pillClass}">${esc(roomOnlyNumber(x.room))}</span>
+    <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
+    ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
+    <div class="toolbar actions"></div>`;
+  return li;
+};
+const renderPlantaItem=(x)=>{const li=docItemBase(x); const a=li.querySelector('.actions');
+  a.append(btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editPlanta(x),'btn icon'),btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon')); return li;};
+const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions');
+  a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
+
+const val=(id)=>document.getElementById(id)?.value||'';
+const openEdit=(fields,onOk)=>{
+  const body=document.getElementById('modalBody'); body.innerHTML='';
+  for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
+  const dlg=document.getElementById('modal'); document.getElementById('modalTitle').textContent='Editar'; document.getElementById('modalOk').textContent='Guardar'; document.getElementById('modalCancel').textContent='Cancelar';
+  dlg.showModal(); dlg.setAttribute('aria-hidden','false');
+  document.getElementById('modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
+  document.getElementById('modalCancel').onclick=e=>{e.preventDefault(); dlg.close();};
+  dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
+};
+const editPlanta=(x)=>openEdit(
+  [{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}],
+  async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')})
+);
+
+function roomSortKey(s){
+  if(!s) return Number.POSITIVE_INFINITY;
+  const m = String(s).match(/\d+/g);
+  if(!m) return Number.POSITIVE_INFINITY;
+  const first = parseInt(m[0],10);
+  const second = m[1] ? parseInt(m[1],10)/100 : 0;
+  return first + second;
+}
+
+function setupPlanta(uid){
+  document.getElementById('p-add').onclick=async()=>{
+    const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup});
+    if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(id=>document.getElementById(id).value='');
+  };
+  const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
+  const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
+
+  const u1=fsMod.onSnapshot(qA,(s)=>{
+    const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
+    const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+    const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+    const lp=document.getElementById('p-list-planta'), li=document.getElementById('p-list-inter'); lp.innerHTML=''; li.innerHTML='';
+    arrP.forEach(x=>lp.appendChild(renderPlantaItem(x)));
+    arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
+    document.getElementById('p-empty-planta').style.display=arrP.length?'none':'block'; document.getElementById('p-empty-inter').style.display=arrI.length?'none':'block';
+    document.getElementById('p-count-planta').textContent=arrP.length; document.getElementById('p-count-inter').textContent=arrI.length;
+  });
+
+  const u2=fsMod.onSnapshot(qD,(s)=>{
+    const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+    arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+    const l=document.getElementById('p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x)));
+    document.getElementById('p-done-empty').style.display=arr.length?'none':'block'; document.getElementById('p-done-count').textContent=arr.length;
+  });
+  unsubs.push(u1,u2);
+}
+
+/* -------------------------------- TAREAS ---------------------------------- */
+const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
+function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
+function bgForHue(h){ return `linear-gradient(180deg, hsl(${h} 90% 96%), #fff)`; }
+
+function renderTareaItem(x){
+  const diff = daysFromToday(x.date);
+  const h = hueForDays(diff);
+  const li=document.createElement('li'); li.className='item borderHue';
+  li.style.borderLeft = `6px solid hsl(${h} 72% 46%)`;
+  li.innerHTML=`<span class="pill date" style="background:${bgForHue(h)};border-color:hsl(${h} 70% 72%)">${pillForDate(x.date)}</span>
+    <div class="text"><div class="line">${esc(x.text||'')}</div></div>
+    <div class="toolbar actions"></div>`;
+  const a=li.querySelector('.actions');
+  a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'));
+  return li;
+}
+function renderTareaDone(x){
+  const li=document.createElement('li'); li.className='item';
+  li.style.borderLeft = `6px solid hsl(140 50% 38%)`;
+  li.innerHTML=`<span class="pill date" style="background:linear-gradient(180deg,#ecfdf5,#fff);border-color:#bbf7d0">${pillForDate(x.date)}</span>
+    <div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
+    <div class="toolbar actions"></div>`;
+  li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+  return li;
+}
+function renderTareaTrash(x){
+  const li=document.createElement('li'); li.className='item';
+  li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
+    <div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
+    <div class="toolbar actions"></div>`;
+  li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+  return li;
+}
+const editTarea=(x)=>openEdit(
+  [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
+  async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')})
+);
+
+function setupTareas(uid){
+  $('#t-date').value=todayISO();
+  $('#t-add').onclick=async ()=>{
+    const date=$('#t-date').value, text=$('#t-text').value.trim(); if(!text) return;
+    await fsMod.addDoc(col.tareas(uid), tareaDoc({date,text})); $('#t-text').value='';
+  };
+  const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
+  const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
+  const qT=fsMod.query(col.tareas(uid),fsMod.where('status','==','trash'));
+
+  const u1=fsMod.onSnapshot(qA,(snap)=>{
+    const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+    arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
+    const list=$('#t-list'); list.innerHTML=''; let n=0;
+    idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); $('#t-count').textContent=n; $('#t-empty').style.display=n?'none':'block'; setNotif(n);});
+  });
+  const u2=fsMod.onSnapshot(qD,(s)=>{
+    const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+    arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+    const l=$('#t-done'); l.innerHTML=''; let n=0;
+    idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); $('#t-done-empty').style.display=n?'none':'block'; $('#t-done-count').textContent=n;});
+  });
+  const u3=fsMod.onSnapshot(qT,(s)=>{
+    const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+    arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+    const l=$('#t-trash'); l.innerHTML=''; let n=0;
+    idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); $('#t-trash-empty').style.display=n?'none':'block'; $('#t-trash-count').textContent=n;});
+  });
+  $('#t-emptyTrash').onclick=()=>emptyTrash(uid,'tareas');
+  unsubs.push(u1,u2,u3);
+}
+
+/* ------------------------------- DIRECTORIO ------------------------------- */
+const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+let dirCache=[];
+function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
+
+function setupDirectorio(uid){
+  $('#d-add').onclick=async()=>{
+    const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
+    await fsMod.addDoc(col.dir(uid),d);
+  };
+  $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
+  const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); });
+  $('#d-q').addEventListener('input', renderDirList, {passive:true});
+  unsubs.push(u);
+}
+
+function phonesToChips(raw){
+  const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
+  return parts.map(p=>{ const href = telHref(p); return href?`<a class="pill" style="background:var(--plate);border:1px solid var(--plate-bd);font-weight:800;font-size:13px;border-radius:999px;line-height:1" href="${href}" dir="ltr">${esc(p)}</a>`:`<span class="pill" style="background:var(--plate);border:1px solid var(--plate-bd);font-weight:800;font-size:13px;border-radius:999px;line-height:1" dir="ltr">${esc(p)}</span>`; }).join(' ');
+}
+
+function renderDirList(){
+  const v=($('#d-q')?.value||'').toLowerCase(); const l=$('#d-list'); if(!l) return; l.innerHTML='';
+  let arr=[...dirCache];
+  // Orden por sección y nombre
+  arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+  // Agrupado por sección con header (dropcap)
+  let cur=null; let n=0;
+  idle(()=>{ arr.forEach(x=>{
+    if(v && ![x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v))) return;
+    if(x.seccion!==cur){
+      cur=x.seccion||'—';
+      const h=document.createElement('div'); h.className='dir-sec';
+      const first = String(cur)[0]?.toUpperCase()||'–';
+      h.innerHTML=`<span class="dropcap">${esc(first)}</span><strong>${esc(cur)}</strong>`;
+      l.appendChild(h);
+    }
+    l.appendChild(renderDirRow(x)); n++;
+  });
+    $('#d-count').textContent=n+' registros'; $('#d-empty').style.display=n?'none':'block';
+  });
+}
+
+function renderDirRow(x){
+  const li=document.createElement('li'); li.className='item';
+  li.innerHTML=`<div class="text">
+      <div class="line"><strong>${esc(x.nombre||'')}</strong></div>
+      <div class="line">${phonesToChips(x.telefono)}</div>
+      ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
+    </div>
+    <div class="toolbar actions"></div>`;
+  li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon')); return li;
+}
+const editDir=(x)=>openEdit(
+  [{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}],
+  async()=>upd('directorio',x.__id,{seccion:val('d_sec'),nombre:val('d_nom'),telefono:val('d_tel'),notas:val('d_not')})
+);
+function importDir(uid){return async()=>{try{
+  const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
+  const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase();
+  const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); }
+  await Promise.all(ops); toast('Importado ('+ops.length+')');
+}catch(e){ toast(e.message||String(e)); }}};
+function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
+
+/* ------------------------------ CRUD HELPERS ------------------------------ */
+function mountApp(uid){ setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); selectTab(location.hash?.slice(1) || localStorage.getItem('tab') || 'planta'); }
+async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
+async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
+async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
+
+/* ------------------------- File pickers (JSON) ---------------------------- */
+async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
+async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+
+/* ------------------------------ PWA Events -------------------------------- */
+let deferredPrompt=null;
+addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').setAttribute('aria-hidden','false');});
+document.getElementById('installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').setAttribute('aria-hidden','true'); } };
+document.getElementById('installBtn').onclick=()=>document.getElementById('installAction').click();
+
+if('serviceWorker' in navigator){
+  const reg=await navigator.serviceWorker.register(BASE+'sw.js');
+  navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
+  const showUpdate=()=>{document.getElementById('updateBanner').setAttribute('aria-hidden','false'); document.getElementById('reloadNow').onclick=()=>reg.waiting?.postMessage({type:'SKIP_WAITING'});};
+  if(reg.waiting) showUpdate();
+  reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
+}
+selectTab((location.hash?.slice(1)) || 'planta');
+
+/* ----------------------------- FAB EMERGENCIAS ---------------------------- */
+const fab=$('#fab'), fabPanel=$('#fabPanel'), fabNums=$('#fabNums');
+const KEY='emergencyNumbers';
+function readEm(){ try{ const v=JSON.parse(localStorage.getItem(KEY)||'[]'); return Array.isArray(v)?v:[];}catch{return []} }
+function writeEm(arr){ localStorage.setItem(KEY, JSON.stringify(arr.slice(0,5))); }
+function renderEm(){
+  const arr=readEm(); fabNums.innerHTML='';
+  if(!arr.length){ fabNums.innerHTML='<div class="muted">Añade tus números de emergencia con el engranaje.</div>'; return; }
+  arr.forEach((o,i)=>{
+    const div=document.createElement('div'); div.className='num-chip';
+    const href = telHref(o.tel);
+    div.innerHTML = `<div style="display:flex;gap:8px;align-items:center">
+        <span class="pill" style="background:var(--plate);border:1px solid var(--plate-bd);font-weight:900">${esc(o.name||('Contacto '+(i+1)))}</span>
+        ${href?`<a href="${href}">${esc(o.tel)}</a>`:`<span>${esc(o.tel||'')}</span>`}
+      </div>
+      <button class="btn icon" aria-label="Eliminar">✖</button>`;
+    div.querySelector('button').onclick=()=>{ const arr2=readEm(); arr2.splice(i,1); writeEm(arr2); renderEm(); };
+    fabNums.appendChild(div);
+  });
+}
+fab.onclick=()=>{ fabPanel.hidden=false; fabPanel.setAttribute('open',''); renderEm(); };
+$('#fabClose').onclick=()=>{ fabPanel.hidden=true; fabPanel.removeAttribute('open'); };
+$('#fabEdit').onclick=()=>{ const arr=readEm(); openEdit(
+  [
+    {l:'Contacto 1 (nombre|tel)',id:'e1',v:arr[0]?`${arr[0].name}|${arr[0].tel}`:''},
+    {l:'Contacto 2 (nombre|tel)',id:'e2',v:arr[1]?`${arr[1].name}|${arr[1].tel}`:''},
+    {l:'Contacto 3 (nombre|tel)',id:'e3',v:arr[2]?`${arr[2].name}|${arr[2].tel}`:''},
+    {l:'Contacto 4 (nombre|tel)',id:'e4',v:arr[3]?`${arr[3].name}|${arr[3].tel}`:''},
+    {l:'Contacto 5 (nombre|tel)',id:'e5',v:arr[4]?`${arr[4].name}|${arr[4].tel}`:''},
+  ],
+  async ()=>{
+    const from=(id)=>{ const raw=val(id).trim(); if(!raw) return null; const [name='',tel='']=raw.split('|'); return {name:name.trim(), tel:tel.trim()}; };
+    const out=[from('e1'),from('e2'),from('e3'),from('e4'),from('e5')].filter(Boolean);
+    writeEm(out); renderEm();
+  });
+};
+
+/* ----------------------------- Notificaciones ----------------------------- */
+const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
+
+</script>
+</body>
+</html>
