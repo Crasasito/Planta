@@ -754,12 +754,35 @@
     document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
 
     document.getElementById('tablist').addEventListener('keydown', (e)=>{
-      const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n']).click(); }
-      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-      if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
-      if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
-    });
+  const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
+
+  if(e.key==='ArrowRight' || e.key==='ArrowDown'){
+    e.preventDefault();
+    const n=(cur+1)%tabOrder.length;
+    document.getElementById('tab-'+tabOrder[n]).focus();
+    document.getElementById('tab-'+tabOrder[n]).click(); // <- corregido
+  }
+
+  if(e.key==='ArrowLeft' || e.key==='ArrowUp'){
+    e.preventDefault();
+    const n=(cur-1+tabOrder.length)%tabOrder.length;
+    document.getElementById('tab-'+tabOrder[n]).focus();
+    document.getElementById('tab-'+tabOrder[n]).click();
+  }
+
+  if(e.key==='Home'){
+    e.preventDefault();
+    document.getElementById('tab-'+tabOrder[0]).focus();
+    document.getElementById('tab-'+tabOrder[0]).click();
+  }
+
+  if(e.key==='End'){
+    e.preventDefault();
+    document.getElementById('tab-'+tabOrder.at(-1)).focus();
+    document.getElementById('tab-'+tabOrder.at(-1)).click();
+  }
+});
+
 
     const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
 
