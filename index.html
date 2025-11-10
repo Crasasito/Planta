@@ -161,7 +161,6 @@
       font-size:clamp(20px,5vw,28px); padding:12px 16px; border-radius:14px; letter-spacing:.4px;
       box-shadow:0 2px 10px rgba(0,0,0,.06), var(--rim);
     }
-    /* Píldoras diferenciadas (Planta vs Interconsulta) */
     .room-planta{
       background:linear-gradient(180deg, color-mix(in oklab,#fff 70%, var(--mint)), var(--mint-plate));
       border-color: color-mix(in oklab,var(--mint),transparent 45%);
@@ -196,7 +195,7 @@
     .abc-index{
       position:fixed; right:calc(max(env(safe-area-inset-right), 0px) + 8px);
       top:calc(var(--app-h) + 8px);
-      bottom:calc(96px + env(safe-area-inset-bottom)); /* deja sitio a FAB */
+      bottom:calc(96px + env(safe-area-inset-bottom));
       width:28px; display:flex; flex-direction:column; align-items:center; gap:4px; z-index:65;
       padding:6px 4px; border:1px solid var(--border); border-radius:14px;
       background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.9));
@@ -285,7 +284,7 @@
         <stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/>
       </linearGradient>
 
-      <!-- Fonendo (se mantiene por compatibilidad) -->
+      <!-- Fonendo (legacy, por si lo reusas en otros sitios) -->
       <symbol id="ico-stetho" viewBox="0 0 24 24">
         <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
         <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
@@ -669,6 +668,7 @@
     document.getElementById('b-tareas').onclick =()=>selectTab('tareas');
     document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
 
+    /* ---- Corrección de sintaxis aquí (nunca comillas tras n) ---- */
     document.getElementById('tablist').addEventListener('keydown', (e)=>{
       const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
       if(e.key==='ArrowRight' || e.key==='ArrowDown'){
