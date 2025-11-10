@@ -1,33 +1,20 @@
 {
-  "name": "Infecciosas — Aurora UI",
-  "short_name": "Infecciosas",
-  "start_url": ".",
-  "scope": "./",
-  "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "icons": [
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/maskable192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "./icons/maskable512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    }
-  ]
+"id": "./",
+"name": "Aurora UI — PWA Infecciosas",
+"short_name": "Aurora UI",
+"description": "Hub de planta, tareas y directorio con Auth Google + Firestore y sincronización en tiempo real.",
+"lang": "es-ES",
+"dir": "ltr",
+"start_url": "./?source=pwa",
+"scope": "./",
+"display": "standalone",
+"orientation": "any",
+"theme_color": "#ffffff",
+"background_color": "#ffffff",
+"categories": ["productivity", "medical", "utilities"],
+"icons": [
+{ "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+{ "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+],
+"prefer_related_applications": false
 }
