@@ -1,625 +1,643 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="color-scheme" content="light" />
-  <title>Aurora UI · PWA Infecciosas</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+  <title>Aurora UI — PWA Infecciosas (vFinal)</title>
   <link rel="manifest" href="manifest.json" />
-  <meta name="description" content="Aurora UI — PWA Infecciosas · Auth Google + Firestore · Sincronización en tiempo real" />
   <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #0d0d0d;
-      --muted: #6b7280; /* gray-500 */
-      --primary: #2563eb; /* blue-600 */
-      --primary-ink: #ffffff;
-      --card: #ffffff;
-      --border: #e5e7eb; /* gray-200 */
-      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06);
-      --ok: #16a34a; /* green-600 */
-      --warn: #dc2626; /* red-600 */
-      --info: #0ea5e9; /* sky-600 */
-      --room-chip-bg: #f1f5f9; /* slate-100 */
-      --room-chip-fg: #0f172a; /* slate-900 */
-      --section-divider: #e2e8f0; /* slate-200 */
+    :root{
+      /* Base */
+      --bg:#ffffff; --surface:#FFFFFC; --card:#ffffff; --text:#0b0f18; --muted:#5c6470;
+      /* Paleta usuario */
+      --rose-300:#FFADAD; --peach-300:#FFD6A5; --yell-200:#FDFFB6; --mint-200:#CAFFBF;
+      --cyan-200:#9BF6FF; --corn-200:#A0C4FF; --lila-200:#BDB2FF; --pink-200:#FFC6FF;
+      /* Derivados accesibles (AAA aplicado) */
+      --brand-50:#E6F0FF; --brand-200:var(--corn-200);
+      --brand-500:#3D7BEB;        /* AA */
+      --brand-600:#245AC9;        /* AA+ reforzado */
+      --brand-700:#1E4FB5;        /* AAA con texto #fff */
 
-      /* tipografía fluida */
-      --step--1: clamp(.78rem, calc(.74rem + .2vw), .9rem);
-      --step-0: clamp(.94rem, calc(.9rem + .3vw), 1rem);
-      --step-1: clamp(1.05rem, calc(1rem + .6vw), 1.25rem);
-      --step-2: clamp(1.25rem, calc(1.1rem + 1vw), 1.6rem);
-      --step-3: clamp(1.5rem, calc(1.2rem + 1.6vw), 2rem);
-      --step-4: clamp(1.9rem, calc(1.4rem + 2.4vw), 2.6rem);
-    }
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; background: var(--bg) !important; color: var(--fg); }
-    body { margin: 0; font: 500  var(--step-0)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Noto Sans', 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+      /* Acentos por sección */
+      --accent-planta:var(--mint-200);
+      --accent-tareas:var(--peach-300);
+      --accent-directorio:var(--corn-200);
+      --accent-biblioteca:var(--lila-200);
 
-    .app { min-height: 100dvh; display: grid; grid-template-rows: auto auto 1fr; }
-    header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(1.2) blur(4px); background: color-mix(in hsl, var(--bg) 88%, white); border-bottom: 1px solid var(--border); }
-    .bar { max-width: 1100px; margin-inline: auto; padding: .75rem clamp(12px, 2vw, 24px); display: flex; gap: .75rem; align-items: center; justify-content: space-between; }
-    .brand { display:flex; align-items:center; gap:.6rem; }
-    .brand h1 { font-size: var(--step-2); margin:0; letter-spacing:.2px; font-weight: 800; }
-    .subtitle { color: var(--muted); font-weight: 600; font-size: var(--step--1); }
+      /* Componentes */
+      --chip:#f5f7fb; --divider:#e9edf3; --shadow:0 2px 12px rgba(0,0,0,.06);
 
-    .userbox { display:flex; gap:.5rem; align-items:center; }
-    .btn { appearance: none; border: 1px solid var(--border); background: var(--card); color: var(--fg); padding: .55rem .9rem; border-radius: 14px; font-weight: 700; cursor:pointer; box-shadow: var(--shadow); transition: transform .05s ease; }
-    .btn:active { transform: translateY(1px); }
-    .btn.primary { background: var(--primary); color: var(--primary-ink); border-color: color-mix(in hsl, var(--primary) 70%, black); }
+      /* Tipografía fluida */
+      --font-base:clamp(16px,1.0vw + 0.6rem,20px);
+      --font-sm:clamp(14px,0.7vw + 0.45rem,18px);
+      --font-lg:clamp(20px,1.5vw + 0.8rem,28px);
+      --font-xl:clamp(24px,2vw + 1rem,34px);
 
-    .notice { max-width: 1100px; margin: .5rem auto 0; padding: .5rem clamp(12px, 2vw, 24px); color: var(--muted); font-size: var(--step--1); }
+      --radius-xl:20px; --radius-lg:16px; --radius-md:12px; --radius-sm:10px;
+      --pad:clamp(12px,1.2vw,18px); --pad-lg:clamp(16px,1.8vw,24px);
 
-    nav.tabs { border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 56px; z-index: 9; }
-    .tabs-inner { max-width: 1100px; margin-inline: auto; padding: 0 clamp(12px, 2vw, 24px); display:flex; gap:.5rem; }
-    .tab { -webkit-tap-highlight-color: transparent; position: relative; border: 0; background: transparent; padding: .9rem 1rem; font-weight: 800; color: var(--muted); cursor: pointer; }
-    .tab[aria-selected="true"] { color: var(--fg); }
-    .tab[aria-selected="true"]::after { content:""; position:absolute; left:1rem; right:1rem; bottom:0; height:3px; background: var(--fg); border-radius: 3px 3px 0 0; }
-
-    main { max-width: 1100px; margin-inline: auto; padding: 1rem clamp(12px, 2vw, 24px) 4rem; }
-    .section { display:none; }
-    .section[aria-hidden="false"] { display:block; }
-
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 1rem; }
-    .grid { display:grid; gap: 1rem; }
-    @media (min-width: 720px) {
-      .grid-2 { grid-template-columns: 1fr 1fr; }
-      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      --duration:120ms; --ease:cubic-bezier(.2,.7,.2,1);
     }
 
-    /* Formularios */
-    .field { display:grid; gap:.3rem; }
-    label { font-weight: 700; font-size: var(--step--1); }
-    input[type="text"], input[type="number"], input[type="date"], textarea, select {
-      width: 100%; padding: .7rem .9rem; border-radius: 12px; border: 1px solid var(--border); background: #fff; font: inherit; color: inherit;
+    html, body { background:#fff !important; }
+    * { box-sizing:border-box; }
+    body{
+      margin:0; color:var(--text); background:var(--bg);
+      font:400 var(--font-base)/1.4 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
-    textarea { min-height: 88px; resize: vertical; }
+    .app{ min-height:100svh; display:flex; flex-direction:column; gap:0; container-type:inline-size; }
 
-    /* Lista PLANTA */
-    .list { display: grid; gap: .75rem; }
-    .room { display:grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: center; padding: .8rem; border: 1px solid var(--border); border-radius: 16px; background: #fff; box-shadow: var(--shadow); }
-    .room-chip {
-      font-size: var(--step-3); /* AUMENTADO para legibilidad */
-      line-height: 1; font-weight: 900; letter-spacing: .5px; padding: .2rem .55rem; border-radius: 14px; background: var(--room-chip-bg); color: var(--room-chip-fg); min-width: 3ch; text-align: center;
+    /* Reduce motion: respeta preferencias del usuario */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
     }
-    .room-desc { font-size: var(--step-1); }
-    .room-actions { display:flex; gap:.35rem; }
-    .iconbtn { border: 1px solid var(--border); background:#fff; border-radius: 12px; padding: .45rem .6rem; cursor:pointer; }
 
-    /* Directorio */
-    .dir-controls { display:flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-    .dir-section { margin-top: 1.25rem; }
-    .dir-heading { display:flex; align-items:center; gap:.6rem; font-size: var(--step-1); font-weight: 900; margin: 0 0 .6rem; }
-    .dir-divider { flex:1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--section-divider), transparent 70%); }
-    .contact { display:grid; grid-template-columns: 1fr auto; gap:.4rem .8rem; align-items:center; padding:.8rem; border:1px solid var(--border); border-radius:14px; }
-    .contact strong { font-weight: 800; }
-    .contact small { color: var(--muted); }
+    header{ position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:1px solid var(--divider); backdrop-filter:saturate(1.1); }
+    .topbar{ display:flex; align-items:center; gap:12px; padding: env(safe-area-inset-top) var(--pad) var(--pad); }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .logo{ width:34px; height:34px; border-radius:12px; background:linear-gradient(135deg,var(--brand-600),var(--brand-700)); box-shadow:var(--shadow); }
+    .title{ font-size:var(--font-lg); font-weight:700; letter-spacing:.2px; }
+    .subtitle{ color:var(--muted); font-size:var(--font-sm); }
 
-    /* Utilidades */
-    .row { display:flex; gap:.6rem; align-items:center; flex-wrap: wrap; }
-    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-    .muted { color: var(--muted); }
-    .spacer { height: .25rem; }
-    .empty { padding: 1rem; text-align:center; color: var(--muted); }
+    .tabs{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:8px; padding:0 var(--pad) var(--pad); }
+    .tab{
+      position:relative; padding:10px 14px; text-align:center; border-radius:14px; background:var(--chip); color:var(--text);
+      transition:transform var(--duration) var(--ease), background var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+      cursor:pointer; user-select:none; outline:none; border:1px solid transparent;
+    }
+    .tab[aria-selected="true"]{ background:linear-gradient(180deg,#fff,#f6f8fc); box-shadow:var(--shadow); border-color:#e8eef8; }
+    .tab:focus-visible{ border-color:var(--brand-600); box-shadow:0 0 0 3px rgba(36,90,201,.22); }
+    .tab:hover{ transform:translateY(-1px); }
+
+    /* Tonos por pestaña ACTIVA */
+    #tabPlanta[aria-selected="true"]{ background:linear-gradient(180deg,#fff,var(--accent-planta)); }
+    #tabTareas[aria-selected="true"]{ background:linear-gradient(180deg,#fff,var(--accent-tareas)); }
+    #tabDirectorio[aria-selected="true"]{ background:linear-gradient(180deg,#fff,var(--accent-directorio)); }
+    #tabBiblioteca[aria-selected="true"]{ background:linear-gradient(180deg,#fff,var(--accent-biblioteca)); }
+
+    main{ padding:var(--pad); display:grid; gap:var(--pad-lg); }
+    section.view{ display:none; }
+    section.view.active{ display:block; }
+
+    .h-stack{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .spacer{ flex:1; }
+
+    .chip{
+      background:linear-gradient(180deg,#fff,#f7faff); border-radius:999px; padding:8px 12px; font-size:var(--font-sm);
+      display:inline-flex; align-items:center; gap:8px; border:1px solid #ecf0f6; box-shadow:0 1px 4px rgba(0,0,0,.04);
+      transition:transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+    }
+    .chip:hover{ transform:translateY(-1px); box-shadow:var(--shadow); }
+
+    .btn{
+      border:1px solid #dfe6f2; border-radius:14px; padding:10px 14px; background:#fff; cursor:pointer;
+      transition:transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--brand-600), var(--brand-700));
+      color:#fff; border-color: transparent;
+      text-shadow: 0 1px 0 rgba(0,0,0,.12);
+      box-shadow: 0 2px 10px rgba(30,79,181,.15);
+    }
+    .btn:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(36,90,201,.22); }
+    .btn.primary:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(36,90,201,.22), 0 2px 10px rgba(30,79,181,.15); }
+    .btn:active{ transform:translateY(0); }
+
+    .card{
+      background:var(--card); border:1px solid #eef2f8; border-radius:var(--radius-xl); box-shadow:var(--shadow);
+      padding:var(--pad-lg); display:grid; gap:14px;
+    }
+    .card.soft{ background:var(--surface); }
+    .card h3{ margin:0; font-size:var(--font-lg); }
+    .divider{ height:1px; background:var(--divider); border-radius:1px; }
+
+    /* ===== PLANTA ===== */
+    .room-list{ display:grid; gap:12px; }
+    .room{
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+      padding:12px 14px; border-radius:var(--radius-lg); border:1px solid #e9eef6; background:#fff; box-shadow:var(--shadow);
+      transition:transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+    }
+    .room:hover{ transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,.08); }
+    .room-num{
+      font-weight:800; font-size:clamp(28px,3.4vw + 1rem,40px); line-height:1; letter-spacing:.3px;
+      background:linear-gradient(135deg,var(--brand-700),var(--brand-600)); -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .room-badge{ font:600 var(--font-sm)/1 system-ui; color:#2a3240; }
+    .room-actions .btn{ padding:8px 10px; }
+
+    .subgrid{ display:grid; gap:14px; grid-template-columns:1fr; }
+    @container (min-width:780px){ .subgrid{ grid-template-columns:1fr 1fr; } }
+
+    .section-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .section-head .chip{ background:linear-gradient(180deg,#fff,#f6f9ff); }
+
+    /* ===== TAREAS ===== */
+    .task-group{ display:grid; gap:10px; }
+    .task-date{
+      display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:14px;
+      background:linear-gradient(180deg,#fff,#f6f9ff); border:1px solid #e6edf8; font-weight:700;
+    }
+    .task{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px;
+      padding:10px 12px; border:1px solid #e9eef6; border-radius:14px; background:#fff; box-shadow:var(--shadow);
+    }
+
+    /* ===== DIRECTORIO ===== */
+    .dir-controls{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .dir-section{ margin:8px 0 16px 0; border-left:6px solid var(--brand-500); padding-left:12px; }
+    .dir-section h4{
+      margin:0 0 8px 0; font-size:var(--font-base); letter-spacing:.2px;
+      position:sticky; top:8px; z-index:1; background:var(--surface);
+      padding:6px 8px; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.05); border:1px solid #eef2f8;
+    }
+    .dir-divider{
+      height:10px; background:linear-gradient(90deg,var(--brand-700),var(--brand-200));
+      border-radius:999px; margin:10px 0 16px 0; opacity:.20;
+    }
+    .contact{
+      display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px;
+      padding:10px 12px; border:1px solid #e9eef6; border-radius:14px; background:#fff; box-shadow:var(--shadow);
+    }
+    .contact small{ color:var(--muted); }
+
+    /* ===== BIBLIOTECA ===== */
+    .lib-form{ display:grid; gap:10px; grid-template-columns:1fr 2fr auto; }
+    .lib-list{ display:grid; gap:10px; }
+    .lib-link a{ word-break:break-all; }
+
+    /* A11y foco */
+    a,button,input,select,textarea{ accent-color:var(--brand-600); }
+    input,select,textarea{
+      border:1px solid #dfe6f2; border-radius:12px; padding:10px 12px; background:#fff; color:var(--text);
+      transition:box-shadow var(--duration) var(--ease), border var(--duration) var(--ease);
+      font-size:var(--font-base);
+    }
+    input:focus,select:focus,textarea:focus{ outline:none; border-color:var(--brand-600); box-shadow:0 0 0 3px rgba(36,90,201,.22); }
+
+    /* Evitar scroll lateral */
+    html, body, .app{ overflow-x:hidden; }
+
+    /* Visually hidden utility (para etiquetas accesibles si hiciera falta) */
+    .sr-only{ position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <header>
-      <div class="bar" role="banner">
-        <div class="brand" aria-label="Aurora UI">
-          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8Z" fill="#2563eb"/><circle cx="12" cy="12" r="4" fill="#0ea5e9"/></svg>
-          <div>
-            <h1>Aurora UI</h1>
-            <div class="subtitle">PWA Infecciosas · Android/PC</div>
-          </div>
-        </div>
-        <div class="userbox" aria-live="polite">
-          <span id="authStatus" class="muted">Desconectado</span>
-          <button id="btnLogin" class="btn primary" type="button">Entrar con Google</button>
-          <button id="btnLogout" class="btn" type="button" hidden>Salir</button>
+<noscript><p style="padding:12px;color:#b00020">Esta app necesita JavaScript para funcionar.</p></noscript>
+<div class="app" id="app">
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="title">Aurora UI · Infecciosas</div>
+          <div class="subtitle">PWA · Fondo 100% blanco · vFinal</div>
         </div>
       </div>
-    </header>
+      <div class="spacer"></div>
+      <button id="loginBtn" class="btn" type="button">Acceder</button>
+      <button id="logoutBtn" class="btn" type="button" style="display:none">Salir</button>
+    </div>
 
-    <div class="notice" id="noticeText">Fondo 100% blanco. Sincronización en tiempo real cuando haya sesión.</div>
-
-    <nav class="tabs" role="tablist" aria-label="Secciones">
-      <div class="tabs-inner">
-        <button class="tab" role="tab" aria-selected="true" aria-controls="sec-planta" id="tab-planta">Planta</button>
-        <button class="tab" role="tab" aria-selected="false" aria-controls="sec-tareas" id="tab-tareas">Tareas</button>
-        <button class="tab" role="tab" aria-selected="false" aria-controls="sec-directorio" id="tab-directorio">Directorio</button>
-      </div>
+    <!-- Tabs accesibles con teclado -->
+    <nav class="tabs" role="tablist" aria-label="Secciones" aria-orientation="horizontal">
+      <button class="tab" role="tab" id="tabPlanta" aria-controls="plantaView"
+              aria-selected="true" aria-current="page" tabindex="0" type="button">Planta</button>
+      <button class="tab" role="tab" id="tabTareas" aria-controls="tareasView"
+              aria-selected="false" tabindex="-1" type="button">Tareas</button>
+      <button class="tab" role="tab" id="tabDirectorio" aria-controls="directorioView"
+              aria-selected="false" tabindex="-1" type="button">Directorio</button>
+      <button class="tab" role="tab" id="tabBiblioteca" aria-controls="bibliotecaView"
+              aria-selected="false" tabindex="-1" type="button">Biblioteca</button>
     </nav>
+  </header>
 
-    <main>
-      <!-- PLANTA -->
-      <section id="sec-planta" class="section" role="tabpanel" aria-hidden="false" aria-labelledby="tab-planta">
-        <div class="grid grid-2">
-          <form id="formPlanta" class="card" autocomplete="off">
-            <h2 style="margin-top:0">Añadir habitación</h2>
-            <div class="grid">
-              <div class="field">
-                <label for="roomNumber">Número de habitación</label>
-                <input id="roomNumber" name="roomNumber" type="number" inputmode="numeric" min="0" placeholder="Ej. 312" required />
-              </div>
-              <div class="field">
-                <label for="roomDesc">Descripción</label>
-                <textarea id="roomDesc" name="roomDesc" placeholder="Motivo / recordatorio"></textarea>
-              </div>
-              <div class="row">
-                <button class="btn primary" type="submit">Añadir</button>
-                <button class="btn" type="reset">Limpiar</button>
-              </div>
+  <main>
+    <!-- PLANTA -->
+    <section id="plantaView" class="view active" role="tabpanel" aria-labelledby="tabPlanta">
+      <div class="card">
+        <div class="section-head">
+          <h3>Planta</h3>
+          <span class="chip">UI Premium</span>
+          <div class="spacer"></div>
+          <button class="btn primary" id="addRoomBtn" type="button">Añadir habitación</button>
+        </div>
+
+        <div class="subgrid">
+          <div class="card">
+            <div class="section-head">
+              <strong>Planta</strong>
+              <div class="spacer"></div>
+              <label for="roomFilter" class="sr-only">Filtrar habitaciones</label>
+              <input id="roomFilter" placeholder="Filtrar por nº o texto…" aria-label="Filtrar habitaciones" />
             </div>
-          </form>
+            <div id="roomList" class="room-list" aria-live="polite"></div>
+          </div>
 
           <div class="card">
-            <div class="row" style="justify-content:space-between; align-items:baseline;">
-              <h2 style="margin:.2rem 0">Listado</h2>
-              <div class="muted" id="plantaCount">0 items</div>
-            </div>
-            <div id="plantaList" class="list" aria-live="polite"></div>
-            <div id="plantaEmpty" class="empty" hidden>No hay habitaciones.</div>
+            <div class="section-head"><strong>Interconsultas</strong></div>
+            <div id="icList" class="room-list" aria-live="polite"></div>
           </div>
         </div>
-      </section>
 
-      <!-- TAREAS -->
-      <section id="sec-tareas" class="section" role="tabpanel" aria-hidden="true" aria-labelledby="tab-tareas">
-        <div class="grid grid-2">
-          <form id="formTarea" class="card" autocomplete="off">
-            <h2 style="margin-top:0">Nueva tarea</h2>
-            <div class="grid">
-              <div class="field">
-                <label for="taskText">Tarea</label>
-                <input id="taskText" name="taskText" type="text" placeholder="Descripción breve" required />
-              </div>
-              <div class="field">
-                <label for="taskDate">Fecha</label>
-                <input id="taskDate" name="taskDate" type="date" />
-              </div>
-              <div class="row">
-                <button class="btn primary" type="submit">Añadir</button>
-                <button class="btn" type="reset">Limpiar</button>
-              </div>
-            </div>
-          </form>
+        <div class="card">
+          <div class="section-head"><strong>Completados</strong></div>
+          <div id="doneList" class="room-list" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
 
-          <div class="card">
-            <div class="row" style="justify-content:space-between; align-items:baseline;">
-              <h2 style="margin:.2rem 0">Tareas</h2>
-              <div class="muted" id="tareasCount">0 items</div>
-            </div>
-            <div id="tareasList" class="list" aria-live="polite"></div>
-            <div id="tareasEmpty" class="empty" hidden>No hay tareas.</div>
+    <!-- TAREAS -->
+    <section id="tareasView" class="view" role="tabpanel" aria-labelledby="tabTareas">
+      <div class="card">
+        <div class="section-head">
+          <h3>Tareas</h3>
+          <div class="spacer"></div>
+          <button class="btn primary" id="addTaskBtn" type="button">Añadir tarea</button>
+        </div>
+        <div id="taskGroups" class="task-groups"></div>
+      </div>
+    </section>
+
+    <!-- DIRECTORIO -->
+    <section id="directorioView" class="view" role="tabpanel" aria-labelledby="tabDirectorio">
+      <div class="card soft">
+        <div class="section-head">
+          <h3>Directorio telefónico</h3>
+          <div class="spacer"></div>
+          <div class="h-stack dir-controls">
+            <label for="importJson" class="sr-only">Importar JSON</label>
+            <input type="file" id="importJson" accept="application/json" aria-label="Importar JSON" />
+            <button class="btn" id="exportJsonBtn" type="button">Exportar JSON</button>
           </div>
         </div>
-      </section>
 
-      <!-- DIRECTORIO -->
-      <section id="sec-directorio" class="section" role="tabpanel" aria-hidden="true" aria-labelledby="tab-directorio">
-        <div class="grid">
-          <div class="card">
-            <h2 style="margin-top:0">Directorio telefónico</h2>
-            <div class="dir-controls">
-              <button id="btnDirAdd" class="btn primary" type="button">Añadir contacto</button>
-              <button id="btnDirImport" class="btn" type="button">Importar JSON</button>
-              <button id="btnDirExport" class="btn" type="button">Exportar JSON</button>
-              <input id="dirFile" class="sr-only" type="file" accept="application/json" />
-            </div>
-            <div class="spacer"></div>
-            <div id="dirContainer"></div>
-            <div id="dirEmpty" class="empty" hidden>Sin contactos. Usa “Añadir” o “Importar JSON”.</div>
-          </div>
+        <div class="dir-section" data-section="Urgencias">
+          <h4>Urgencias</h4>
+          <div class="dir-divider" aria-hidden="true"></div>
+          <div class="dir-list" id="dirUrgencias"></div>
         </div>
-      </section>
-    </main>
-  </div>
 
-  <!-- ===== Firebase SDK (requerido para Auth + Firestore) =====
-       Inserta tus scripts del SDK (compat o modular) aquí si no los tienes ya en el proyecto.
-       Ejemplo (compat, versión de ejemplo, ajusta a la tuya):
-       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  -->
+        <div class="dir-section" data-section="Planta">
+          <h4>Planta</h4>
+          <div class="dir-divider" aria-hidden="true"></div>
+          <div class="dir-list" id="dirPlanta"></div>
+        </div>
 
-  <script>
-  // =============================
-  // Utilidades comunes
-  // =============================
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-  const byId = id => document.getElementById(id);
-  const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
-  const nowIso = () => new Date().toISOString();
+        <div class="dir-section" data-section="UCI">
+          <h4>UCI</h4>
+          <div class="dir-divider" aria-hidden="true"></div>
+          <div class="dir-list" id="dirUci"></div>
+        </div>
 
-  function toast(text) { try { byId('noticeText').textContent = text; } catch(e){} }
+        <div class="dir-section" data-section="Administración">
+          <h4>Administración</h4>
+          <div class="dir-divider" aria-hidden="true"></div>
+          <div class="dir-list" id="dirAdmin"></div>
+        </div>
+      </div>
+    </section>
 
-  // =============================
-  // Estado de sesión/Auth (Google)
-  // =============================
-  const authUI = {
-    setSignedIn(displayName) {
-      byId('authStatus').textContent = displayName ? `Conectado: ${displayName}` : 'Conectado';
-      byId('btnLogin').hidden = true; byId('btnLogout').hidden = false;
-    },
-    setSignedOut() {
-      byId('authStatus').textContent = 'Desconectado';
-      byId('btnLogin').hidden = false; byId('btnLogout').hidden = true;
-    }
+    <!-- BIBLIOTECA -->
+    <section id="bibliotecaView" class="view" role="tabpanel" aria-labelledby="tabBiblioteca">
+      <div class="card soft">
+        <div class="section-head">
+          <h3>Biblioteca</h3>
+          <span class="chip">Enlaces locales / web</span>
+        </div>
+        <div class="lib-form">
+          <label for="libLabel" class="sr-only">Título del enlace</label>
+          <input id="libLabel" placeholder="Título (p.ej., Guía C. difficile)" aria-label="Título del enlace" />
+          <label for="libUrl" class="sr-only">URL o ruta</label>
+          <input id="libUrl" placeholder="URL o ruta (https:// … o file:///…)" aria-label="URL o ruta" />
+          <button class="btn primary" id="addLib" type="button">Añadir</button>
+        </div>
+        <div class="divider"></div>
+        <div id="libList" class="lib-list" aria-live="polite"></div>
+        <p class="subtitle" style="margin:6px 0 0">
+          Nota: los enlaces <code>file://</code> pueden requerir permisos del sistema o abrirse solo desde el navegador.
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $  = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  const uidKey = 'aurora_uid';
+  const ls = {
+    get: (k, d=null)=>{ try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+    set: (k,v)=>localStorage.setItem(k, JSON.stringify(v)),
   };
 
-  // =============================
-  // Almacenamiento: Firestore (si disponible) o localStorage (fallback)
-  // =============================
-  const STORE_KEYS = { planta: 'aurora:planta', tareas: 'aurora:tareas', directorio: 'aurora:directorio' };
-
-  function lsGet(key, def=[]) { try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch(_) { return def; } }
-  function lsSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
-
-  const Data = (() => {
-    let mode = 'local'; // 'firestore' | 'local'
-    let fs = null;      // referencias firestore
-    let user = null;    // usuario autenticado
-
-    // listeners de tiempo real (para FS)
-    let unsub = { planta: null, tareas: null, directorio: null };
-
-    function isFirebaseReady() {
-      return typeof window !== 'undefined' && window.firebase && firebase.apps && firebase.apps.length > 0;
-    }
-
-    function initFirebaseApp() {
-      // Rellena con tu configuración real
-      const firebaseConfig = {
-        apiKey: "TU_API_KEY",
-        authDomain: "TU_DOMINIO.firebaseapp.com",
-        projectId: "TU_PROJECT_ID",
-        storageBucket: "TU_BUCKET.appspot.com",
-        messagingSenderId: "TU_SENDER_ID",
-        appId: "TU_APP_ID",
-      };
-      if (!isFirebaseReady()) return false;
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      try {
-        firebase.firestore().enablePersistence?.({ synchronizeTabs: true }).catch(() => {});
-      } catch (_) {}
-      return true;
-    }
-
-    function path(col) { return firebase.firestore().collection('aurora').doc(user.uid).collection(col); }
-
-    async function signIn() {
-      if (!isFirebaseReady()) { toast('SDK Firebase no cargado: usando almacenamiento local.'); return null; }
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const res = await firebase.auth().signInWithPopup(provider);
-      return res.user;
-    }
-
-    async function signOut() {
-      if (isFirebaseReady()) await firebase.auth().signOut();
-      user = null; mode = 'local';
-      stopRealtime();
-    }
-
-    function startRealtime() {
-      if (mode !== 'firestore') return;
-      stopRealtime();
-      unsub.planta = path('planta').orderBy('roomNumber').onSnapshot(snap => {
-        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render.planta(arr);
-      });
-      unsub.tareas = path('tareas').orderBy('date', 'asc').onSnapshot(snap => {
-        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render.tareas(arr);
-      });
-      unsub.directorio = path('directorio').orderBy('section').onSnapshot(snap => {
-        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render.directorio(arr);
-      });
-    }
-
-    function stopRealtime() {
-      Object.keys(unsub).forEach(k => { if (unsub[k]) { unsub[k](); unsub[k] = null; } });
-    }
-
-    function snapshotLocal() {
-      render.planta(lsGet(STORE_KEYS.planta));
-      render.tareas(lsGet(STORE_KEYS.tareas));
-      render.directorio(lsGet(STORE_KEYS.directorio));
-    }
-
-    // API pública
-    return {
-      async init() {
-        // intento de firebase si SDK disponible
-        if (window.firebase) {
-          try { initFirebaseApp(); } catch(_) {}
-          firebase?.auth?.().onAuthStateChanged(u => {
-            user = u || null;
-            if (u) { mode = 'firestore'; authUI.setSignedIn(u.displayName || ''); startRealtime(); toast('Sincronización en tiempo real activa.'); }
-            else { mode = 'local'; authUI.setSignedOut(); stopRealtime(); snapshotLocal(); toast('Modo local (sincronización desactivada).'); }
-          });
-        } else {
-          // sin SDK → local
-          authUI.setSignedOut(); snapshotLocal(); toast('SDK Firebase no detectado. Modo local.');
-        }
-      },
-      async login() { const u = await signIn(); return !!u; },
-      async logout() { await signOut(); },
-
-      // ---- PLANTA ----
-      async addPlanta(item) {
-        if (mode === 'firestore') { await path('planta').add(item); }
-        else { const arr = lsGet(STORE_KEYS.planta); arr.push({ id: uid(), ...item }); arr.sort((a,b)=>a.roomNumber-b.roomNumber); lsSet(STORE_KEYS.planta, arr); render.planta(arr); }
-      },
-      async removePlanta(id) {
-        if (mode === 'firestore') { await path('planta').doc(id).delete(); }
-        else { const arr = lsGet(STORE_KEYS.planta).filter(x=>x.id!==id); lsSet(STORE_KEYS.planta, arr); render.planta(arr); }
-      },
-
-      // ---- TAREAS ----
-      async addTarea(item) {
-        if (mode === 'firestore') { await path('tareas').add(item); }
-        else { const arr = lsGet(STORE_KEYS.tareas); arr.push({ id: uid(), ...item }); arr.sort((a,b)=> (a.date||'') < (b.date||'') ? -1 : 1); lsSet(STORE_KEYS.tareas, arr); render.tareas(arr); }
-      },
-      async removeTarea(id) {
-        if (mode === 'firestore') { await path('tareas').doc(id).delete(); }
-        else { const arr = lsGet(STORE_KEYS.tareas).filter(x=>x.id!==id); lsSet(STORE_KEYS.tareas, arr); render.tareas(arr); }
-      },
-
-      // ---- DIRECTORIO ----
-      async upsertContacto(item) {
-        if (mode === 'firestore') {
-          if (item.id) { const {id, ...rest} = item; await path('directorio').doc(id).set(rest, { merge:true }); }
-          else { await path('directorio').add(item); }
-        } else {
-          const arr = lsGet(STORE_KEYS.directorio);
-          if (item.id) {
-            const idx = arr.findIndex(x=>x.id===item.id); if (idx>-1) arr[idx] = item;
-          } else { item.id = uid(); arr.push(item); }
-          arr.sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
-          lsSet(STORE_KEYS.directorio, arr); render.directorio(arr);
-        }
-      },
-      async removeContacto(id) {
-        if (mode === 'firestore') { await path('directorio').doc(id).delete(); }
-        else { const arr = lsGet(STORE_KEYS.directorio).filter(x=>x.id!==id); lsSet(STORE_KEYS.directorio, arr); render.directorio(arr); }
-      },
-      async importDirectorio(jsonArr) {
-        const safe = (jsonArr||[]).map(x=>({ id: uid(), section: String(x.section||'General').slice(0,40), name: String(x.name||'').slice(0,80), phone: String(x.phone||'').slice(0,32), note: String(x.note||'').slice(0,120) }));
-        if (mode === 'firestore') {
-          const batch = firebase.firestore().batch();
-          safe.forEach(it=> { const ref = path('directorio').doc(); const {id, ...rest} = it; batch.set(ref, rest); });
-          await batch.commit();
-        } else {
-          const arr = lsGet(STORE_KEYS.directorio).concat(safe);
-          arr.sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
-          lsSet(STORE_KEYS.directorio, arr); render.directorio(arr);
-        }
-      },
-      async exportDirectorio() {
-        const data = (window.__lastDirectorio || []).map(({id, ...rest})=>rest);
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = `directorio-${new Date().toISOString().slice(0,10)}.json`; a.click();
-        URL.revokeObjectURL(a.href);
-      }
-    };
-  })();
-
-  // =============================
-  // Renderizado
-  // =============================
-  const render = {
-    planta(arr) {
-      arr = (arr||[]).slice().sort((a,b)=> (a.roomNumber||0) - (b.roomNumber||0));
-      byId('plantaCount').textContent = `${arr.length} ${arr.length===1?'item':'items'}`;
-      const cont = byId('plantaList'); cont.innerHTML = '';
-      byId('plantaEmpty').hidden = arr.length>0;
-      arr.forEach(item => {
-        const row = document.createElement('div'); row.className = 'room'; row.dataset.id = item.id;
-        const chip = document.createElement('div'); chip.className = 'room-chip'; chip.textContent = String(item.roomNumber ?? '');
-        const desc = document.createElement('div'); desc.className = 'room-desc'; desc.textContent = item.description || '';
-        const actions = document.createElement('div'); actions.className = 'room-actions';
-        const del = document.createElement('button'); del.className='iconbtn'; del.type='button'; del.title='Eliminar'; del.textContent='✕';
-        del.addEventListener('click', ()=> Data.removePlanta(item.id));
-        actions.appendChild(del);
-        row.append(chip, desc, actions);
-        cont.appendChild(row);
-      });
-    },
-    tareas(arr) {
-      arr = (arr||[]).slice().sort((a,b)=> (a.date||'') < (b.date||'') ? -1 : 1);
-      byId('tareasCount').textContent = `${arr.length} ${arr.length===1?'item':'items'}`;
-      const cont = byId('tareasList'); cont.innerHTML = '';
-      byId('tareasEmpty').hidden = arr.length>0;
-      arr.forEach(item => {
-        const row = document.createElement('div'); row.className = 'contact'; row.dataset.id = item.id;
-        const name = document.createElement('div'); name.innerHTML = `<strong></strong><br><small class="muted"></small>`;
-        name.querySelector('strong').textContent = item.text || '';
-        name.querySelector('small').textContent = item.date || '';
-        const del = document.createElement('button'); del.className='iconbtn'; del.type='button'; del.title='Eliminar'; del.textContent='✕';
-        del.addEventListener('click', ()=> Data.removeTarea(item.id));
-        row.append(name, del);
-        cont.appendChild(row);
-      });
-    },
-    directorio(arr) {
-      window.__lastDirectorio = arr = (arr||[]).slice().sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
-      const cont = byId('dirContainer'); cont.innerHTML = '';
-      byId('dirEmpty').hidden = arr.length>0;
-      // Agrupar por sección
-      const groups = arr.reduce((acc, c) => { (acc[c.section] ||= []).push(c); return acc; }, {});
-      Object.entries(groups).forEach(([section, items]) => {
-        const wrapper = document.createElement('div'); wrapper.className = 'dir-section';
-        const heading = document.createElement('h3'); heading.className='dir-heading'; heading.innerHTML = `<span>${section}</span><span class="dir-divider"></span>`;
-        wrapper.appendChild(heading);
-        const list = document.createElement('div'); list.className = 'list';
-        items.forEach(it => {
-          const row = document.createElement('div'); row.className = 'contact'; row.dataset.id = it.id;
-          const left = document.createElement('div');
-          left.innerHTML = `<strong></strong><br><small class="muted"></small>`;
-          left.querySelector('strong').textContent = it.name || '';
-          left.querySelector('small').textContent = [it.phone, it.note].filter(Boolean).join(' · ');
-          const right = document.createElement('div'); right.className = 'row';
-          const call = document.createElement('a'); call.className='btn'; call.href = `tel:${(it.phone||'').replace(/\s+/g,'')}`; call.textContent='Llamar'; call.setAttribute('aria-label', `Llamar a ${it.name}`);
-          const edit = document.createElement('button'); edit.className='btn'; edit.type='button'; edit.textContent='Editar';
-          const del = document.createElement('button'); del.className='btn'; del.type='button'; del.textContent='Borrar';
-          edit.addEventListener('click', ()=> openContactDialog(it));
-          del.addEventListener('click', ()=> Data.removeContacto(it.id));
-          right.append(call, edit, del);
-          row.append(left, right);
-          list.appendChild(row);
-        });
-        wrapper.appendChild(list);
-        cont.appendChild(wrapper);
-      });
-    }
+  // ===== Tabs accesibles (click + teclado con roving tabindex) =====
+  const tabButtons = $$('#tabPlanta, #tabTareas, #tabDirectorio, #tabBiblioteca');
+  const views = {
+    Planta: $('#plantaView'),
+    Tareas: $('#tareasView'),
+    Directorio: $('#directorioView'),
+    Biblioteca: $('#bibliotecaView')
   };
 
-  // =============================
-  // UI y eventos
-  // =============================
-  function initTabs() {
-    const tabs = $$('.tab');
-    tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab.id)));
-    function activateTab(id) {
-      tabs.forEach(t => t.setAttribute('aria-selected', String(t.id === id)));
-      ['planta','tareas','directorio'].forEach(name => {
-        const sec = byId(`sec-${name}`);
-        sec.setAttribute('aria-hidden', String(`tab-${name}` !== id));
-      });
-    }
-  }
-
-  function initPlanta() {
-    byId('formPlanta').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const roomNumber = Number(byId('roomNumber').value);
-      const description = byId('roomDesc').value.trim();
-      if (!Number.isFinite(roomNumber)) return;
-      await Data.addPlanta({ roomNumber, description, createdAt: nowIso() });
-      e.target.reset();
+  function activateTab(btn){
+    tabButtons.forEach(t=>{
+      const selected = t === btn;
+      t.setAttribute('aria-selected', String(selected));
+      t.setAttribute('tabindex', selected ? '0' : '-1');
+      t.toggleAttribute('aria-current', selected);
     });
+    Object.values(views).forEach(v => v.classList.remove('active'));
+    const view = views[btn.textContent];
+    if(view){ view.classList.add('active'); }
+    btn.focus({preventScroll:true});
   }
 
-  function initTareas() {
-    byId('formTarea').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = byId('taskText').value.trim();
-      const date = byId('taskDate').value || '';
-      if (!text) return;
-      await Data.addTarea({ text, date, createdAt: nowIso() });
-      e.target.reset();
+  tabButtons.forEach(tab=>{
+    tab.addEventListener('click', ()=> activateTab(tab));
+    tab.addEventListener('keydown', (e)=>{
+      const i = tabButtons.indexOf(e.currentTarget);
+      if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){ e.preventDefault(); activateTab(tabButtons[(i+1)%tabButtons.length]); }
+      if(e.key === 'ArrowLeft'  || e.key === 'ArrowUp'){   e.preventDefault(); activateTab(tabButtons[(i-1+tabButtons.length)%tabButtons.length]); }
+      if(e.key === 'Home'){ e.preventDefault(); activateTab(tabButtons[0]); }
+      if(e.key === 'End'){  e.preventDefault(); activateTab(tabButtons[tabButtons.length-1]); }
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activateTab(tab); }
     });
-  }
-
-  function initDirectorio() {
-    byId('btnDirAdd').addEventListener('click', () => openContactDialog());
-    byId('btnDirExport').addEventListener('click', () => Data.exportDirectorio());
-    byId('btnDirImport').addEventListener('click', () => byId('dirFile').click());
-    byId('dirFile').addEventListener('change', async (e) => {
-      const f = e.target.files?.[0]; if (!f) return;
-      try { const text = await f.text(); const json = JSON.parse(text); await Data.importDirectorio(Array.isArray(json) ? json : []); toast('Directorio importado.'); }
-      catch { toast('Archivo inválido.'); }
-      finally { e.target.value = ''; }
-    });
-  }
-
-  // Diálogo mínimo para contacto
-  function openContactDialog(existing) {
-    const d = document.createElement('dialog');
-    d.style.padding = '0'; d.style.border = '1px solid var(--border)'; d.style.borderRadius = '16px'; d.style.width = 'min(520px, 92vw)';
-    d.innerHTML = `
-      <form method="dialog" style="padding:1rem; display:grid; gap:.8rem;">
-        <h3 style="margin:.2rem 0; font-size:var(--step-2);">${existing? 'Editar contacto':'Nuevo contacto'}</h3>
-        <div class="field">
-          <label for="fSection">Sección</label>
-          <input id="fSection" name="section" type="text" placeholder="Ej. UCI" required value="${existing?.section||''}">
-        </div>
-        <div class="field">
-          <label for="fName">Nombre</label>
-          <input id="fName" name="name" type="text" placeholder="Ej. Control Enfermería" required value="${existing?.name||''}">
-        </div>
-        <div class="field">
-          <label for="fPhone">Teléfono</label>
-          <input id="fPhone" name="phone" type="text" placeholder="Extensión o número" value="${existing?.phone||''}">
-        </div>
-        <div class="field">
-          <label for="fNote">Nota</label>
-          <input id="fNote" name="note" type="text" placeholder="Opcional" value="${existing?.note||''}">
-        </div>
-        <div class="row" style="justify-content:flex-end; gap:.5rem; margin-top:.3rem;">
-          <button class="btn" value="cancel">Cancelar</button>
-          <button class="btn primary" value="ok">Guardar</button>
-        </div>
-      </form>`;
-    document.body.appendChild(d);
-    d.addEventListener('close', async () => {
-      if (d.returnValue === 'ok') {
-        const section = d.querySelector('#fSection').value.trim() || 'General';
-        const name = d.querySelector('#fName').value.trim();
-        const phone = d.querySelector('#fPhone').value.trim();
-        const note = d.querySelector('#fNote').value.trim();
-        if (name) await Data.upsertContacto({ id: existing?.id, section, name, phone, note });
-      }
-      d.remove();
-    });
-    d.showModal();
-  }
-
-  // =============================
-  // PWA: registro de Service Worker
-  // =============================
-  (function registerSW(){
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js', { scope: './' })
-          .then(() => console.log('SW registrado'))
-          .catch(err => console.warn('SW error', err));
-      });
-    }
-  })();
-
-  // =============================
-  // Bootstrap
-  // =============================
-  window.addEventListener('DOMContentLoaded', () => {
-    initTabs();
-    initPlanta();
-    initTareas();
-    initDirectorio();
-
-    byId('btnLogin').addEventListener('click', () => Data.login());
-    byId('btnLogout').addEventListener('click', () => Data.logout());
-
-    Data.init();
   });
-  </script>
 
-  <!--
-  CAMBIOS (Iteración vFinal.5):
-  - Legibilidad: chip de habitación con tamaño tipográfico mucho mayor (var(--step-3)), alto contraste y espaciado.
-  - Directorio: agrupación por "Sección" con encabezado y divisor de color (raya horizontal). Botones Llamar/Editar/Borrar.
-  - Fondo 100% blanco asegurado (meta theme-color + CSS !important en <body>).
-  - PWA: registro de Service Worker desde ./sw.js con scope './' compatible con GitHub Pages subcarpeta.
-  - Sincronización: capa de datos con modo Firestore en tiempo real (onSnapshot) y fallback a localStorage si no hay SDK/sesión.
-  - Accesibilidad: roles ARIA para tabs/tabpanel, foco visible nativo, contraste elevado, texto de estado aria-live.
-  - Import/Export JSON (Directorio) con sanitización básica de campos.
-  - Estructura estable y sin dependencias de UI externas; Firebase SDK debe incluirse aparte.
+  // ===== Estado local (fallback) =====
+  const state = {
+    rooms: ls.get('rooms', []),       // {id, num, texto, tipo}
+    tasks: ls.get('tasks', []),       // {id, dateISO, text, done}
+    directory: ls.get('directory', {Urgencias:[], Planta:[], UCI:[], Administración:[]}),
+    library: ls.get('library', [])    // {id, label, url}
+  };
+  function persist(){ ls.set('rooms', state.rooms); ls.set('tasks', state.tasks); ls.set('directory', state.directory); ls.set('library', state.library); }
 
-  QA (pasado localmente):
-  [x] Navegación por pestañas sin errores.
-  [x] Alta/Baja de habitaciones (orden ascendente por número) y tareas.
-  [x] Directorio: alta/edición/borrado + import/export JSON.
-  [x] Fondo blanco en Android/PC (emulación) y meta theme-color.
-  [x] SW: registro sin errores cuando existe sw.js.
-  [x] Modo local: datos persisten en localStorage.
-  [ ] Modo Firestore: requiere configurar SDK + reglas; probado con proyecto de ejemplo.
-  -->
+  // ===== PLANTA =====
+  const roomList = $('#roomList'), icList = $('#icList'), doneList = $('#doneList');
+  const roomFilter = $('#roomFilter');
+  $('#addRoomBtn').addEventListener('click', () => {
+    const num = prompt('Número de habitación'); if(!num) return;
+    const texto = prompt('Descripción breve');
+    state.rooms.push({ id: crypto.randomUUID(), num: String(num).trim(), texto: texto?.trim() ?? '', tipo:'planta' });
+    persist(); renderRooms(); syncUp('rooms');
+  });
+  roomFilter.addEventListener('input', renderRooms);
+
+  function renderRooms(){
+    const q = roomFilter.value?.toLowerCase() ?? '';
+    const filtered = state.rooms.filter(r => !q || r.num.toLowerCase().includes(q) || r.texto.toLowerCase().includes(q));
+    const planta = filtered.filter(r=>r.tipo==='planta').sort((a,b)=> +a.num - +b.num);
+    const ic     = filtered.filter(r=>r.tipo==='ic').sort((a,b)=> +a.num - +b.num);
+    const done   = filtered.filter(r=>r.tipo==='done').sort((a,b)=> +a.num - +b.num);
+
+    roomList.innerHTML = planta.map(roomTpl).join('');
+    icList.innerHTML   = ic.map(roomTpl).join('');
+    doneList.innerHTML = done.map(roomTpl).join('');
+
+    $$('.room .move').forEach(btn=>btn.addEventListener('change', (e)=>{
+      const id = e.target.dataset.id, to = e.target.value;
+      const r = state.rooms.find(x=>x.id===id); if(!r) return;
+      r.tipo = to; persist(); renderRooms(); syncUp('rooms');
+    }));
+    $$('.room .del').forEach(btn=>btn.addEventListener('click', (e)=>{
+      const id = e.currentTarget.dataset.id;
+      const i = state.rooms.findIndex(x=>x.id===id); if(i>-1){ state.rooms.splice(i,1); persist(); renderRooms(); syncUp('rooms'); }
+    }));
+    $$('.room .edit').forEach(btn=>btn.addEventListener('click', (e)=>{
+      const id = e.currentTarget.dataset.id; const r = state.rooms.find(x=>x.id===id); if(!r) return;
+      const newNum = prompt('Número', r.num) ?? r.num;
+      const newTxt = prompt('Descripción', r.texto) ?? r.texto;
+      r.num = String(newNum).trim(); r.texto = String(newTxt).trim();
+      persist(); renderRooms(); syncUp('rooms');
+    }));
+  }
+  function roomTpl(r){
+    return `
+      <div class="room" data-id="${r.id}">
+        <div class="room-num" aria-label="Habitación">${escapeHtml(r.num)}</div>
+        <div class="room-badge">${escapeHtml(r.texto || '—')}</div>
+        <div class="room-actions h-stack">
+          <select class="move" data-id="${r.id}" aria-label="Mover a">
+            <option value="planta" ${r.tipo==='planta'?'selected':''}>Planta</option>
+            <option value="ic" ${r.tipo==='ic'?'selected':''}>Interconsultas</option>
+            <option value="done" ${r.tipo==='done'?'selected':''}>Completados</option>
+          </select>
+          <button class="btn edit" data-id="${r.id}" type="button">Editar</button>
+          <button class="btn del" data-id="${r.id}" type="button">Borrar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== TAREAS =====
+  const taskGroups = $('#taskGroups');
+  $('#addTaskBtn').addEventListener('click', ()=>{
+    const text = prompt('Tarea'); if(!text) return;
+    const date = prompt('Fecha (YYYY-MM-DD)', new Date().toISOString().slice(0,10)) || new Date().toISOString().slice(0,10);
+    state.tasks.push({ id: crypto.randomUUID(), text: text.trim(), dateISO: date, done:false });
+    persist(); renderTasks(); syncUp('tasks');
+  });
+  function renderTasks(){
+    const groups = {};
+    for(const t of state.tasks) (groups[t.dateISO] ??= []).push(t);
+    const dates = Object.keys(groups).sort();
+    taskGroups.innerHTML = dates.map(d=>{
+      const items = groups[d].map(t=>`
+        <div class="task">
+          <div><label><input type="checkbox" data-id="${t.id}" class="taskDone" ${t.done?'checked':''}/> ${escapeHtml(t.text)}</label></div>
+          <button class="btn delTask" data-id="${t.id}" type="button">Borrar</button>
+        </div>
+      `).join('');
+      return `<div class="task-group"><div class="task-date">${d}</div>${items}</div>`;
+    }).join('');
+    $$('.taskDone').forEach(c=>c.addEventListener('change',(e)=>{
+      const id=e.target.dataset.id; const t = state.tasks.find(x=>x.id===id); if(!t) return;
+      t.done = e.target.checked; persist(); syncUp('tasks');
+    }));
+    $$('.delTask').forEach(b=>b.addEventListener('click',(e)=>{
+      const id = e.currentTarget.dataset.id;
+      const i = state.tasks.findIndex(x=>x.id===id); if(i>-1){ state.tasks.splice(i,1); persist(); renderTasks(); syncUp('tasks');}
+    }));
+  }
+
+  // ===== DIRECTORIO =====
+  const dirEls = { 'Urgencias': $('#dirUrgencias'), 'Planta': $('#dirPlanta'), 'UCI': $('#dirUci'), 'Administración': $('#dirAdmin') };
+  $('#importJson').addEventListener('change', async (e)=>{
+    const file = e.target.files?.[0]; if(!file) return;
+    try{
+      const text = await file.text();
+      const obj = JSON.parse(text);
+      const allowedSections = Object.keys(dirEls);
+      const clean = {Urgencias:[], Planta:[], UCI:[], Administración:[]};
+      for(const key of allowedSections){
+        const arr = Array.isArray(obj[key]) ? obj[key] : [];
+        clean[key] = arr.slice(0, 200).map(x=>({
+          nombre: String(x?.nombre ?? '').slice(0,80),
+          telefono: String(x?.telefono ?? '').slice(0,24),
+          nota: String(x?.nota ?? '').slice(0,120)
+        }));
+      }
+      state.directory = clean; persist(); renderDirectory(); syncUp('directory');
+      e.target.value = '';
+    }catch(err){ alert('JSON inválido'); console.error(err); }
+  });
+  $('#exportJsonBtn').addEventListener('click', ()=>{
+    const data = JSON.stringify(state.directory, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'directorio.json'; a.rel = 'noopener'; a.click(); URL.revokeObjectURL(url);
+  });
+  function renderDirectory(){
+    for(const [section, el] of Object.entries(dirEls)){
+      const list = state.directory[section] ?? [];
+      el.innerHTML = list.map(c => `
+        <div class="contact">
+          <div><div><strong>${escapeHtml(c.nombre || '—')}</strong></div><small>${escapeHtml(c.nota || '')}</small></div>
+          <div class="h-stack">${c.telefono ? `<a class="btn" href="tel:${encodeURI(c.telefono)}" rel="noopener">Llamar</a>` : ''}</div>
+        </div>`).join('') || `<div class="subtitle">Sin contactos</div>`;
+    }
+  }
+
+  // ===== BIBLIOTECA =====
+  const libList = $('#libList');
+  $('#addLib').addEventListener('click', ()=>{
+    const label = $('#libLabel').value.trim();
+    const url = $('#libUrl').value.trim();
+    if(!label || !url) return;
+    state.library.push({ id: crypto.randomUUID(), label, url });
+    $('#libLabel').value=''; $('#libUrl').value='';
+    persist(); renderLibrary(); syncUp('library');
+  });
+  function renderLibrary(){
+    libList.innerHTML = state.library.map(x=>`
+      <div class="contact lib-link">
+        <div><strong>${escapeHtml(x.label)}</strong><div class="subtitle">${escapeHtml(x.url)}</div></div>
+        <div class="h-stack">
+          <a class="btn" target="_blank" rel="noopener" href="${escapeAttr(x.url)}">Abrir</a>
+          <button class="btn" data-id="${x.id}" onclick="removeLib('${x.id}')" type="button">Borrar</button>
+        </div>
+      </div>`).join('') || `<div class="subtitle">Sin enlaces</div>`;
+  }
+  window.removeLib = (id)=>{
+    const i = state.library.findIndex(x=>x.id===id);
+    if(i>-1){ state.library.splice(i,1); persist(); renderLibrary(); syncUp('library'); }
+  };
+
+  // ===== Auth + Firestore (con persistencia offline) =====
+  let currentUser = null;
+  const loginBtn = $('#loginBtn'), logoutBtn = $('#logoutBtn');
+
+  async function tryInitFirebase(){
+    if(!(window.firebase?.apps || window.firebase?.initializeApp)) return false;
+    try{
+      const app = firebase.apps?.length ? firebase.app() : firebase.initializeApp(window.firebaseConfig || {});
+      const auth = firebase.auth?.() || null;
+      const db   = firebase.firestore?.() || null;
+
+      // Persistencia offline (best effort)
+      if (db && typeof firebase.firestore().enablePersistence === 'function') {
+        try { await firebase.firestore().enablePersistence({ synchronizeTabs: true }); }
+        catch (err) { console.warn('IndexedDB persistence no disponible, seguimos online-only:', err?.code || err); }
+      }
+
+      if(auth){
+        auth.onAuthStateChanged(user=>{
+          currentUser = user || null;
+          loginBtn.style.display = user ? 'none':'';
+          logoutBtn.style.display = user ? '':'none';
+          if(user){ ls.set(uidKey, user.uid); attachRealtime(db, user.uid); }
+        });
+      }
+      loginBtn.addEventListener('click', async ()=>{
+        if(!auth){ alert('SDK de Firebase no cargado'); return; }
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+      });
+      logoutBtn.addEventListener('click', async ()=>{ if(auth) await auth.signOut(); });
+
+      return true;
+    }catch(e){
+      console.warn('Firebase init falló (local fallback):', e);
+      return false;
+    }
+  }
+
+  function attachRealtime(db, uid){
+    if(!db || !uid) return;
+    const col = (k)=> db.collection('projects').doc('aurora').collection('users').doc(uid).collection(k);
+
+    Promise.all(['rooms','tasks','directory','library'].map(async k=>{
+      const snap = await col(k).get();
+      const arr = []; snap.forEach(d=>arr.push({id:d.id, ...d.data()}));
+      if(k==='directory'){
+        const doc = await col('meta').doc('directoryTree').get();
+        if(doc.exists){ state.directory = doc.data()?.tree || state.directory; }
+      }else{ state[k] = arr; }
+    })).then(()=>{ persist(); renderAll(); });
+
+    col('rooms').onSnapshot(s=>{ state.rooms = s.docs.map(d=>({id:d.id, ...d.data()})); persist(); renderRooms(); });
+    col('tasks').onSnapshot(s=>{ state.tasks = s.docs.map(d=>({id:d.id, ...d.data()})); persist(); renderTasks(); });
+    col('library').onSnapshot(s=>{ state.library = s.docs.map(d=>({id:d.id, ...d.data()})); persist(); renderLibrary(); });
+    col('meta').doc('directoryTree').onSnapshot(doc=>{
+      if(doc.exists){ state.directory = doc.data()?.tree || state.directory; persist(); renderDirectory(); }
+    });
+  }
+
+  let syncTimer=null;
+  function debounceSync(fn){ clearTimeout(syncTimer); syncTimer = setTimeout(fn, 180); }
+  function syncUp(key){
+    debounceSync(async ()=>{
+      if(!(window.firebase?.firestore) || !currentUser) return;
+      try{
+        const db = firebase.firestore();
+        const col = db.collection('projects').doc('aurora').collection('users').doc(currentUser.uid);
+        if(key==='directory'){
+          await col.collection('meta').doc('directoryTree').set({ tree: state.directory, ts: Date.now() }, { merge:true });
+        }else{
+          const target = col.collection(key);
+          const batch = db.batch();
+          const snap = await target.get();
+          snap.forEach(d=>batch.delete(d.ref));
+          for(const item of state[key]){
+            const {id, ...rest} = item;
+            batch.set(target.doc(id), rest);
+          }
+          await batch.commit();
+        }
+      }catch(e){ console.warn('syncUp fallo (local permanece):', e); }
+    });
+  }
+
+  function renderAll(){ renderRooms(); renderTasks(); renderDirectory(); renderLibrary(); }
+  renderAll(); tryInitFirebase();
+
+  function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+  function escapeAttr(s){ return String(s ?? '').replace(/"/g,'&quot;'); }
+
+  // ===== PWA: registro SW =====
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .then(reg => {
+          if(reg.waiting){ reg.waiting.postMessage({type:'SKIP_WAITING'}); }
+          reg.addEventListener('updatefound', ()=>{
+            const nw = reg.installing;
+            if(nw){ nw.addEventListener('statechange', ()=>{ if(nw.state==='installed' && navigator.serviceWorker.controller){ console.log('PWA actualizada'); } }); }
+          });
+        })
+        .catch(err => console.warn('SW registro fallo:', err));
+    });
+  }
+})();
+</script>
 </body>
 </html>
