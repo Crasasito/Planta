@@ -284,6 +284,98 @@
       gap:10px; align-items:center; border-radius:999px;
       box-shadow: var(--shadow-1), var(--rim);
     }
+
+    /* =========================================================
+       PREMIUM FINISH v2 — Glow + Rim lights + Safe-area lateral
+       (Añadidos, sin quitar nada)
+       ========================================================= */
+    :root{
+      --glow-mint: 0 0 0 3px color-mix(in oklab,var(--mint),#fff 80%);
+      --glow-teal: 0 0 0 3px color-mix(in oklab,var(--teal),#fff 82%);
+      --glow-coral:0 0 0 3px color-mix(in oklab,var(--coral),#fff 82%);
+      --glow-gold: 0 0 0 3px color-mix(in oklab,var(--gold),#fff 82%);
+    }
+
+    body{ overflow-x:hidden; }
+    .container{
+      padding-left: max(12px, calc(env(safe-area-inset-left) + 12px));
+      padding-right:max(12px, calc(env(safe-area-inset-right) + 12px));
+    }
+    .appbar .container{
+      padding-top: max(0px, calc(env(safe-area-inset-top) / 2));
+    }
+
+    /* Toolbar universal para evitar desbordes laterales */
+    .toolbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .toolbar > *{ flex:0 0 auto; }
+
+    /* Tabs: nunca cortadas en pantallas estrechas */
+    .tabs, .tabs-bottom{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .tab, .tab-bottom{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    /* Íconos un poco más compactos, con halo */
+    .tab .ico, .tab-bottom .ico{ width:18px; height:18px; }
+    .tab .ico-bg, .tab-bottom .ico-bg{ filter:drop-shadow(0 4px 10px rgba(0,0,0,.10)); }
+
+    /* Botones con rim light elegante */
+    .btn{ position:relative; }
+    .btn::after{ content:""; position:absolute; inset:0; border-radius:inherit; box-shadow: inset 0 1px 0 rgba(255,255,255,.9); pointer-events:none; }
+    .btn.primary{
+      background: linear-gradient(180deg, color-mix(in oklab,#fff 70%, var(--gold)), var(--gold-plate));
+      border-color: color-mix(in oklab,var(--gold), transparent 55%);
+      box-shadow: var(--shadow-1), 0 0 0 3px rgba(255,196,61,.06), var(--rim);
+    }
+    .btn.icon{ padding:0 8px; }
+
+    /* Cartas con sombra más profunda controlada */
+    .card{ box-shadow: 0 1px 2px rgba(5,18,35,.05), 0 14px 36px rgba(5,18,35,.10); }
+    .card-h::before{
+      content:""; position:absolute; inset:0; border-radius:inherit;
+      background: radial-gradient(120% 60% at 0% 0%, rgba(255,255,255,.38), transparent 55%);
+      mix-blend-mode: soft-light; pointer-events:none;
+    }
+    .card-h h2{ text-shadow: 0 1px 0 rgba(255,255,255,.75); }
+
+    /* Halo suave en iconografía circular */
+    .ico-wrap::after{
+      content:""; position:absolute; inset:-2px; border-radius:999px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 24px rgba(27,154,170,.12);
+      pointer-events:none;
+    }
+
+    /* Ítems: columna central sin overflow lateral jamás */
+    li.item{ grid-template-columns:auto minmax(0,1fr) auto; min-width:0; }
+    .actions{ display:flex; gap:6px; flex-wrap:wrap; }
+
+    /* Directorio: separador cromático tipo “marcador” */
+    .section-banner{ position:sticky; top: calc(var(--app-h) + 6px); z-index:2; }
+    .section-banner::before{
+      content:""; align-self:stretch; width:6px; border-radius:8px;
+      background: linear-gradient(180deg, var(--gold), color-mix(in oklab,var(--teal),#fff 40%));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 6px 18px rgba(27,154,170,.12);
+      margin-right:10px;
+    }
+
+    /* Barra inferior: siempre dentro de pantalla y sin cortes */
+    nav.bottom{ left:0; right:0; }
+    .tabs-bottom{ max-width:100%; }
+
+    /* Micro-ajustes para pantallas muy pequeñas */
+    @media (max-width: 420px){
+      .btn{ padding:9px 10px; }
+      .brand-chip{ padding:8px 12px }
+      .pill.room{ font-size: clamp(18px,6vw,24px); padding:10px 14px; }
+      .tab, .tab-bottom{ gap:8px; padding:8px 10px; }
+      .card-b{ padding:10px }
+    }
+    @media (max-width:360px){
+      .tab span, .tab-bottom span{ display:none } /* Oculta iconos para evitar truncado extremo */
+    }
+
+    @media (prefers-contrast: more){
+      .chip, .btn, .pill{ border-color: color-mix(in oklab,var(--ink),transparent 70%) }
+      .card-h{ border-bottom-color: color-mix(in oklab,var(--ink),transparent 82%) }
+    }
   </style>
 </head>
 <body>
@@ -663,7 +755,7 @@
 
     document.getElementById('tablist').addEventListener('keydown', (e)=>{
       const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n']).click(); }
       if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
       if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
       if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
