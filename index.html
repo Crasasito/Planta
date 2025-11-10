@@ -582,15 +582,27 @@
     const serverTS = fsMod.serverTimestamp;
 
     const $ = (s, r=document)=>r.querySelector(s);
-    const todayISO = ()=> new Date().toISOString().slice(0,10);
+    const todayISO = ()=> {
+      const d=new Date();
+      const pad=(n)=> (n<10?'0'+n:n);
+      return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    };
     const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
     const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
-    const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-    const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
+    const esc = (s)=>String((s==null)?'':s).replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});
+    const pillForDate=function(iso){
+      try{
+        const d=new Date(iso+'T00:00:00');
+        return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,'');
+      }catch(e){return iso}
+    };
 
     // Viewport fix (guard para no redeclarar)
     if(!window.__APP_setVHVar){
-      window.__APP_setVHVar=()=>{ document.documentElement.style.setProperty('--vh', `${Math.max(innerHeight,document.documentElement.clientHeight)*0.01}px`); };
+      window.__APP_setVHVar=function(){
+        var h=Math.max(innerHeight,document.documentElement.clientHeight)*0.01;
+        document.documentElement.style.setProperty('--vh', h+'px');
+      };
       addEventListener('resize', __APP_setVHVar, {passive:true}); __APP_setVHVar();
     }
 
@@ -603,22 +615,24 @@
       return first + second;
     }
 
-    const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
+    const setOnline=function(on){
+      const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad');
+    };
     setOnline(navigator.onLine);
-    addEventListener('online', ()=>setOnline(true), {passive:true});
-    addEventListener('offline',()=>setOnline(false), {passive:true});
+    addEventListener('online', function(){setOnline(true)}, {passive:true});
+    addEventListener('offline',function(){setOnline(false)}, {passive:true});
 
-    const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname']);
+    const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
     const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
 
-    const doSignIn=async()=>{ try{
+    const doSignIn=async function(){ try{
       if(matchMedia('(display-mode: standalone)').matches) await authMod.signInWithRedirect(auth,provider);
       else await authMod.signInWithPopup(auth,provider);
     }catch(e){ $('#authErr').textContent=e.message||String(e); } };
 
-    $('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async()=>authMod.signOut(auth);
+    $('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async function(){ await authMod.signOut(auth) };
 
-    authMod.onAuthStateChanged(auth, user=>{
+    authMod.onAuthStateChanged(auth, function(user){
       if(user){
         badgeAuth.textContent='Google: '+(user.displayName||user.email); badgeAuth.className='chip ok';
         avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.classList.remove('hide');
@@ -633,240 +647,255 @@
 
     /* ==================== Datos ==================== */
     const col = {
-      planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
-      tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
-      dir     : (uid)=> fsMod.collection(db,'users',uid,'directorio'),
+      planta  : function(uid){ return fsMod.collection(db,'users',uid,'planta') },
+      tareas  : function(uid){ return fsMod.collection(db,'users',uid,'tareas') },
+      dir     : function(uid){ return fsMod.collection(db,'users',uid,'directorio') },
     };
-    let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
-    function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
+    var unsubs=[]; function currentUid(){ return (auth.currentUser && auth.currentUser.uid) || null; }
+    function unmountApp(){ unsubs.forEach(function(u){u&&u()}); unsubs=[]; }
 
     /* ==================== Tabs ==================== */
     const tabOrder=['planta','tareas','directorio'];
     function setTabA11y(id){
-      for(const k of tabOrder){
-        const sel = (k===id);
-        const el = document.getElementById('tab-'+k);
+      for(var i=0;i<tabOrder.length;i++){
+        var k=tabOrder[i], sel=(k===id), el=document.getElementById('tab-'+k);
         el.setAttribute('aria-selected', sel);
         el.setAttribute('tabindex', sel ? '0' : '-1');
       }
     }
-    function selectTab(id, focusPanel=false){
+    function selectTab(id, focusPanel){
+      if(typeof focusPanel==='undefined') focusPanel=false;
       const map={planta:['panel-planta','tab-planta','b-planta','Planta'],tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],directorio:['panel-directorio','tab-directorio','b-directorio','Directorio']};
-      for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id);
+      for(const k in map){
+        const v=map[k]; const p=v[0], t=v[1], b=v[2], l=v[3]; const sel=(k===id);
         document.getElementById(p).classList.toggle('hide',!sel);
         document.getElementById(t).setAttribute('aria-selected',sel);
         document.getElementById(b).setAttribute('aria-selected',sel);
-        if(sel){ document.getElementById('title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) document.getElementById(p).focus?.(); }
+        if(sel){
+          document.getElementById('title').textContent=l;
+          localStorage.setItem('tab', k);
+          if(focusPanel){
+            var pnl=document.getElementById(p);
+            if(pnl && pnl.focus) pnl.focus();
+          }
+        }
       }
       setTabA11y(id);
       location.hash = id;
     }
-    document.getElementById('tab-planta').onclick =()=>selectTab('planta',true);
-    document.getElementById('tab-tareas').onclick =()=>selectTab('tareas',true);
-    document.getElementById('tab-directorio').onclick=()=>selectTab('directorio',true);
-    document.getElementById('b-planta').onclick =()=>selectTab('planta');
-    document.getElementById('b-tareas').onclick =()=>selectTab('tareas');
-    document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
+    document.getElementById('tab-planta').onclick =function(){selectTab('planta',true)};
+    document.getElementById('tab-tareas').onclick =function(){selectTab('tareas',true)};
+    document.getElementById('tab-directorio').onclick=function(){selectTab('directorio',true)};
+    document.getElementById('b-planta').onclick =function(){selectTab('planta')};
+    document.getElementById('b-tareas').onclick =function(){selectTab('tareas')};
+    document.getElementById('b-directorio').onclick=function(){selectTab('directorio')};
 
-    /* ---- Listener de teclado (corregido, sin comillas erróneas ni at(-1)) ---- */
-    document.getElementById('tablist').addEventListener('keydown', (e)=>{
-      const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-
-      const goIndex = (idx)=>{
-        const n = (idx + tabOrder.length) % tabOrder.length;
-        const nextId = 'tab-' + tabOrder[n];
-        const nextEl = document.getElementById(nextId);
+    // Teclado tabs (robusto ES2018)
+    document.getElementById('tablist').addEventListener('keydown', function(e){
+      var cur=-1;
+      for(var i=0;i<tabOrder.length;i++){
+        var el=document.getElementById('tab-'+tabOrder[i]);
+        if(el.getAttribute('aria-selected')==='true'){ cur=i; break; }
+      }
+      function goIndex(idx){
+        var n=(idx + tabOrder.length) % tabOrder.length;
+        var nextId='tab-'+tabOrder[n];
+        var nextEl=document.getElementById(nextId);
         if(nextEl){ nextEl.focus(); nextEl.click(); }
-      };
-
+      }
       if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); goIndex(cur+1); }
       if(e.key==='ArrowLeft'  || e.key==='ArrowUp'  ){ e.preventDefault(); goIndex(cur-1); }
       if(e.key==='Home'){ e.preventDefault(); goIndex(0); }
       if(e.key==='End' ){ e.preventDefault(); goIndex(tabOrder.length-1); }
     });
 
-    const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
+    const setNotif = function(n){ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?(n+' tareas activas'):'Sin avisos'; };
 
     /* ==================== PLANTA ==================== */
-    let currentGroup='planta';
+    var currentGroup='planta';
     function updateAddTarget(){
       const t=document.getElementById('addTarget');
       t.textContent = currentGroup==='planta' ? 'Añadiendo a: Planta' : 'Añadiendo a: Interconsulta';
     }
-    document.getElementById('p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
-    document.getElementById('p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
+    document.getElementById('p-group-planta').onclick=function(){currentGroup='planta'; updateAddTarget();};
+    document.getElementById('p-group-inter').onclick =function(){currentGroup='interconsulta'; updateAddTarget();};
     updateAddTarget();
 
-    const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
-      grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+    const plantaDoc = function(d){ return { room:String(d.room||'').trim(), desc:String(d.desc||'').trim(), pendiente:String(d.pendiente||'').trim(),
+      grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) }; };
 
-    const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
+    const btn = function(t,fn,cls){ if(!cls) cls='btn'; const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=function(e){e.preventDefault(); if(fn) fn(e)}; b.type='button'; return b; };
 
-    const docItemBase=(x,done=false)=>{
+    const docItemBase=function(x,done){
+      if(!done) done=false;
       const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl');
       const roomClass = 'pill room ' + (x.grupo==='interconsulta'?'room-inter':'room-planta');
-      li.innerHTML=`<span class="${roomClass}">${esc(x.room||'—')}</span>
-        <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
-        ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
-        <div class="toolbar actions"></div>`;
+      li.innerHTML='<span class="'+roomClass+'">'+esc(x.room||'—')+'</span>'
+        +'<div class="text">'+(done?('<div class="line strike">'+esc(x.desc||'')+'</div>'):('<div class="line">'+esc(x.desc||'')+'</div>'))
+        +(x.pendiente?('<div class="muted">'+esc(x.pendiente)+'</div>'):'')+'</div>'
+        +'<div class="toolbar actions"></div>';
       return li;
     };
 
-    const renderPlantaItem=(x)=>{
+    const renderPlantaItem=function(x){
       const li=docItemBase(x);
       const a=li.querySelector('.actions');
       a.append(
-        btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'),
-        btn('✎',()=>editPlanta(x),'btn icon')
+        btn('✓',function(){upd('planta',x.__id,{status:'done'})},'btn icon'),
+        btn('✎',function(){editPlanta(x)},'btn icon')
       );
-      const swap=btn('',async()=>{ const next = (x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next}); },'btn icon');
-      swap.innerHTML = `<svg class="ico"><use href="#ico-swap"/></svg>`;
-      a.append(swap, btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon'));
+      const swap=btn('',async function(){ const next = (x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next}); },'btn icon');
+      swap.innerHTML = '<svg class="ico"><use href="#ico-swap"/></svg>';
+      a.append(swap, btn('🗑️',function(){upd('planta',x.__id,{status:'trash'})},'btn icon'));
       return li;
     };
-    const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions');
-      a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
+    const renderPlantaDone=function(x){const li=docItemBase(x,true); const a=li.querySelector('.actions');
+      a.append(btn('↩',function(){upd('planta',x.__id,{status:'active'})},'btn icon'),btn('✖',function(){del('planta',x.__id)},'btn icon')); return li;};
 
-    const val=(id)=>document.getElementById(id)?.value||'';
-    const openEdit=(fields,onOk)=>{
+    const val=function(id){ var el=document.getElementById(id); return (el && el.value) || ''; };
+    const openEdit=function(fields,onOk){
       const body=document.getElementById('modalBody'); body.innerHTML='';
-      for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
+      for(var i=0;i<fields.length;i++){
+        var f=fields[i]; var w=document.createElement('div');
+        w.innerHTML='<label for="'+f.id+'">'+f.l+'</label><input id="'+f.id+'" value="'+esc(f.v||'')+'">';
+        body.append(w);
+      }
       const dlg=document.getElementById('modal'); document.getElementById('modalTitle').textContent='Editar'; document.getElementById('modalOk').textContent='Guardar'; document.getElementById('modalCancel').textContent='Cancelar';
       dlg.showModal(); dlg.setAttribute('aria-hidden','false');
-      document.getElementById('modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
-      document.getElementById('modalCancel').onclick=e=>{e.preventDefault(); dlg.close();};
-      dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
+      document.getElementById('modalOk').onclick=async function(e){e.preventDefault(); await onOk(); dlg.close();};
+      document.getElementById('modalCancel').onclick=function(e){e.preventDefault(); dlg.close();};
+      dlg.addEventListener('close',function(){dlg.setAttribute('aria-hidden','true')},{once:true});
     };
-    const editPlanta=(x)=>openEdit(
+    const editPlanta=function(x){ return openEdit(
       [{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}],
-      async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')})
-    );
+      async function(){ await upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}) }
+    ); };
 
     function setupPlanta(uid){
-      document.getElementById('p-add').onclick=async()=>{
+      document.getElementById('p-add').onclick=async function(){
         const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup});
-        if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(id=>document.getElementById(id).value='');
+        if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(function(id){var el=document.getElementById(id); if(el) el.value='';});
       };
       const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
       const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
 
-      const u1=fsMod.onSnapshot(qA,(s)=>{
-        const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
-        const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
-        const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+      const u1=fsMod.onSnapshot(qA,function(s){
+        const all=[]; s.forEach(function(d){const x=d.data(); x.__id=d.id; all.push(x);});
+        const arrP = all.filter(function(x){return (x.grupo||'planta')==='planta'}).sort(function(a,b){ return roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')) });
+        const arrI = all.filter(function(x){return (x.grupo||'planta')==='interconsulta'}).sort(function(a,b){ return roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')) });
         const lp=document.getElementById('p-list-planta'), li=document.getElementById('p-list-inter'); lp.innerHTML=''; li.innerHTML='';
-        arrP.forEach(x=>lp.appendChild(renderPlantaItem(x)));
-        arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
+        arrP.forEach(function(x){lp.appendChild(renderPlantaItem(x))});
+        arrI.forEach(function(x){li.appendChild(renderPlantaItem(x))});
         document.getElementById('p-empty-planta').style.display=arrP.length?'none':'block'; document.getElementById('p-empty-inter').style.display=arrI.length?'none':'block';
         document.getElementById('p-count-planta').textContent=arrP.length; document.getElementById('p-count-inter').textContent=arrI.length;
       });
 
-      const u2=fsMod.onSnapshot(qD,(s)=>{
-        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
-        const l=document.getElementById('p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x)));
+      const u2=fsMod.onSnapshot(qD,function(s){
+        const arr=[]; s.forEach(function(d){const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort(function(a,b){ var bu=(b.updatedAt && b.updatedAt.seconds)||0; var au=(a.updatedAt && a.updatedAt.seconds)||0; return bu-au; });
+        const l=document.getElementById('p-done'); l.innerHTML=''; arr.forEach(function(x){l.appendChild(renderPlantaDone(x))});
         document.getElementById('p-done-empty').style.display=arr.length?'none':'block'; document.getElementById('p-done-count').textContent=arr.length;
       });
       unsubs.push(u1,u2);
     }
 
     /* ==================== TAREAS ==================== */
-    const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-    function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
+    const tareaDoc = function(d){ return { date:d.date||todayISO(), text:String(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) }; };
+    function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch(e){return 0} }
     function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
 
     function renderTareaItem(x){
       const diff = daysFromToday(x.date);
       const h = hueForDays(diff);
       const li=document.createElement('li'); li.className='item t-hue'; li.style.setProperty('--h', h);
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
-        <div class="text"><div class="line">${esc(x.text||'')}</div></div>
-        <div class="toolbar actions"></div>`;
+      li.innerHTML='<span class="pill date">'+pillForDate(x.date)+'</span>'
+        +'<div class="text"><div class="line">'+esc(x.text||'')+'</div></div>'
+        +'<div class="toolbar actions"></div>';
       const a=li.querySelector('.actions');
-      a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'));
+      a.append(btn('✓',function(){upd('tareas',x.__id,{status:'done'})},'btn icon'),btn('✎',function(){editTarea(x)},'btn icon'),btn('🗑️',function(){upd('tareas',x.__id,{status:'trash'})},'btn icon'));
       return li;
     }
     function renderTareaDone(x){
-      const li=document.createElement('li'); li.className='item'; li.style.borderLeft = `6px solid hsl(150 50% 38%)`;
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
-        <div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
-        <div class="toolbar actions"></div>`;
-      li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+      const li=document.createElement('li'); li.className='item'; li.style.borderLeft = '6px solid hsl(150 50% 38%)';
+      li.innerHTML='<span class="pill date">'+pillForDate(x.date)+'</span>'
+        +'<div class="text"><div class="line strike">'+esc(x.text||'')+'</div></div>'
+        +'<div class="toolbar actions"></div>';
+      li.querySelector('.actions').append(btn('↩',function(){upd('tareas',x.__id,{status:'active'})},'btn icon'),btn('✖',function(){del('tareas',x.__id)},'btn icon'));
       return li;
     }
     function renderTareaTrash(x){
       const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
-        <div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
-        <div class="toolbar actions"></div>`;
-      li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+      li.innerHTML='<span class="pill date">'+pillForDate(x.date)+'</span>'
+        +'<div class="text muted"><div class="line">'+esc(x.text||'')+'</div></div>'
+        +'<div class="toolbar actions"></div>';
+      li.querySelector('.actions').append(btn('⤴',function(){upd('tareas',x.__id,{status:'active'})},'btn icon'),btn('✖',function(){del('tareas',x.__id)},'btn icon'));
       return li;
     }
-    const editTarea=(x)=>openEdit(
+    const editTarea=function(x){ return openEdit(
       [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
-      async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')})
-    );
+      async function(){ await upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')}) }
+    ); };
     function setupTareas(uid){
       document.getElementById('t-date').value=todayISO();
-      document.getElementById('t-add').onclick=async ()=>{
+      document.getElementById('t-add').onclick=async function(){
         const date=document.getElementById('t-date').value, text=document.getElementById('t-text').value.trim(); if(!text) return;
-        await fsMod.addDoc(col.tareas(uid), tareaDoc({date,text})); document.getElementById('t-text').value='';
+        await fsMod.addDoc(col.tareas(uid), tareaDoc({date:date,text:text})); document.getElementById('t-text').value='';
       };
       const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
       const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
       const qT=fsMod.query(col.tareas(uid),fsMod.where('status','==','trash'));
 
-      const u1=fsMod.onSnapshot(qA,(snap)=>{
-        const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
+      const u1=fsMod.onSnapshot(qA,function(snap){
+        const arr=[]; snap.forEach(function(d){const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort(function(a,b){ return daysFromToday(a.date)-daysFromToday(b.date) || (((b.createdAt&&b.createdAt.seconds)||0)-((a.createdAt&&a.createdAt.seconds)||0)) });
         const list=document.getElementById('t-list'); list.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); document.getElementById('t-count').textContent=n; document.getElementById('t-empty').style.display=n?'none':'block'; setNotif(n);});
+        idle(function(){arr.forEach(function(x){list.appendChild(renderTareaItem(x)); n++;}); document.getElementById('t-count').textContent=n; document.getElementById('t-empty').style.display=n?'none':'block'; setNotif(n);});
       });
-      const u2=fsMod.onSnapshot(qD,(s)=>{
-        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+      const u2=fsMod.onSnapshot(qD,function(s){
+        const arr=[]; s.forEach(function(d){const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort(function(a,b){ var bu=(b.updatedAt&&b.updatedAt.seconds)||0; var au=(a.updatedAt&&a.updatedAt.seconds)||0; return bu-au; });
         const l=document.getElementById('t-done'); l.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); document.getElementById('t-done-empty').style.display=n?'none':'block'; document.getElementById('t-done-count').textContent=n;});
+        idle(function(){arr.forEach(function(x){l.appendChild(renderTareaDone(x)); n++;}); document.getElementById('t-done-empty').style.display=n?'none':'block'; document.getElementById('t-done-count').textContent=n;});
       });
-      const u3=fsMod.onSnapshot(qT,(s)=>{
-        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
-        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+      const u3=fsMod.onSnapshot(qT,function(s){
+        const arr=[]; s.forEach(function(d){const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort(function(a,b){ var bu=(b.updatedAt&&b.updatedAt.seconds)||0; var au=(a.updatedAt&&a.updatedAt.seconds)||0; return bu-au; });
         const l=document.getElementById('t-trash'); l.innerHTML=''; let n=0;
-        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); document.getElementById('t-trash-empty').style.display=n?'none':'block'; document.getElementById('t-trash-count').textContent=n;});
+        idle(function(){arr.forEach(function(x){l.appendChild(renderTareaTrash(x)); n++;}); document.getElementById('t-trash-empty').style.display=n?'none':'block'; document.getElementById('t-trash-count').textContent=n;});
       });
-      document.getElementById('t-emptyTrash').onclick=()=>emptyTrash(uid,'tareas');
+      document.getElementById('t-emptyTrash').onclick=function(){ emptyTrash(uid,'tareas') };
       unsubs.push(u1,u2,u3);
     }
 
     /* ==================== DIRECTORIO ==================== */
-    const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-    let dirCache=[];
-    function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
+    const dirDoc=function(d){ return { seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) }; };
+    var dirCache=[];
+    function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?('tel:'+s):null; }
     function setupDirectorio(uid){
-      document.getElementById('d-add').onclick=async()=>{
+      document.getElementById('d-add').onclick=async function(){
         const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
         await fsMod.addDoc(col.dir(uid),d);
       };
       document.getElementById('d-import').onclick=importDir(uid); document.getElementById('d-export').onclick=exportDir(uid);
-      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); });
+      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),function(s){ dirCache=[]; s.forEach(function(d){const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); });
       document.getElementById('d-q').addEventListener('input', renderDirList, {passive:true});
       unsubs.push(u);
     }
     function phonesToChips(raw){
-      const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
-      return parts.map(p=>{ const href = telHref(p); return href?`<a class="pill" href="${href}" dir="ltr">${esc(p)}</a>`:`<span class="pill" dir="ltr">${esc(p)}</span>`; }).join(' ');
+      const parts = String(raw||'').split(/[,;\n]| {2,}/).map(function(s){return s.trim()}).filter(function(x){return !!x});
+      return parts.map(function(p){ const href = telHref(p); return href?('<a class="pill" href="'+href+'" dir="ltr">'+esc(p)+'</a>'):('<span class="pill" dir="ltr">'+esc(p)+'</span>'); }).join(' ');
     }
 
     function renderDirList(){
-      const v=($('#d-q')?.value||'').toLowerCase();
+      const qEl=$('#d-q'); const v=(qEl && qEl.value || '').toLowerCase();
       const l=$('#d-list'); if(!l) return; l.innerHTML='';
-      let arr=[...dirCache];
-      arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+      var arr=dirCache.slice(0);
+      arr.sort(function(a,b){ return (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||'') });
 
-      let n=0; let currentSec=''; const createdAnchors=new Set(); const lettersPresent=new Set();
-      idle(()=>{
-        arr.forEach(x=>{
-          const match = !v || [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v));
+      var n=0; var currentSec=''; const createdAnchors=new Set(); const lettersPresent=new Set();
+      idle(function(){
+        arr.forEach(function(x){
+          const match = !v || [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(function(y){return String(y||'').toLowerCase().includes(v)});
           if(!match) return;
           const sec = x.seccion||'Sin sección'; const letter=(sec[0]||'¿').toUpperCase();
 
@@ -874,21 +903,21 @@
             currentSec=sec; lettersPresent.add(letter);
             const hdr=document.createElement('div'); hdr.className='section-banner';
             if(!createdAnchors.has(letter)){ hdr.id='sec-'+letter; createdAnchors.add(letter); }
-            hdr.innerHTML=`<div style="display:flex;align-items:center;gap:12px">
-              <span class="initial">${letter}</span>
-              <strong class="sb-title">${esc(currentSec)}</strong>
-            </div>`;
+            hdr.innerHTML='<div style="display:flex;align-items:center;gap:12px">'
+              +'<span class="initial">'+letter+'</span>'
+              +'<strong class="sb-title">'+esc(currentSec)+'</strong>'
+              +'</div>';
             l.appendChild(hdr);
           }
 
           const li=document.createElement('li'); li.className='item';
-          li.innerHTML=`<div class="text">
-              <div class="line"><strong>${esc(x.nombre||'')}</strong></div>
-              <div class="line">${phonesToChips(x.telefono)}</div>
-              ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
-            </div>
-            <div class="toolbar actions"></div>`;
-          li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon'));
+          li.innerHTML='<div class="text">'
+              +'<div class="line"><strong>'+esc(x.nombre||'')+'</strong></div>'
+              +'<div class="line">'+phonesToChips(x.telefono)+'</div>'
+              +(x.notas?('<div class="muted">'+esc(x.notas)+'</div>'):'')
+            +'</div>'
+            +'<div class="toolbar actions"></div>';
+          li.querySelector('.actions').append(btn('✎',function(){editDir(x)},'btn icon'),btn('🗑️',function(){del('directorio',x.__id)},'btn icon'));
           l.appendChild(li); n++;
         });
         $('#d-count').textContent=n+' registros'; $('#d-empty').style.display=n?'none':'block';
@@ -900,13 +929,13 @@
       const nav = $('#abcIndex'); if(!nav) return;
       const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
       nav.innerHTML = '';
-      ABC.forEach(ch=>{
+      ABC.forEach(function(ch){
         const b=document.createElement('button');
         const present = lettersPresent.has(ch);
         b.textContent=ch;
         if(!present){ b.disabled=true; }
         else{
-          b.onclick=()=>{
+          b.onclick=function(){
             const target=document.getElementById('sec-'+ch);
             if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); highlightAbc(ch); }
           };
@@ -916,78 +945,80 @@
     }
     function highlightAbc(ch){
       const nav=$('#abcIndex'); if(!nav) return;
-      nav.querySelectorAll('button').forEach(btn=>btn.classList.toggle('active', btn.textContent===ch));
-      setTimeout(()=>nav.querySelectorAll('button').forEach(btn=>btn.classList.remove('active')),1200);
+      var btns=nav.querySelectorAll('button');
+      for(var i=0;i<btns.length;i++){ btns[i].classList.toggle('active', btns[i].textContent===ch); }
+      setTimeout(function(){ for(var i=0;i<btns.length;i++){ btns[i].classList.remove('active'); } },1200);
     }
 
-    const editDir=(x)=>openEdit(
+    const editDir=function(x){ return openEdit(
       [{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}],
-      async()=>upd('directorio',x.__id,{seccion:val('d_sec'),nombre:val('d_nom'),telefono:val('d_tel'),notas:val('d_not')})
-    );
-    function importDir(uid){return async()=>{try{
+      async function(){ await upd('directorio',x.__id,{seccion:val('d_sec'),nombre:val('d_nom'),telefono:val('d_tel'),notas:val('d_not')}) }
+    ); };
+    function importDir(uid){return async function(){try{
       const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
-      const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase();
-      const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); }
+      const snap=await fsMod.getDocs(col.dir(uid)); const key=function(o){return (String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase()};
+      const set=new Set(snap.docs.map(function(d){return key(d.data())})); const ops=[]; for(let i=0;i<arr.length;i++){ const o=arr[i]; if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); }
       await Promise.all(ops); toast('Importado ('+ops.length+')');
-    }catch(e){ toast(e.message||String(e)); }}};
-    function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
+    }catch(e){ toast(e.message||String(e)); }}}
+    function exportDir(uid){return async function(){const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(function(d){return {id:d.id, ...d.data()} }); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }}
 
     /* ==================== Emergencias (localStorage) ==================== */
     const defaultEmerg=[{n:'Parada',t:'2222'},{n:'UCI',t:'1234'},{n:'Seguridad',t:'091'},{n:'Jef. Enfermería',t:'2345'}];
-    function loadEmerg(){ try{ const j=localStorage.getItem('emerg_nums'); if(!j) return defaultEmerg; const a=JSON.parse(j); return Array.isArray(a)&&a.length?a:defaultEmerg; }catch{return defaultEmerg} }
+    function loadEmerg(){ try{ const j=localStorage.getItem('emerg_nums'); if(!j) return defaultEmerg; const a=JSON.parse(j); return (Array.isArray(a)&&a.length)?a:defaultEmerg; }catch(e){return defaultEmerg} }
     function saveEmerg(a){ localStorage.setItem('emerg_nums', JSON.stringify(a)); }
     function renderFab(){
       const list=$('#fabList'); list.innerHTML=''; const arr=loadEmerg();
-      arr.forEach((o,i)=>{
+      arr.forEach(function(o){
         const row=document.createElement('div'); row.className='contact-chip';
-        const href = o.t.replace(/[^\d+]/g,''); row.innerHTML=`<strong>${esc(o.n)}</strong>
-          <a class="btn" href="${href?('tel:'+href):'#'}" style="min-height:36px">${esc(o.t)}</a>`;
+        const href = o.t.replace(/[^\d+]/g,''); row.innerHTML='<strong>'+esc(o.n)+'</strong>'
+          +'<a class="btn" href="'+(href?('tel:'+href):'#')+'" style="min-height:36px">'+esc(o.t)+'</a>';
         list.appendChild(row);
       });
     }
-    $('#fab').onclick=()=>{ const p=$('#fabPanel'); const open=p.hasAttribute('open'); if(open){p.removeAttribute('open'); $('#fab').setAttribute('aria-expanded','false');} else { renderFab(); p.setAttribute('open',''); $('#fab').setAttribute('aria-expanded','true'); } };
-    $('#fabEdit').onclick=()=>{ const arr=loadEmerg(); const body=$('#modalBody'); body.innerHTML='';
-      arr.forEach((o,i)=>{ const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n" value="${esc(o.n)}"><label>Teléfono</label><input id="en_${i}_t" value="${esc(o.t)}">`; body.append(w); });
-      const add=document.createElement('button'); add.className='btn'; add.textContent='Añadir fila'; add.onclick={(e)=>{e.preventDefault(); const i=body.querySelectorAll('input').length/2; const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n"><label>Teléfono</label><input id="en_${i}_t">`; body.append(w); }};
+    $('#fab').onclick=function(){ const p=$('#fabPanel'); const open=p.hasAttribute('open'); if(open){p.removeAttribute('open'); $('#fab').setAttribute('aria-expanded','false');} else { renderFab(); p.setAttribute('open',''); $('#fab').setAttribute('aria-expanded','true'); } };
+    $('#fabEdit').onclick=function(){ const arr=loadEmerg(); const body=$('#modalBody'); body.innerHTML='';
+      arr.forEach(function(o,i){ const w=document.createElement('div'); w.innerHTML='<label>Nombre</label><input id="en_'+i+'_n" value="'+esc(o.n)+'"><label>Teléfono</label><input id="en_'+i+'_t" value="'+esc(o.t)+'">'; body.append(w); });
+      const add=document.createElement('button'); add.className='btn'; add.textContent='Añadir fila'; add.onclick=function(e){e.preventDefault(); const i=body.querySelectorAll('input').length/2; const w=document.createElement('div'); w.innerHTML='<label>Nombre</label><input id="en_'+i+'_n"><label>Teléfono</label><input id="en_'+i+'_t">'; body.append(w); };
       body.append(add);
       const dlg=$('#modal'); $('#modalTitle').textContent='Editar emergencias'; $('#modalOk').textContent='Guardar'; $('#modalCancel').textContent='Cancelar';
       dlg.showModal(); dlg.setAttribute('aria-hidden','false');
-      $('#modalOk').onclick=(e)=>{ e.preventDefault(); const out=[]; const inputs=[...body.querySelectorAll('input')];
-        for(let i=0;i<inputs.length;i+=2){ const n=inputs[i].value.trim(); const t=inputs[i+1].value.trim(); if(n||t) out.push({n,t}); }
+      $('#modalOk').onclick=function(e){ e.preventDefault(); const out=[]; const inputs=[].slice.call(body.querySelectorAll('input'));
+        for(var i=0;i<inputs.length;i+=2){ const n=inputs[i].value.trim(); const t=inputs[i+1].value.trim(); if(n||t) out.push({n:n,t:t}); }
         saveEmerg(out.length?out:defaultEmerg); dlg.close(); renderFab();
       };
-      $('#modalCancel').onclick=(e)=>{e.preventDefault(); dlg.close();};
-      dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
+      $('#modalCancel').onclick=function(e){e.preventDefault(); dlg.close();};
+      dlg.addEventListener('close',function(){dlg.setAttribute('aria-hidden','true')},{once:true});
     };
 
     /* ==================== Mount ==================== */
     function mountApp(uid){
       setupPlanta(uid); setupTareas(uid); setupDirectorio(uid);
-      const last = location.hash?.slice(1) || localStorage.getItem('tab') || 'planta';
+      const last = (location.hash ? location.hash.slice(1) : '') || localStorage.getItem('tab') || 'planta';
       selectTab(last);
     }
-    async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
-    async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
-    async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
+    async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users', (auth.currentUser && auth.currentUser.uid), kind, id); await fsMod.updateDoc(ref,Object.assign({},patch,{updatedAt:serverTS()})); }
+    async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',(auth.currentUser && auth.currentUser.uid),kind,id)); }
+    async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(function(x){return fsMod.deleteDoc(x.ref)})); toast('Papelera vaciada'); }
 
-    async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
+    async function pickReadText(){ if('showOpenFilePicker' in window){ const hArr=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const h=hArr[0]; const f=await h.getFile(); return await f.text(); }
+      return await new Promise(function(res,rej){ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=function(){ const f=i.files&&i.files[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=function(){res(String(r.result||''))}; r.onerror=function(){rej(new Error('Error leyendo'))}; r.readAsText(f); }; i.click(); }); }
     async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
     /* ==================== PWA banners & SW ==================== */
     let deferredPrompt=null;
-    addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;$('#installBanner').style.display='inline-flex';});
-    $('#installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').style.display='none'; } };
-    $('#installBtn').onclick=()=>$('#installAction').click();
+    addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;$('#installBanner').style.display='inline-flex';});
+    $('#installAction').onclick=async function(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').style.display='none'; } };
+    $('#installBtn').onclick=function(){ $('#installAction').click() };
 
     if('serviceWorker' in navigator){
       const reg=await navigator.serviceWorker.register(BASE+'sw.js');
-      navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
-      const showUpdate=()=>{$('#updateBanner').style.display='inline-flex'; $('#reloadNow').onclick=()=>reg.waiting?.postMessage({type:'SKIP_WAITING'});};
+      navigator.serviceWorker.addEventListener('controllerchange',function(){location.reload()});
+      const showUpdate=function(){ $('#updateBanner').style.display='inline-flex'; $('#reloadNow').onclick=function(){ if(reg.waiting){ reg.waiting.postMessage({type:'SKIP_WAITING'}); } } };
       if(reg.waiting) showUpdate();
-      reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
+      reg.addEventListener('updatefound',function(){const sw=reg.installing; if(!sw) return; sw.addEventListener('statechange',function(){if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
     }
 
-    selectTab((location.hash?.slice(1)) || 'planta');
+    selectTab((location.hash ? location.hash.slice(1) : '') || 'planta');
   </script>
 </body>
 </html>
