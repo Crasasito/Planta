@@ -190,6 +190,100 @@
       #title{font-size:clamp(18px,5vw,22px)}
     }
     @container (max-width:700px){ .g3,.g2{grid-template-columns:1fr} }
+
+    /* =========================================================
+       PREMIUM A11Y + ANDROID FIT + ENCABEZADOS DIFERENCIADOS
+       (Overrides puramente estéticos. No rompen JS/HTML.)
+       ========================================================= */
+
+    /* Android/iOS: evita escalados raros y garantiza autoajuste vertical */
+    html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    :root{ --bottom-h: 68px; }
+
+    /* El main nunca quedará bajo la barra inferior */
+    main.container{
+      min-height: calc(var(--vh, 1vh) * 100);
+      padding-bottom: calc(var(--bottom-h) + max(env(safe-area-inset-bottom), 12px));
+    }
+
+    /* Barra inferior translúcida con blur sutil y seguridad en safe-area */
+    nav.bottom{
+      backdrop-filter: saturate(1.05) blur(6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.98));
+      padding-bottom: max(env(safe-area-inset-bottom), 0px);
+    }
+
+    /* Legibilidad en tabs (tocar más cómodo) */
+    .tab, .tab-bottom{ font-size:clamp(14px,1.8vw,16px); }
+    .tab[aria-selected="true"], .tab-bottom[aria-selected="true"]{
+      outline: none;
+      box-shadow: 0 10px 24px rgba(20,70,120,.08), 0 0 0 1px rgba(255,255,255,.8) inset;
+    }
+
+    /* Inputs con foco visible premium */
+    input:focus-visible, textarea:focus-visible, select:focus-visible{
+      outline: none;
+      border-color: color-mix(in oklab,var(--teal),transparent 30%);
+      box-shadow: 0 0 0 3px color-mix(in oklab,var(--teal),#fff 70%), var(--rim);
+    }
+    label{ font-size:13px; font-weight:700; color:color-mix(in oklab,var(--ink),transparent 18%); }
+
+    /* Píldora de habitación: más grande, más contraste y mejor lectura */
+    .pill.room{
+      font-size:clamp(20px,5vw,28px);
+      padding:12px 16px;
+      line-height:1.1;
+      letter-spacing:.4px;
+      box-shadow:0 2px 10px rgba(0,0,0,.06), var(--rim);
+    }
+
+    /* Listado: mejor jerarquía y aire */
+    li.item{
+      grid-template-columns:auto 1fr auto;
+      align-items:start;
+      padding:14px 12px;
+    }
+    .text{ font-size:clamp(15px,1.6vw,18px); }
+    .muted{ opacity:.9 }
+
+    /* Encabezados de tarjeta: más “corte” (rim light) y separación */
+    .card-h{
+      padding:16px 18px;
+      border-bottom:1px solid color-mix(in oklab, var(--ink), transparent 90%);
+      box-shadow: var(--rim), inset 0 1px 0 rgba(255,255,255,.65);
+    }
+    .card-h h2{ font-size:clamp(20px,2.6vw,24px); letter-spacing:.25px }
+    .card-h .subtitle{ color:#07111d; opacity:.78; font-weight:800 }
+
+    /* Diferenciación cromática explícita por sección */
+    .hdr-planta{ background: var(--g-mint); }
+    .hdr-inter { background: var(--g-teal); }
+    .hdr-tareas{ background: var(--g-coral); }
+    .hdr-dir   { background: var(--g-gold); }
+
+    /* (Falta en el CSS original pero se usa en TAREAS) */
+    .hdr-coral { background: var(--g-coral); }
+
+    /* Borde interno sutil para todos los headers coloreados */
+    .hdr-planta::after, .hdr-inter::after, .hdr-tareas::after, .hdr-dir::after, .hdr-coral::after, .hdr-add::after{
+      content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.66), inset 0 -1px 0 rgba(7,17,29,.06);
+    }
+
+    /* Separadores de secciones en Directorio más legibles y “anclables” */
+    .section-banner{
+      background: linear-gradient(180deg,#ffffff, #fafcff);
+      border-color: color-mix(in oklab,var(--teal),transparent 82%);
+    }
+
+    /* Chips de estado con peso visual ligeramente mayor */
+    .chip{ font-weight:800 }
+
+    /* Banner de actualización/instalación: que no tape contenido y sea visible */
+    #updateBanner, #installBanner{
+      gap:10px; align-items:center; border-radius:999px;
+      box-shadow: var(--shadow-1), var(--rim);
+    }
   </style>
 </head>
 <body>
