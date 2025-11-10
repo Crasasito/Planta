@@ -46,6 +46,8 @@
       --shadow-1:0 1px 2px rgba(5,18,35,.06),0 10px 26px rgba(5,18,35,.06);
       --shadow-2:0 2px 8px rgba(5,18,35,.10),0 18px 36px rgba(5,18,35,.12);
       --rim: inset 0 1px 0 #fff;
+
+      --bottom-h: 68px; /* altura reservada barra inferior */
     }
 
     /* ---------- Base ---------- */
@@ -55,7 +57,7 @@
       margin:0;background:var(--surface);color:var(--ink);
       font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
       font-size:clamp(15px,1vw + .3vh,18px);line-height:1.65;min-height:100dvh;
-      -webkit-tap-highlight-color:transparent
+      -webkit-tap-highlight-color:transparent; overflow-x:hidden;
     }
     :focus-visible{outline:3px solid color-mix(in oklab, var(--gold), var(--mint) 30%);outline-offset:2px;border-radius:10px}
     .hide{display:none !important}
@@ -65,17 +67,22 @@
     /* ---------- AppBar + chips ---------- */
     header.appbar{
       position:sticky;top:0;z-index:50;min-height:var(--app-h);
-      background:linear-gradient(180deg,rgba(255,255,255,.9) 55%,rgba(244,248,255,.9) 100%);
+      background:linear-gradient(180deg,rgba(255,255,255,.9) 55%,rgba(244,248,255,.95) 100%);
       border-bottom:1px solid var(--border);
-      backdrop-filter:saturate(1.05) blur(8px)
+      backdrop-filter:saturate(1.05) blur(8px);
+      padding-top: env(safe-area-inset-top);
     }
     .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
     .brand-chip{
       display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;
-      color:#0E121A;background:var(--ivory);border:1px solid #eef4df;box-shadow:var(--shadow-1),var(--rim);
-      font-weight:900;letter-spacing:.3px
+      background: radial-gradient(120% 120% at 0% 0%, #ffffff, var(--ivory));
+      border:1px solid #eef4df;box-shadow:0 8px 22px rgba(10,22,40,.08), var(--rim);
+      font-weight:900;letter-spacing:.35px;
+      font-size: clamp(14px, 1.3vw, 16px);
+      color:#0d1522; text-shadow:0 1px 0 rgba(255,255,255,.9), 0 0 18px rgba(255,196,61,.18);
     }
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06), 0 0 16px rgba(255,196,61,.35); animation:pulse 2.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.12);filter:brightness(1.08)}}
     h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
 
     .chip{
@@ -132,7 +139,7 @@
       position:sticky;bottom:0;z-index:30;border-top:1px solid var(--border);
       backdrop-filter:saturate(1.05) blur(8px);
       background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.98));
-      padding-bottom:max(env(safe-area-inset-bottom),0px)
+      padding-bottom:max(env(safe-area-inset-bottom), 0px)
     }
     .tabs-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center;padding:8px 12px}
     .tab-bottom{
@@ -240,7 +247,6 @@
 
     /* ---------- Responsivo ---------- */
     html, body { -webkit-text-size-adjust:100%; text-size-adjust:100% }
-    :root{ --bottom-h: 68px }
     main.container{ min-height: calc(var(--vh, 1vh) * 100); padding-bottom: calc(var(--bottom-h) + max(env(safe-area-inset-bottom), 12px)) }
 
     @media (max-width:520px){
@@ -283,12 +289,6 @@
       <linearGradient id="grad-gold" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/>
       </linearGradient>
-
-      <!-- Fonendo (legacy, por si lo reusas en otros sitios) -->
-      <symbol id="ico-stetho" viewBox="0 0 24 24">
-        <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
-        <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
-      </symbol>
 
       <!-- Mini-hospital (Planta) -->
       <symbol id="ico-hospital" viewBox="0 0 24 24">
@@ -668,31 +668,21 @@
     document.getElementById('b-tareas').onclick =()=>selectTab('tareas');
     document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
 
-    /* ---- Corrección de sintaxis aquí (nunca comillas tras n) ---- */
+    /* ---- Listener de teclado (corregido, sin comillas erróneas ni at(-1)) ---- */
     document.getElementById('tablist').addEventListener('keydown', (e)=>{
       const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-      if(e.key==='ArrowRight' || e.key==='ArrowDown'){
-        e.preventDefault();
-        const n=(cur+1)%tabOrder.length;
-        document.getElementById('tab-'+tabOrder[n]).focus();
-        document.getElementById('tab-'+tabOrder[n]).click();
-      }
-      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){
-        e.preventDefault();
-        const n=(cur-1+tabOrder.length)%tabOrder.length;
-        document.getElementById('tab-'+tabOrder[n]).focus();
-        document.getElementById('tab-'+tabOrder[n]).click();
-      }
-      if(e.key==='Home'){
-        e.preventDefault();
-        document.getElementById('tab-'+tabOrder[0]).focus();
-        document.getElementById('tab-'+tabOrder[0]).click();
-      }
-      if(e.key==='End'){
-        e.preventDefault();
-        document.getElementById('tab-'+tabOrder.at(-1)).focus();
-        document.getElementById('tab-'+tabOrder.at(-1)).click();
-      }
+
+      const goIndex = (idx)=>{
+        const n = (idx + tabOrder.length) % tabOrder.length;
+        const nextId = 'tab-' + tabOrder[n];
+        const nextEl = document.getElementById(nextId);
+        if(nextEl){ nextEl.focus(); nextEl.click(); }
+      };
+
+      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); goIndex(cur+1); }
+      if(e.key==='ArrowLeft'  || e.key==='ArrowUp'  ){ e.preventDefault(); goIndex(cur-1); }
+      if(e.key==='Home'){ e.preventDefault(); goIndex(0); }
+      if(e.key==='End' ){ e.preventDefault(); goIndex(tabOrder.length-1); }
     });
 
     const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
@@ -701,8 +691,7 @@
     let currentGroup='planta';
     function updateAddTarget(){
       const t=document.getElementById('addTarget');
-      if(currentGroup==='planta'){ t.textContent='Añadiendo a: Planta'; }
-      else { t.textContent='Añadiendo a: Interconsulta'; }
+      t.textContent = currentGroup==='planta' ? 'Añadiendo a: Planta' : 'Añadiendo a: Interconsulta';
     }
     document.getElementById('p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
     document.getElementById('p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
@@ -959,7 +948,7 @@
     $('#fab').onclick=()=>{ const p=$('#fabPanel'); const open=p.hasAttribute('open'); if(open){p.removeAttribute('open'); $('#fab').setAttribute('aria-expanded','false');} else { renderFab(); p.setAttribute('open',''); $('#fab').setAttribute('aria-expanded','true'); } };
     $('#fabEdit').onclick=()=>{ const arr=loadEmerg(); const body=$('#modalBody'); body.innerHTML='';
       arr.forEach((o,i)=>{ const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n" value="${esc(o.n)}"><label>Teléfono</label><input id="en_${i}_t" value="${esc(o.t)}">`; body.append(w); });
-      const add=document.createElement('button'); add.className='btn'; add.textContent='Añadir fila'; add.onclick=(e)=>{e.preventDefault(); const i=body.querySelectorAll('input').length/2; const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n"><label>Teléfono</label><input id="en_${i}_t">`; body.append(w); };
+      const add=document.createElement('button'); add.className='btn'; add.textContent='Añadir fila'; add.onclick={(e)=>{e.preventDefault(); const i=body.querySelectorAll('input').length/2; const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n"><label>Teléfono</label><input id="en_${i}_t">`; body.append(w); }};
       body.append(add);
       const dlg=$('#modal'); $('#modalTitle').textContent='Editar emergencias'; $('#modalOk').textContent='Guardar'; $('#modalCancel').textContent='Cancelar';
       dlg.showModal(); dlg.setAttribute('aria-hidden','false');
