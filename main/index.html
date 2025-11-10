@@ -5,17 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#ffffff"/>
   <meta name="color-scheme" content="light"/>
-  <title>Aurora UI — Infecciosas · Planta · Tareas · Directorio · Biblioteca</title>
-
+  <title>Aurora UI — Infecciosas · Planta · Tareas · Directorio · Biblioteca · *</title>
   <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest"/>
   <link rel="icon" href="icons/icon-192.png" sizes="192x192"/>
   <link rel="apple-touch-icon" href="icons/icon-192.png"/>
-
   <style>
     /* ===================  TOKENS · One UI 8 Premium  =================== */
     :root{
-      /* Color base (respetando paleta previa, con derivados elegantes) */
       --ink:#0b1220;           /* texto principal */
       --muted:#5b677c;         /* texto secundario */
       --surface:#ffffff;       /* fondo base */
@@ -35,6 +32,7 @@
       --g-green:   linear-gradient(135deg,#DCFCE7 0%, #34D399 55%, #10B981 100%);
       --g-dir:     linear-gradient(135deg,#FFF1B6 0%, #FACC15 55%, #EAB308 100%);
       --g-biblio:  linear-gradient(135deg,#E0E7FF 0%, #818CF8 55%, #6366F1 100%);
+      --g-extra:   linear-gradient(135deg,#fdf2ff 0%, #f0abfc 55%, #d946ef 100%);
 
       /* Dimensiones */
       --radius:14px; --radius-xl:22px; --appbar:64px; --touch:44px; --safe-bottom:calc(88px + env(safe-area-inset-bottom));
@@ -44,9 +42,10 @@
       --shadow-2: 0 2px 10px rgba(6,16,30,.10),0 20px 40px rgba(6,16,30,.14);
       --glow: 0 0 0 1px rgba(255,255,255,.70) inset, 0 12px 26px rgba(16,40,80,.12);
 
-      /* Tipografía fluida */
+      /* Tipografía fluida + viewport real en Android */
       --fs: clamp(15px, 0.85vw + 0.35vh, 18px);
       --h2: clamp(20px, 2.6vw, 26px);
+      --vh: 1vh;
     }
 
     *,*::before,*::after{box-sizing:border-box}
@@ -54,7 +53,7 @@
     body{
       margin:0; color:var(--ink); background:var(--surface);
       font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-      font-size:var(--fs); line-height:1.65; min-height:100dvh;
+      font-size:var(--fs); line-height:1.65; min-height:calc(var(--vh) * 100);
       padding-bottom: var(--safe-bottom);
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       -webkit-tap-highlight-color:transparent; overflow-x:hidden;
@@ -62,6 +61,7 @@
     :focus-visible{outline:3px solid color-mix(in oklab,var(--brand-3),var(--brand-2) 35%); outline-offset:2px; border-radius:12px}
     .container{max-width:min(1180px,98vw); margin:0 auto; padding:8px clamp(12px,4vw,20px); container-type:inline-size}
     .grow{flex:1;min-width:0}
+    .hide{display:none !important}
 
     /* ===================  GLASS APPBAR =================== */
     header.appbar{
@@ -80,8 +80,13 @@
     .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--brand-3);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
     header.appbar h1{
       margin:0; font-size:clamp(18px,2.2vw,22px); font-weight:1000; letter-spacing:.2px;
-      color:#0d1726; -webkit-text-stroke:.35px rgba(255,255,255,.65);
-      text-shadow: 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(0,0,0,.10);
+      color:#0d1726;
+      /* RIM-LIGHT + stroke para legibilidad premium */
+      -webkit-text-stroke:.45px rgba(255,255,255,.85);
+      text-shadow:
+        0 0 1px rgba(255,255,255,.9),
+        0 1px 0 rgba(255,255,255,.9),
+        0 8px 22px rgba(0,0,0,.12);
     }
 
     .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
@@ -113,8 +118,12 @@
     }
     .card-h h2{
       margin:0; font-size:var(--h2); font-weight:1000; letter-spacing:.2px; color:#0b1220;
-      -webkit-text-stroke:.35px rgba(255,255,255,.65);
-      text-shadow: 0 1px 0 rgba(255,255,255,.9), 0 2px 12px rgba(0,0,0,.14), 0 16px 32px rgba(0,0,0,.08);
+      -webkit-text-stroke:.45px rgba(255,255,255,.85);
+      text-shadow:
+        0 0 1px rgba(255,255,255,.95),
+        0 1px 0 rgba(255,255,255,.95),
+        0 2px 12px rgba(0,0,0,.14),
+        0 16px 32px rgba(0,0,0,.08);
     }
     .subtitle{ color:#06121fcc; font-weight:800 }
 
@@ -125,6 +134,7 @@
     .hdr-green{  background:var(--g-green) }
     .hdr-dir{    background:var(--g-dir) }
     .hdr-biblio{ background:var(--g-biblio) }
+    .hdr-extra{  background:var(--g-extra) }
 
     /* ===================  TABS =================== */
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -146,6 +156,7 @@
     .ico-wrap{ position:relative; display:inline-grid; place-items:center }
     .ico-wrap::before{
       content:""; position:absolute; inset:-8px; border-radius:14px;
+      /* halo suave alrededor del icono para sensación premium */
       background: radial-gradient(60% 60% at 50% 40%, #ffffff 0%, #ffffff 55%, rgba(255,255,255,0) 100%);
       box-shadow: 0 12px 28px rgba(0,0,0,.10); z-index:0;
     }
@@ -157,23 +168,47 @@
     label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
     input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:inset 0 1px 0 #fff}
     textarea{min-height:90px;resize:vertical}
+
+    /* Píldoras de habitaciones — mayor contraste + rim light */
     .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
-    .pill.room{font-family: ui-monospace,Consolas,Menlo,monospace;font-size:clamp(22px,3.2vw,26px); padding:12px 16px; letter-spacing:.3px; box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 94%), 0 0 0 6px rgba(6,214,160,.12), inset 0 1px 0 #fff}
+    .pill.room{
+      font-family: ui-monospace,Consolas,Menlo,monospace;
+      font-size:clamp(22px,3.2vw,26px);
+      padding:12px 16px; letter-spacing:.3px;
+      color:#07101f;
+      background: linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
+      border:1px solid color-mix(in oklab,var(--brand-2),transparent 75%);
+      /* aro exterior + interior para legibilidad */
+      box-shadow:
+        0 0 0 1px color-mix(in oklab,#000,transparent 90%),
+        0 0 0 6px rgba(6,214,160,.12),
+        inset 0 1px 0 #fff,
+        0 14px 30px rgba(7,16,31,.08);
+    }
     .pill.date{font-weight:1000}
 
     .viewer{ width:100%; block-size:min(70vh, 100dvh - 280px); border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1); }
 
-    /* ===================  DIRECTORIO: LAYOUT + A-Z =================== */
+    /* ===================  DIRECTORIO: LAYOUT + A-Z (sticky headers que no tapan) =================== */
     .dir-wrap{display:grid;grid-template-columns:1fr min(36px,8vw);gap:12px;align-items:start}
     .az{position:sticky; top:calc(var(--appbar) + 10px); display:grid; grid-template-columns:1fr; gap:4px; align-content:start}
     .az a{display:grid;place-items:center; width:100%; aspect-ratio:1/1; border:1px solid var(--border); border-radius:10px; text-decoration:none; color:#263041; font-weight:900; background:#fff; box-shadow:inset 0 1px 0 #fff}
     .az a:focus-visible{outline-offset:0}
-    .section-tag{position:sticky; top:calc(var(--appbar) + 8px); z-index:2; margin:-12px; margin-bottom:8px; padding:6px 12px; font-weight:1000; letter-spacing:.6px; border-radius:12px; color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%); border:1px solid var(--border); box-shadow:var(--shadow-1)}
+    /* Encabezado de sección con fondo sólido y borde, y margen de scroll para no solapar */
+    .section-tag{
+      position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
+      margin:-12px; margin-bottom:8px; padding:6px 12px;
+      font-weight:1000; letter-spacing:.6px; border-radius:12px;
+      color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
+      border:1px solid var(--border); box-shadow:var(--shadow-1)
+    }
+    /* Empuje de anclaje para evitar que el sticky tape el primer elemento */
+    section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px); }
 
     /* ===================  RESPONSIVE FINO =================== */
     @media (max-width:560px){
-      .statusRow{order:3;width:100%}
-      #userGroup{order:4;width:100%;justify-content:flex-start}
+      .statusRow{order:4;width:100%}
+      #userGroup{order:5;width:100%;justify-content:flex-start}
       #title{font-size:clamp(18px,5vw,22px)}
       .dir-wrap{grid-template-columns:1fr min(30px,8vw)}
       li.item{grid-template-columns:auto 1fr auto}
@@ -189,274 +224,302 @@
       <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd0dc"/><stop offset="1" stop-color="#EF476F"/></linearGradient>
       <linearGradient id="grad-gold"  x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/></linearGradient>
       <linearGradient id="grad-indigo"x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
+  <symbol id="ico-stetho" viewBox="0 0 24 24">
+    <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
+    <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
+  </symbol>
+  <symbol id="ico-note" viewBox="0 0 24 24">
+    <path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+    <path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/>
+  </symbol>
+  <symbol id="ico-phone" viewBox="0 0 24 24">
+    <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/>
+    <circle cx="11" cy="7" r="1" fill="#fff"/>
+    <rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/>
+    <rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/>
+  </symbol>
+  <symbol id="ico-books" viewBox="0 0 24 24">
+    <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#grad-indigo)"/>
+    <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#grad-gold)"/>
+    <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#grad-mint)"/>
+    <rect x="3.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+    <rect x="10.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+    <rect x="17.5" y="9" width="2.8" height="1.2" rx=".6" fill="#fff" opacity=".9"/>
+  </symbol>
+  <symbol id="ico-bell" viewBox="0 0 24 24">
+    <path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/>
+    <circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/>
+  </symbol>
+  <symbol id="ico-gear" viewBox="0 0 24 24">
+    <path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0 0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24">
+    <path fill="url(#grad-gold)" d="M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 8.8l6.5-.9L12 2z"/>
+  </symbol>
+</defs>
 
-      <symbol id="ico-stetho" viewBox="0 0 24 24">
-        <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
-        <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
-      </symbol>
-      <symbol id="ico-note" viewBox="0 0 24 24">
-        <path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
-        <path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/>
-      </symbol>
-      <symbol id="ico-phone" viewBox="0 0 24 24">
-        <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/>
-        <circle cx="11" cy="7" r="1" fill="#fff"/>
-        <rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/>
-        <rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/>
-      </symbol>
-      <symbol id="ico-books" viewBox="0 0 24 24">
-        <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#grad-indigo)"/>
-        <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#grad-gold)"/>
-        <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#grad-mint)"/>
-        <rect x="3.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
-        <rect x="10.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
-        <rect x="17.5" y="9" width="2.8" height="1.2" rx=".6" fill="#fff" opacity=".9"/>
-      </symbol>
-      <symbol id="ico-bell" viewBox="0 0 24 24">
-        <path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/>
-        <circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/>
-      </symbol>
-      <symbol id="ico-gear" viewBox="0 0 24 24">
-        <path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0 0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/>
-      </symbol>
-      <symbol id="ico-swap" viewBox="0 0 24 24">
-        <path fill="url(#grad-teal)" d="M7 7h10l-3-3 1.4-1.4L21 8l-5.6 5.4L14 12l3-3H7V7z"/>
-        <path fill="url(#grad-coral)" d="M17 17H7l3 3-1.4 1.4L3 16l5.6-5.4L10 12l-3 3h10v2z"/>
-      </symbol>
-    </defs>
   </svg>
-
   <header class="appbar" role="banner">
     <div class="container">
       <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
-      <div class="grow"></div>
-      <h1 id="title">Planta</h1>
+  <!-- Botón * entre marca y título -->
+  <button id="extraToggle" class="btn icon" aria-label="Abrir sección *" title="Sección * (personalizable)">
+    <svg class="ico" aria-hidden="true"><use href="#ico-star"/></svg>
+  </button>
 
-      <div class="statusRow" aria-live="polite" style="margin-left:12px">
-        <span id="badge-online" class="chip bad">Offline</span>
-        <span id="badge-auth" class="chip bad">Google: desconectado</span>
-      </div>
+  <h1 id="title">Planta</h1>
+  <div class="grow"></div>
 
-      <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
-        <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
-          <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
-          <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
-          <span id="notifBadge" class="chip" title="Tareas activas">0</span>
-        </div>
-        <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
-        <button id="signin"  class="btn primary">Acceder</button>
-        <button id="signout" class="btn hide">Salir</button>
-      </div>
+  <div class="statusRow" aria-live="polite" style="margin-left:12px">
+    <span id="badge-online" class="chip bad">Offline</span>
+    <span id="badge-auth" class="chip bad">Google: desconectado</span>
+  </div>
+
+  <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+    <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
+      <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
+      <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+      <span id="notifBadge" class="chip" title="Tareas activas">0</span>
     </div>
-  </header>
+    <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
+    <button id="signin"  class="btn primary">Acceder</button>
+    <button id="signout" class="btn hide">Salir</button>
+  </div>
+</div>
 
+  </header>
   <main class="container">
     <div id="updateBanner" class="chip" style="display:none">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
     <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
+<!-- Gate -->
+<section id="gate" class="card" role="region" aria-live="polite">
+  <div class="card-h hdr-add"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
+  <div class="card-b">
+    <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+    <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
+    <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+  </div>
+</section>
 
-    <!-- Gate -->
-    <section id="gate" class="card" role="region" aria-live="polite">
-      <div class="card-h hdr-add"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
+<!-- App -->
+<section id="app" class="hide" aria-labelledby="tabsLabel">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-b">
+      <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
+      <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
+        <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
+          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta
+        </button>
+        <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
+          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas
+        </button>
+        <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
+          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio
+        </button>
+        <button id="tab-biblioteca" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblioteca" tabindex="-1">
+          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLANTA ===== -->
+  <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
+    <div class="card">
+      <div class="card-h hdr-add"><h2>Añadir habitación</h2><span class="subtitle">Planta e interconsultas</span></div>
+      <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+        <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
+        <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
+        <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
+        <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr">
+          <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
+          <div>
+            <label>Grupo</label>
+            <div role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 #fff">
+              <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#efe9ff;border-color:#d7c8ff">Planta</button>
+              <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#ffedd5;border-color:#fdba74">Interconsulta</button>
+            </div>
+            <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
       <div class="card-b">
-        <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
-        <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
-        <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+        <ul id="p-list-planta" class="list"></ul>
+        <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
       </div>
-    </section>
+    </div>
 
-    <!-- App -->
-    <section id="app" class="hide" aria-labelledby="tabsLabel">
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-b">
-          <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
-          <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
-            <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
-              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta
-            </button>
-            <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
-              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas
-            </button>
-            <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
-              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio
-            </button>
-            <button id="tab-biblioteca" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblioteca" tabindex="-1">
-              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca
-            </button>
-          </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
+      <div class="card-b">
+        <ul id="p-list-inter" class="list"></ul>
+        <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
+      <div class="card-b">
+        <ul id="p-done" class="list"></ul>
+        <p id="p-done-empty" class="muted">Nada completado.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAREAS ===== -->
+  <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
+    <div class="card">
+      <div class="card-h hdr-tareas"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
+      <div class="card-b">
+        <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+          <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
+          <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+          <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
         </div>
       </div>
+    </div>
 
-      <!-- ===== PLANTA ===== -->
-      <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
-        <div class="card">
-          <div class="card-h hdr-add"><h2>Añadir habitación</h2><span class="subtitle">Planta e interconsultas</span></div>
-          <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-            <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
-            <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
-            <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
-            <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr">
-              <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
-              <div>
-                <label>Grupo</label>
-                <div role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 #fff">
-                  <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#efe9ff;border-color:#d7c8ff">Planta</button>
-                  <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#ffedd5;border-color:#fdba74">Interconsulta</button>
-                </div>
-                <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
-              </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
+      <div class="card-b">
+        <ul id="t-list" class="list"></ul>
+        <p id="t-empty" class="muted">No hay tareas activas.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
+      <div class="card-b">
+        <ul id="t-done" class="list"></ul>
+        <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
+      <div class="card-b">
+        <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
+        <ul id="t-trash" class="list"></ul>
+        <p id="t-trash-empty" class="muted">Papelera vacía.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DIRECTORIO ===== -->
+  <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
+    <div class="card">
+      <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
+      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
+        <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
+        <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap; gap:6px">
+          <button id="d-add" class="btn primary">Añadir</button>
+          <button id="d-import" class="btn">Importar JSON</button>
+          <button id="d-export" class="btn">Exportar JSON</button>
+          <button id="d-dedupe" class="btn">Eliminar duplicados</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="card-b dir-wrap">
+        <div>
+          <div id="d-list-wrap"></div>
+          <p id="d-empty" class="muted">Sin registros.</p>
+        </div>
+        <nav class="az" aria-label="Índice alfabético" id="d-az"></nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BIBLIOTECA ===== -->
+  <div id="panel-biblioteca" class="hide" role="tabpanel" aria-labelledby="tab-biblioteca" tabindex="-1">
+    <div class="card">
+      <div class="card-h hdr-biblio"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
+      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+        <div>
+          <label for="b-notes">Notas rápidas</label>
+          <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
+          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+            <button id="b-notes-save" class="btn primary">Guardar notas</button>
+            <button id="b-open-file" class="btn">Abrir PDF local…</button>
+            <button id="b-clear-view" class="btn">Vaciar visor</button>
+          </div>
+        </div>
+
+        <div>
+          <label for="b-url">Nuevo enlace (PDF o web)</label>
+          <input id="b-url" type="url" placeholder="https://… o *.pdf">
+          <label for="b-title">Título</label>
+          <input id="b-title" type="text" placeholder="Nombre del recurso">
+          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+            <button id="b-add-link" class="btn primary">Añadir a lista</button>
+            <button id="b-export-links" class="btn">Exportar JSON</button>
+            <button id="b-import-links" class="btn">Importar JSON</button>
+          </div>
+
+          <div style="margin-top:10px">
+            <label for="b-select">Mis enlaces</label>
+            <select id="b-select"></select>
+            <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+              <button id="b-open" class="btn">Abrir en visor</button>
+              <button id="b-remove" class="btn">Eliminar</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
-          <div class="card-b">
-            <ul id="p-list-planta" class="list"></ul>
-            <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
+    <div class="card" style="margin-top:12px">
+      <div class="card-h hdr-biblio"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
+      <div class="card-b">
+        <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
+        <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECCIÓN * (EXTRA) ===== -->
+  <div id="panel-extra" class="hide" role="region" aria-labelledby="lbl-extra" tabindex="-1">
+    <div class="card">
+      <div class="card-h hdr-extra"><h2 id="lbl-extra">*</h2><span class="subtitle">Espacio personalizable</span></div>
+      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+        <div>
+          <label for="x-notes">Lienzo libre</label>
+          <textarea id="x-notes" placeholder="Texto libre, snippets, recordatorios…"></textarea>
+          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+            <button id="x-notes-save" class="btn primary">Guardar lienzo</button>
+            <button id="x-clear" class="btn">Vaciar</button>
           </div>
         </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
-          <div class="card-b">
-            <ul id="p-list-inter" class="list"></ul>
-            <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
+        <div>
+          <label>Accesos rápidos (widgets)</label>
+          <div id="x-widgets"></div>
+          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+            <button id="x-edit" class="btn">Editar widgets</button>
+            <button id="x-reset" class="btn">Restaurar</button>
           </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
-          <div class="card-b">
-            <ul id="p-done" class="list"></ul>
-            <p id="p-done-empty" class="muted">Nada completado.</p>
-          </div>
+          <p class="muted" style="margin-top:6px">Formato por línea: <code>Etiqueta | URL o tel</code></p>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- ===== TAREAS ===== -->
-      <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
-        <div class="card">
-          <div class="card-h hdr-tareas"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
-          <div class="card-b">
-            <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-              <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
-              <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
-              <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
-            </div>
-          </div>
-        </div>
+  <!-- Tabs inferiores -->
+  <nav class="bottom" aria-label="Secciones">
+    <div class="tabs-bottom">
+      <button class="tab-bottom" id="b-planta" aria-selected="true"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta</button>
+      <button class="tab-bottom" id="b-tareas" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas</button>
+      <button class="tab-bottom" id="b-directorio" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio</button>
+      <button class="tab-bottom" id="b-biblioteca" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca</button>
+    </div>
+  </nav>
+</section>
 
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
-          <div class="card-b">
-            <ul id="t-list" class="list"></ul>
-            <p id="t-empty" class="muted">No hay tareas activas.</p>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
-          <div class="card-b">
-            <ul id="t-done" class="list"></ul>
-            <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
-          <div class="card-b">
-            <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
-            <ul id="t-trash" class="list"></ul>
-            <p id="t-trash-empty" class="muted">Papelera vacía.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== DIRECTORIO ===== -->
-      <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-        <div class="card">
-          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
-          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
-            <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
-            <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap; gap:6px">
-              <button id="d-add" class="btn primary">Añadir</button>
-              <button id="d-import" class="btn">Importar JSON</button>
-              <button id="d-export" class="btn">Exportar JSON</button>
-              <button id="d-dedupe" class="btn">Eliminar duplicados</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-b dir-wrap">
-            <div>
-              <div id="d-list-wrap"></div>
-              <p id="d-empty" class="muted">Sin registros.</p>
-            </div>
-            <nav class="az" aria-label="Índice alfabético" id="d-az"></nav>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== BIBLIOTECA ===== -->
-      <div id="panel-biblioteca" class="hide" role="tabpanel" aria-labelledby="tab-biblioteca" tabindex="-1">
-        <div class="card">
-          <div class="card-h hdr-biblio"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
-          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
-            <div>
-              <label for="b-notes">Notas rápidas</label>
-              <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
-              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-                <button id="b-notes-save" class="btn primary">Guardar notas</button>
-                <button id="b-open-file" class="btn">Abrir PDF local…</button>
-                <button id="b-clear-view" class="btn">Vaciar visor</button>
-              </div>
-            </div>
-
-            <div>
-              <label for="b-url">Nuevo enlace (PDF o web)</label>
-              <input id="b-url" type="url" placeholder="https://… o *.pdf">
-              <label for="b-title">Título</label>
-              <input id="b-title" type="text" placeholder="Nombre del recurso">
-              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-                <button id="b-add-link" class="btn primary">Añadir a lista</button>
-                <button id="b-export-links" class="btn">Exportar JSON</button>
-                <button id="b-import-links" class="btn">Importar JSON</button>
-              </div>
-
-              <div style="margin-top:10px">
-                <label for="b-select">Mis enlaces</label>
-                <select id="b-select"></select>
-                <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-                  <button id="b-open" class="btn">Abrir en visor</button>
-                  <button id="b-remove" class="btn">Eliminar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div class="card-h hdr-biblio"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
-          <div class="card-b">
-            <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
-            <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tabs inferiores -->
-      <nav class="bottom" aria-label="Secciones">
-        <div class="tabs-bottom">
-          <button class="tab-bottom" id="b-planta" aria-selected="true"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta</button>
-          <button class="tab-bottom" id="b-tareas" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas</button>
-          <button class="tab-bottom" id="b-directorio" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio</button>
-          <button class="tab-bottom" id="b-biblioteca" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca</button>
-        </div>
-      </nav>
-    </section>
   </main>
-
   <!-- FAB emergencias -->
   <button id="fab" class="btn primary" style="position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + 84px);z-index:70;border-radius:999px;padding:14px 16px;display:flex;align-items:center;gap:10px">
     <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-bell"/></svg></span>Emergencias
@@ -470,17 +533,20 @@
       <div id="fabList" style="margin-top:8px"></div>
     </div>
   </div>
-
   <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
-
   <script type="module">
     /* ===================  HELPERS BÁSICOS  =================== */
     const BASE = new URL('./', location).pathname;
     const $ = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
     const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
     const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
     const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
     const todayISO = ()=> new Date().toISOString().slice(0,10);
+
+    /* Ajuste 100dvh real en Android */
+    const setVH=()=>{ document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px'); };
+    setVH(); addEventListener('resize', setVH, {passive:true});
 
     /* Online badge */
     const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
@@ -531,6 +597,7 @@
       biblio  : (uid)=> fsMod.collection(db,'users',uid,'biblioteca'),
       notes   : (uid)=> fsMod.doc(db,'users',uid,'biblioteca','__notes__'),
       settings: (uid)=> fsMod.doc(db,'users',uid,'__meta__','settings'),
+      extra   : (uid)=> fsMod.doc(db,'users',uid,'__meta__','extra'),
     };
 
     let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
@@ -542,24 +609,28 @@
     async function flushRetry(){ try{ const q=JSON.parse(localStorage.getItem(RETRY_KEY)||'[]'); if(!q.length) return; const ok=[]; for(const j of q){ try{ const ref=fsMod.doc(db,j.path); await fsMod.setDoc(ref,j.data,{merge:true}); ok.push(j); }catch{} } if(ok.length){ const rest=q.filter(x=>!ok.includes(x)); localStorage.setItem(RETRY_KEY,JSON.stringify(rest)); } }catch{} }
     addEventListener('online', flushRetry, {passive:true});
 
-    /* ===================  TABS =================== */
-    const tabOrder=['planta','tareas','directorio','biblioteca'];
+    /* ===================  TABS (robustas + teclado + hash) =================== */
+    const mapTabs={
+      planta:['panel-planta','tab-planta','b-planta','Planta'],
+      tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],
+      directorio:['panel-directorio','tab-directorio','b-directorio','Directorio'],
+      biblioteca:['panel-biblioteca','tab-biblioteca','b-biblioteca','Biblioteca'],
+      extra:['panel-extra',null,null,'*'] // sección independiente
+    };
+
     function selectTab(id){
-      const map={
-        planta:['panel-planta','tab-planta','b-planta','Planta'],
-        tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],
-        directorio:['panel-directorio','tab-directorio','b-directorio','Directorio'],
-        biblioteca:['panel-biblioteca','tab-biblioteca','b-biblioteca','Biblioteca']
-      };
-      for(const k in map){
-        const [p,t,b,l]=map[k]; const sel=(k===id);
-        document.getElementById(p).classList.toggle('hide',!sel);
-        document.getElementById(t).setAttribute('aria-selected',sel);
-        document.getElementById(b).setAttribute('aria-selected',sel);
+      for(const k in mapTabs){
+        const [p,t,b,l]=mapTabs[k]; const sel=(k===id);
+        const panel=document.getElementById(p); if(panel) panel.classList.toggle('hide',!sel);
+        if(t){ const tb=document.getElementById(t); if(tb){ tb.setAttribute('aria-selected',sel); tb.tabIndex=sel?0:-1; } }
+        if(b){ const bb=document.getElementById(b); if(bb) bb.setAttribute('aria-selected',sel); }
         if(sel) document.getElementById('title').textContent=l;
       }
-      localStorage.setItem('tab', id); location.hash = id;
+      localStorage.setItem('tab', id);
+      if(id!=='extra') location.hash = id; else history.replaceState(null,'', '#*');
     }
+
+    // Clicks superiores/inferiores
     $('#tab-planta').onclick =()=>selectTab('planta');
     $('#tab-tareas').onclick =()=>selectTab('tareas');
     $('#tab-directorio').onclick=()=>selectTab('directorio');
@@ -568,6 +639,34 @@
     $('#b-tareas').onclick =()=>selectTab('tareas');
     $('#b-directorio').onclick=()=>selectTab('directorio');
     $('#b-biblioteca').onclick=()=>selectTab('biblioteca');
+
+    // Teclado en tablist (izq/der + Home/End)
+    const order=['tab-planta','tab-tareas','tab-directorio','tab-biblioteca'];
+    $('#tablist').addEventListener('keydown', (e)=>{
+      const i=order.indexOf(document.activeElement?.id);
+      if(i<0) return;
+      let j=i;
+      if(e.key==='ArrowRight') j=(i+1)%order.length;
+      else if(e.key==='ArrowLeft') j=(i-1+order.length)%order.length;
+      else if(e.key==='Home') j=0;
+      else if(e.key==='End') j=order.length-1;
+      else if(e.key==='Enter' || e.key===' ') { document.activeElement.click(); return; }
+      else return;
+      e.preventDefault();
+      const btn=document.getElementById(order[j]);
+      btn?.focus();
+      btn?.click();
+    });
+
+    // Hashchange resiliente
+    addEventListener('hashchange', ()=>{
+      const h=location.hash.slice(1);
+      if(mapTabs[h]) selectTab(h);
+      else if(h==='*') selectTab('extra');
+    }, {passive:true});
+
+    // Botón * en appbar
+    document.getElementById('extraToggle').onclick=()=>selectTab('extra');
 
     /* ===================  HELPERS COMUNES  =================== */
     const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
@@ -635,8 +734,6 @@
     const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS() });
     let dirCache=[];
     const telHref=(raw)=>{ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
-
-    // Normalización acentos + diacríticos
     const norm = (s)=> String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'');
 
     function setupDirectorio(uid){
@@ -730,6 +827,43 @@
       const u=fsMod.onSnapshot(fsMod.query(col.biblio(uid)),(s)=>{ bCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; bCache.push(x);}); renderBiblioSelect(); }); unsubs.push(u);
     }
 
+    /* ===================  SECCIÓN * =================== */
+    let xWidgets = [];
+    function renderXWidgets(){
+      const box = $('#x-widgets'); if(!box) return;
+      box.innerHTML = xWidgets.length
+        ? xWidgets.map((w,i)=>`<div class="item" style="display:flex;align-items:center;gap:10px"><span class="pill">${esc(w.label||'')}</span>${w.href?`<a class="pill" href="${esc(w.href)}" target="_blank" rel="noopener">${esc(w.href)}</a>`:''}<button class="btn icon" data-i="${i}">✖</button></div>`).join('')
+        : '<p class="muted">Sin widgets. Pulsa “Editar widgets”.</p>';
+      box.querySelectorAll('button[data-i]').forEach(b=>{
+        b.onclick=async()=>{ const i=+b.dataset.i; xWidgets.splice(i,1); await fsMod.setDoc(col.extra(currentUid()), { widgets:xWidgets }, { merge:true }); renderXWidgets(); };
+      });
+    }
+    async function loadExtra(uid){
+      try{
+        const s = await fsMod.getDoc(col.extra(uid));
+        const data = s.exists() ? s.data() : {};
+        $('#x-notes').value = String(data.notes||'');
+        xWidgets = Array.isArray(data.widgets)? data.widgets : [];
+        renderXWidgets();
+      }catch{ $('#x-notes').value=''; xWidgets=[]; renderXWidgets(); }
+    }
+    $('#x-notes-save').onclick=async()=>{ const ref=col.extra(currentUid()); const data={notes:$('#x-notes').value, updatedAt:serverTS()}; try{ await fsMod.setDoc(ref,data,{merge:true}); }catch{ pushRetry({path:ref.path,data}); } toast('Lienzo guardado'); };
+    $('#x-clear').onclick=()=>{ $('#x-notes').value=''; };
+    $('#x-edit').onclick=async()=>{
+      const seed = xWidgets.map(w=>(w.label||'')+' | '+(w.href||'')).join('\n') || 'Consultas | tel:3333\nUCI | tel:4444\nManual | https://…';
+      const txt = prompt('Una línea por widget:\nEtiqueta | URL o tel', seed);
+      if(txt==null) return;
+      const arr = txt.split('\n').map(s=>s.trim()).filter(Boolean).map(line=>{ const [label, href=''] = line.split('|').map(x=>x?.trim()||''); return {label, href}; });
+      xWidgets = arr;
+      await fsMod.setDoc(col.extra(currentUid()), { widgets:xWidgets }, { merge:true });
+      renderXWidgets();
+    };
+    $('#x-reset').onclick=async()=>{
+      xWidgets = [{label:'Consultas',href:'tel:3333'},{label:'UCI',href:'tel:4444'}];
+      await fsMod.setDoc(col.extra(currentUid()), { widgets:xWidgets }, { merge:true });
+      renderXWidgets();
+    };
+
     /* ===================  MODAL SIMPLE =================== */
     const openEdit=(fields,onOk)=>{ const body=document.createElement('div'); body.style.display='grid'; body.style.gap='8px'; body.style.gridTemplateColumns='1fr';
       const dlg=document.createElement('dialog'); dlg.style.padding='16px'; dlg.style.border='1px solid var(--border)'; dlg.style.borderRadius='14px'; dlg.style.boxShadow='var(--shadow-2)';
@@ -780,7 +914,14 @@
     document.getElementById('fabEdit').onclick = editEmergency;
 
     /* ===================  MONTAJE =================== */
-    function mountApp(uid){ setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); setupBiblioteca(uid); loadEmergency(uid); selectTab(location.hash?.slice(1) || localStorage.getItem('tab') || 'planta'); flushRetry(); }
+    function mountApp(uid){
+      setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); setupBiblioteca(uid); loadEmergency(uid); loadExtra(uid);
+      const first = location.hash?.slice(1);
+      if(first==='*') selectTab('extra');
+      else if(mapTabs[first]) selectTab(first);
+      else selectTab(localStorage.getItem('tab') || 'planta');
+      flushRetry();
+    }
   </script>
 </body>
 </html>
