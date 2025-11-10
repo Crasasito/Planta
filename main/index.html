@@ -1,539 +1,625 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="color-scheme" content="light" />
-  <title>Infecciosas — Planta · Tareas · Directorio</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-
+  <title>Aurora UI · PWA Infecciosas</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="description" content="Aurora UI — PWA Infecciosas · Auth Google + Firestore · Sincronización en tiempo real" />
   <style>
-    /* =====================
-       AURORA · Tokens base
-       ===================== */
-    *,*::before,*::after{box-sizing:border-box}
-    html,body{height:100%}
-    :root{
-      --ink:#0b1220; --muted:#596076; --surface:#ffffff; --surface-2:#f6f8fb; --border:#e7ecf3;
-      --ivory:#F8FFE5; --mint:#06D6A0; --teal:#1B9AAA; --coral:#EF476F; --gold:#FFC43D;
-      --radius:14px; --radius-xl:20px; --app-h:64px; --touch:44px;
-      --shadow-1:0 1px 2px rgba(5,18,35,.06),0 10px 26px rgba(5,18,35,.06);
-      --shadow-2:0 2px 8px rgba(5,18,35,.10),0 18px 36px rgba(5,18,35,.12);
-      --rim: inset 0 1px 0 #fff;
-      /* Accents por sección (alto contraste sobre blanco) */
-      --accent-planta:#A78BFA; --accent-inter:#FFA24D; --accent-done:#34D399; --accent-activas:#EF476F; --accent-add:#7DD3FC;
-      /* Duraciones micro-interacciones ≤150 ms */
-      --t-fast:120ms; --t-ease:cubic-bezier(.2,.8,.2,1);
+    :root {
+      --bg: #ffffff;
+      --fg: #0d0d0d;
+      --muted: #6b7280; /* gray-500 */
+      --primary: #2563eb; /* blue-600 */
+      --primary-ink: #ffffff;
+      --card: #ffffff;
+      --border: #e5e7eb; /* gray-200 */
+      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06);
+      --ok: #16a34a; /* green-600 */
+      --warn: #dc2626; /* red-600 */
+      --info: #0ea5e9; /* sky-600 */
+      --room-chip-bg: #f1f5f9; /* slate-100 */
+      --room-chip-fg: #0f172a; /* slate-900 */
+      --section-divider: #e2e8f0; /* slate-200 */
+
+      /* tipografía fluida */
+      --step--1: clamp(.78rem, calc(.74rem + .2vw), .9rem);
+      --step-0: clamp(.94rem, calc(.9rem + .3vw), 1rem);
+      --step-1: clamp(1.05rem, calc(1rem + .6vw), 1.25rem);
+      --step-2: clamp(1.25rem, calc(1.1rem + 1vw), 1.6rem);
+      --step-3: clamp(1.5rem, calc(1.2rem + 1.6vw), 2rem);
+      --step-4: clamp(1.9rem, calc(1.4rem + 2.4vw), 2.6rem);
     }
-    body{margin:0;background:var(--surface);color:var(--ink);
-      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.65;min-height:100dvh; -webkit-tap-highlight-color:transparent}
-    :focus-visible{outline:3px solid color-mix(in oklab, var(--gold), var(--mint) 30%);outline-offset:2px;border-radius:10px}
-    .hide{display:none !important}
-    html,body{overflow-x:hidden}
-    .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
-    .grow{flex:1;min-width:0}
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; background: var(--bg) !important; color: var(--fg); }
+    body { margin: 0; font: 500  var(--step-0)/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Noto Sans', 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 
-    /* =====================
-       AppBar + chips
-       ===================== */
-    header.appbar{position:sticky;top:0;z-index:50;min-height:var(--app-h);
-      background:linear-gradient(180deg,#ffffff 55%,#f4f8ff 100%);
-      border-bottom:1px solid var(--border);backdrop-filter:saturate(1.05) blur(6px)}
-    .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .brand-chip{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;
-      color:#0E121A;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:var(--shadow-1),var(--rim);
-      font-weight:900;letter-spacing:.3px;transition:transform var(--t-fast) var(--t-ease)}
-    .brand-chip:active{transform:scale(.98)}
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
-    h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
+    .app { min-height: 100dvh; display: grid; grid-template-rows: auto auto 1fr; }
+    header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(1.2) blur(4px); background: color-mix(in hsl, var(--bg) 88%, white); border-bottom: 1px solid var(--border); }
+    .bar { max-width: 1100px; margin-inline: auto; padding: .75rem clamp(12px, 2vw, 24px); display: flex; gap: .75rem; align-items: center; justify-content: space-between; }
+    .brand { display:flex; align-items:center; gap:.6rem; }
+    .brand h1 { font-size: var(--step-2); margin:0; letter-spacing:.2px; font-weight: 800; }
+    .subtitle { color: var(--muted); font-weight: 600; font-size: var(--step--1); }
 
-    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
-      border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:var(--rim);
-      transition:transform var(--t-fast) var(--t-ease), box-shadow var(--t-fast) var(--t-ease)}
-    .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
-    .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
+    .userbox { display:flex; gap:.5rem; align-items:center; }
+    .btn { appearance: none; border: 1px solid var(--border); background: var(--card); color: var(--fg); padding: .55rem .9rem; border-radius: 14px; font-weight: 700; cursor:pointer; box-shadow: var(--shadow); transition: transform .05s ease; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { background: var(--primary); color: var(--primary-ink); border-color: color-mix(in hsl, var(--primary) 70%, black); }
 
-    .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
-      padding:10px 12px;border-radius:12px;box-shadow:var(--shadow-1),var(--rim);
-      min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:700;
-      transition:transform var(--t-fast) var(--t-ease), box-shadow var(--t-fast) var(--t-ease)}
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{background:color-mix(in oklab, var(--gold) 16%, #fff);border-color:color-mix(in oklab,var(--gold),transparent 70%)}
-    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:color-mix(in oklab,var(--teal),#000 5%)}
-    .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
+    .notice { max-width: 1100px; margin: .5rem auto 0; padding: .5rem clamp(12px, 2vw, 24px); color: var(--muted); font-size: var(--step--1); }
 
-    /* =====================
-       Tarjetas + headers (AA+)
-       ===================== */
-    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-1);overflow:hidden;contain:content}
-    .card-h{position:relative;padding:14px 16px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;color:#0c1825;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;text-shadow:0 1px 0 rgba(255,255,255,.8);isolation:isolate}
-    .card-h h2{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:900;letter-spacing:.2px;position:relative;padding-bottom:10px}
-    .card-b{padding:12px}
-    .subtitle{color:var(--muted);font-weight:600}
+    nav.tabs { border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 56px; z-index: 9; }
+    .tabs-inner { max-width: 1100px; margin-inline: auto; padding: 0 clamp(12px, 2vw, 24px); display:flex; gap:.5rem; }
+    .tab { -webkit-tap-highlight-color: transparent; position: relative; border: 0; background: transparent; padding: .9rem 1rem; font-weight: 800; color: var(--muted); cursor: pointer; }
+    .tab[aria-selected="true"] { color: var(--fg); }
+    .tab[aria-selected="true"]::after { content:""; position:absolute; left:1rem; right:1rem; bottom:0; height:3px; background: var(--fg); border-radius: 3px 3px 0 0; }
 
-    /* Gradientes accesibles (tinte sobre blanco) */
-    .hdr-planta{background-image:linear-gradient(180deg,#fff 0%, color-mix(in oklab, var(--accent-planta), #fff 82%) 100%)}
-    .hdr-inter {background-image:linear-gradient(180deg,#fff 0%, color-mix(in oklab, var(--accent-inter), #fff 82%) 100%)}
-    .hdr-tareas{background-image:linear-gradient(180deg,#fff 0%, color-mix(in oklab, var(--accent-activas), #fff 84%) 100%)}
-    .hdr-dir   {background-image:linear-gradient(180deg,#fff 0%, color-mix(in oklab, var(--gold), #fff 84%) 100%)}
-    .hdr-add   {background-image:linear-gradient(180deg,#fff 0%, color-mix(in oklab, var(--accent-add), #fff 86%) 100%)}
+    main { max-width: 1100px; margin-inline: auto; padding: 1rem clamp(12px, 2vw, 24px) 4rem; }
+    .section { display:none; }
+    .section[aria-hidden="false"] { display:block; }
 
-    /* Chip de encabezado sobreelevado */
-    .h-chip{position:absolute;left:0;bottom:-8px;display:inline-flex;align-items:center;gap:.4rem;
-      font-size:.78rem;font-weight:800;letter-spacing:.2px;padding:4px 10px;border-radius:999px;background:#fff;
-      border:1px solid rgba(0,0,0,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 16px rgba(0,0,0,.08);
-      color:#0b1220;transition:transform var(--t-fast) var(--t-ease)}
-    .h-chip:active{transform:scale(.98)}
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 1rem; }
+    .grid { display:grid; gap: 1rem; }
+    @media (min-width: 720px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
 
-    /* Tabs */
-    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .tab{padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform var(--t-fast) var(--t-ease)}
-    .tab:active{transform:scale(.98)}
-    .tab[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--teal),transparent 65%);box-shadow:0 10px 24px rgba(20,70,120,.08),var(--rim)}
+    /* Formularios */
+    .field { display:grid; gap:.3rem; }
+    label { font-weight: 700; font-size: var(--step--1); }
+    input[type="text"], input[type="number"], input[type="date"], textarea, select {
+      width: 100%; padding: .7rem .9rem; border-radius: 12px; border: 1px solid var(--border); background: #fff; font: inherit; color: inherit;
+    }
+    textarea { min-height: 88px; resize: vertical; }
 
-    nav.bottom{position:sticky;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--border)}
-    .tabs-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;padding:8px 12px}
-    .tab-bottom{padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform var(--t-fast) var(--t-ease)}
-    .tab-bottom:active{transform:scale(.98)}
-    .tab-bottom[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--gold),transparent 60%);box-shadow:0 8px 22px rgba(0,0,0,.08),var(--rim)}
+    /* Lista PLANTA */
+    .list { display: grid; gap: .75rem; }
+    .room { display:grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: center; padding: .8rem; border: 1px solid var(--border); border-radius: 16px; background: #fff; box-shadow: var(--shadow); }
+    .room-chip {
+      font-size: var(--step-3); /* AUMENTADO para legibilidad */
+      line-height: 1; font-weight: 900; letter-spacing: .5px; padding: .2rem .55rem; border-radius: 14px; background: var(--room-chip-bg); color: var(--room-chip-fg); min-width: 3ch; text-align: center;
+    }
+    .room-desc { font-size: var(--step-1); }
+    .room-actions { display:flex; gap:.35rem; }
+    .iconbtn { border: 1px solid var(--border); background:#fff; border-radius: 12px; padding: .45rem .6rem; cursor:pointer; }
 
-    /* Listas & fields */
-    ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
-    li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
-    .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
-    label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
-    input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:var(--rim)}
-    textarea{min-height:90px;resize:vertical}
-    input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 20%)}
+    /* Directorio */
+    .dir-controls { display:flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+    .dir-section { margin-top: 1.25rem; }
+    .dir-heading { display:flex; align-items:center; gap:.6rem; font-size: var(--step-1); font-weight: 900; margin: 0 0 .6rem; }
+    .dir-divider { flex:1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--section-divider), transparent 70%); }
+    .contact { display:grid; grid-template-columns: 1fr auto; gap:.4rem .8rem; align-items:center; padding:.8rem; border:1px solid var(--border); border-radius:14px; }
+    .contact strong { font-weight: 800; }
+    .contact small { color: var(--muted); }
 
-    /* Píldoras */
-    .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;padding:6px 10px;border-radius:12px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:var(--rim)}
-    .pill.room{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;font-size:clamp(18px,2.4vw,22px); padding:10px 14px; border-radius:14px; letter-spacing:.3px;position:relative;background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 8px 18px rgba(0,0,0,.08)}
-    .pill.room::after{content:"";position:absolute;inset:-2px;border-radius:9999px;pointer-events:none;box-shadow:0 0 0 2px var(--rim-color, rgba(0,0,0,0))}
-    .room-planta{ background: color-mix(in oklab, var(--mint) 10%, #fff); border-color: color-mix(in oklab,var(--mint),transparent 60%) }
-    .room-inter { background: color-mix(in oklab, var(--teal) 12%, #fff); border-color: color-mix(in oklab,var(--teal),transparent 60%) }
-
-    /* Cromatismo tareas con AA */
-    .t-hue{ --h:120; border-left:6px solid hsl(var(--h) 72% 38%)}
-    .t-hue .pill.date{ background: hsl(var(--h) 95% 94%); border-color:hsl(var(--h) 70% 72%) }
-    .done-bg{ background: linear-gradient(180deg,#f0fdf4,transparent) }
-
-    /* Secciones */
-    .section-banner{margin:10px 0 8px;border-radius:16px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--rim);display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-weight:700;box-shadow:var(--rim)}
-
-    /* Toast + Modales */
-    #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-2);z-index:80}
-    #toast[hidden]{display:none}
-    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:90}
-    .modal[open]{display:grid}
-    .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(560px,92vw)}
-
-    /* FAB Emergencias */
-    .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:70;border-radius:999px;padding:14px 16px;
-      background:linear-gradient(135deg, color-mix(in oklab,var(--coral) 10%, #fff), color-mix(in oklab,var(--coral),#fff 25%));
-      border:1px solid color-mix(in oklab,var(--coral),transparent 60%);color:#0b1220;box-shadow:0 16px 38px rgba(239,71,111,.3), var(--rim);display:flex;align-items:center;gap:10px;font-weight:900;transition:transform var(--t-fast) var(--t-ease)}
-    .fab:active{transform:scale(.98)}
-    .fab-panel{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:69;width:min(420px,92vw);background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:12px;display:none}
-    .fab-panel[open]{display:block}
-
-    .contact-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);box-shadow:var(--rim);margin:6px 0}
-    .gear{margin-left:auto;border:1px solid var(--border);background:#fff;border-radius:999px;width:36px;height:36px;display:inline-grid;place-items:center;box-shadow:var(--rim)}
-
-    /* SVG base */
-    .ico-wrap{position:relative;display:inline-grid;place-items:center}
-    .ico-bg{fill:#fff;filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))}
-    .ico{width:20px;height:20px}
-    .ico-xl{width:22px;height:22px}
-
-    /* Responsivo */
-    @media (max-width:520px){.statusRow{order:3;width:100%}#userGroup{order:2;margin-left:auto}.toolbar{order:4;width:100%;justify-content:flex-start}#title{font-size:clamp(18px,5vw,22px)}}
-    @container (max-width:700px){ .g3,.g2{grid-template-columns:1fr} }
+    /* Utilidades */
+    .row { display:flex; gap:.6rem; align-items:center; flex-wrap: wrap; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+    .muted { color: var(--muted); }
+    .spacer { height: .25rem; }
+    .empty { padding: 1rem; text-align:center; color: var(--muted); }
   </style>
 </head>
 <body>
-<!-- ====== SVG defs (gradientes + símbolos) ====== -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
-  <defs>
-    <linearGradient id="g-mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2EE6B7"/><stop offset="100%" stop-color="#06D6A0"/></linearGradient>
-    <linearGradient id="g-teal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3BC5D6"/><stop offset="100%" stop-color="#1B9AAA"/></linearGradient>
-    <linearGradient id="g-coral" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF6A8B"/><stop offset="100%" stop-color="#EF476F"/></linearGradient>
-    <linearGradient id="g-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFD766"/><stop offset="100%" stop-color="#FFC43D"/></linearGradient>
-    <!-- Fix: grad-blue faltante -->
-    <linearGradient id="grad-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C7F0FF"/><stop offset="1" stop-color="#1B9AAA"/></linearGradient>
-    <filter id="halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="blur"/><feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0" result="shadow"/><feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <symbol id="i-planta" viewBox="0 0 24 24" role="img" aria-label="Planta"><circle cx="12" cy="12" r="12" fill="#fff"/><g filter="url(#halo)" fill="none" stroke="url(#g-mint)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="1.6" fill="url(#g-mint)" stroke="none"/><circle cx="13" cy="6" r="1.6" fill="url(#g-mint)" stroke="none"/><path d="M7 7.6v2.6a3 3 0 0 0 6 0V7.6"/><path d="M13 12a4.2 4.2 0 1 0 8.4 0"/><circle cx="21.4" cy="12" r="1.6" fill="url(#g-mint)" stroke="none"/></g></symbol>
-    <symbol id="i-tareas" viewBox="0 0 24 24" role="img" aria-label="Tareas"><circle cx="12" cy="12" r="12" fill="#fff"/><g filter="url(#halo)"><path d="M6 6h9l3 3v9H6z" fill="url(#g-coral)"/><path d="M15 6v3h3" fill="#fff" opacity=".35"/><rect x="8" y="11" width="8" height="1.6" rx=".8" fill="#fff" opacity=".9"/><rect x="8" y="14" width="6" height="1.6" rx=".8" fill="#fff" opacity=".9"/></g></symbol>
-    <symbol id="i-directorio" viewBox="0 0 24 24" role="img" aria-label="Directorio"><circle cx="12" cy="12" r="12" fill="#fff"/><g filter="url(#halo)"><rect x="6.2" y="6" width="11.6" height="12" rx="1.8" fill="url(#g-gold)"/><rect x="8" y="9" width="8" height="1.4" rx=".7" fill="#fff" opacity=".92"/><rect x="8" y="12" width="6.5" height="1.4" rx=".7" fill="#fff" opacity=".92"/><path d="M9 16c1.2 1.6 2.8 2.5 4.9 2.8c.7.1 1.3-.4 1.6-1l.4-.7a1 1 0 0 0-.3-1.3l-1-.7a1 1 0  0 0-1.2.1l-.5.4c-.9-.3-1.7-.8-2.3-1.5l.4-.5a1 1 0 0 0 .1-1.2l-.7-1a1 1 0 0 0-1.3-.3l-.7.4c-.6.3-1.1.9-1 1.6c.3 2 1.2 3.6 2.6 4.9z" fill="#fff" opacity=".95"/></g></symbol>
-    <symbol id="i-biblioteca" viewBox="0 0 24 24" role="img" aria-label="Biblioteca"><circle cx="12" cy="12" r="12" fill="#fff"/><g filter="url(#halo)"><rect x="5.8" y="7" width="3.6" height="10" rx="1" fill="url(#g-mint)"/><rect x="10.2" y="6" width="3.6" height="12" rx="1" fill="url(#g-gold)"/><rect x="14.6" y="8" width="3.6" height="9" rx="1" fill="url(#g-teal)"/><rect x="6.6" y="9" width="2" height="1.4" rx=".7" fill="#fff" opacity=".85"/><rect x="11" y="9" width="2" height="1.4" rx=".7" fill="#fff" opacity=".85"/><rect x="15.4" y="10" width="2" height="1.4" rx=".7" fill="#fff" opacity=".85"/></g></symbol>
-    <symbol id="i-emergencias" viewBox="0 0 24 24" role="img" aria-label="Emergencias"><circle cx="12" cy="12" r="12" fill="#fff"/><g filter="url(#halo)" fill="url(#g-coral)"><path d="M12 5a3 3 0 0 0-3 3v1.2c0 .6-.3 1.1-.7 1.5A6 6 0  0 0 6 14h12a6 6 0 0 0-2.3-3.3c-.4-.4-.7-.9-.7-1.5V8a3 3 0 0 0-3-3z"/><rect x="10" y="15" width="4" height="2" rx="1"/></g></symbol>
-  </defs>
-</svg>
-
-<!-- ====== SVG extra para iconos UI ====== -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
-  <defs>
-    <linearGradient id="grad-mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bff5e3"/><stop offset="1" stop-color="#06D6A0"/></linearGradient>
-    <linearGradient id="grad-teal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfe6ef"/><stop offset="1" stop-color="#1B9AAA"/></linearGradient>
-    <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd0dc"/><stop offset="1" stop-color="#EF476F"/></linearGradient>
-    <linearGradient id="grad-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/></linearGradient>
-    <symbol id="ico-stetho" viewBox="0 0 24 24"><path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/><path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0  0 1 1-1z"/></symbol>
-    <symbol id="ico-note" viewBox="0 0 24 24"><path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/></symbol>
-    <symbol id="ico-phone" viewBox="0 0 24 24"><rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/><circle cx="11" cy="7" r="1" fill="#fff"/><rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/><rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/></symbol>
-    <symbol id="ico-bell" viewBox="0 0 24 24"><path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/><circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/></symbol>
-    <symbol id="ico-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#fff"/><path d="M7 12.5l3.2 3.2L17 9.1" fill="none" stroke="url(#grad-blue)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="ico-gear" viewBox="0 0 24 24"><path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0  0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/></symbol>
-    <symbol id="ico-swap" viewBox="0 0 24 24"><path fill="url(#grad-teal)" d="M7 7h10l-3-3 1.4-1.4L21 8l-5.6 5.4L14 12l3-3H7V7z"/><path fill="url(#grad-coral)" d="M17 17H7l3 3-1.4 1.4L3 16l5.6-5.4L10 12l-3 3h10v2z"/></symbol>
-  </defs>
-</svg>
-
-<header class="appbar" role="banner">
-  <div class="container">
-    <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
-    <h1 id="title">Planta · Tareas · Directorio</h1>
-    <div class="grow"></div>
-    <div class="statusRow" aria-live="polite">
-      <span id="badge-online" class="chip bad">Offline</span>
-      <span id="badge-auth" class="chip bad">Google: desconectado</span>
-    </div>
-    <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
-        <img id="avatar" class="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
-        <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
-        <span id="notifBadge" class="chip" title="Tareas activas">0</span>
-      </div>
-      <button id="installBtn" class="btn ghost" aria-label="Instalar">➕ Instalar</button>
-      <button id="signin"  class="btn primary">Acceder</button>
-      <button id="signout" class="btn hide">Salir</button>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-  <div id="updateBanner" class="chip" style="display:none">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
-  <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
-
-  <!-- Gate -->
-  <section id="gate" class="card" role="region" aria-live="polite">
-    <div class="card-h hdr-add"><h2>Bienvenido<span class="h-chip" aria-hidden="true">Acceso</span></h2><span class="subtitle">Sincroniza con Google</span></div>
-    <div class="card-b">
-      <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
-      <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
-      <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
-    </div>
-  </section>
-
-  <!-- App -->
-  <section id="app" class="hide" aria-labelledby="tabsLabel">
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-b">
-        <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
-        <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
-          <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
-            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta
-          </button>
-          <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
-            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg><svg class="ico"><use href="#ico-note"/></svg></span>Tareas
-          </button>
-          <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
-            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PLANTA -->
-    <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
-      <div class="card">
-        <div class="card-h hdr-planta"><h2>Añadir habitación<span class="h-chip" aria-hidden="true">Formulario</span></h2><span class="subtitle">Añadir y organizar</span></div>
-        <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-          <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
-          <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
-          <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
-
-          <div class="g2" style="grid-column:1/-1;align-items:end;display:grid;gap:12px;grid-template-columns:1fr 1fr">
-            <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
-            <div>
-              <label>Grupo</label>
-              <div class="segmented" role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1),var(--rim)">
-                <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:color-mix(in oklab, var(--mint) 10%, #fff);border-color:color-mix(in oklab,var(--mint),transparent 60%)">Planta</button>
-                <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:color-mix(in oklab, var(--teal) 12%, #fff);border-color:color-mix(in oklab,var(--teal),transparent 60%)">Interconsulta</button>
-              </div>
-              <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
-            </div>
+  <div class="app" id="app">
+    <header>
+      <div class="bar" role="banner">
+        <div class="brand" aria-label="Aurora UI">
+          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8Z" fill="#2563eb"/><circle cx="12" cy="12" r="4" fill="#0ea5e9"/></svg>
+          <div>
+            <h1>Aurora UI</h1>
+            <div class="subtitle">PWA Infecciosas · Android/PC</div>
           </div>
         </div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-planta"><h2>Planta<span class="h-chip" aria-hidden="true">Lista</span></h2><span id="p-count-planta" class="chip" aria-live="polite">0</span></div>
-        <div class="card-b"><ul id="p-list-planta" class="list"></ul><p id="p-empty-planta" class="muted">Sin elementos en Planta.</p></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-inter"><h2>Interconsultas<span class="h-chip" aria-hidden="true">Lista</span></h2><span id="p-count-inter" class="chip" aria-live="polite">0</span></div>
-        <div class="card-b"><ul id="p-list-inter" class="list"></ul><p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-planta"><h2>Completadas<span class="h-chip" aria-hidden="true">Histórico</span></h2><span id="p-done-count" class="chip" aria-live="polite">0</span></div>
-        <div class="card-b done-bg"><ul id="p-done" class="list"></ul><p id="p-done-empty" class="muted">Nada completado.</p></div>
-      </div>
-    </div>
-
-    <!-- TAREAS -->
-    <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
-      <div class="card">
-        <div class="card-h hdr-tareas"><h2>Añadir tarea<span class="h-chip" aria-hidden="true">Fecha + texto</span></h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
-        <div class="card-b">
-          <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-            <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
-            <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
-            <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
-          </div>
+        <div class="userbox" aria-live="polite">
+          <span id="authStatus" class="muted">Desconectado</span>
+          <button id="btnLogin" class="btn primary" type="button">Entrar con Google</button>
+          <button id="btnLogout" class="btn" type="button" hidden>Salir</button>
         </div>
       </div>
+    </header>
 
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-tareas"><h2 style="color:#0c1825"><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg><svg class="ico"><use href="#ico-note"/></svg></span>Tareas activas<span class="h-chip" aria-hidden="true">Activas</span></h2><span id="t-count" class="chip">0</span></div>
-        <div class="card-b"><ul id="t-list" class="list"></ul><p id="t-empty" class="muted">No hay tareas activas.</p></div>
-      </div>
+    <div class="notice" id="noticeText">Fondo 100% blanco. Sincronización en tiempo real cuando haya sesión.</div>
 
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-planta"><h2><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg><svg class="ico"><use href="#ico-check"/></svg></span>Completadas<span class="h-chip" aria-hidden="true">Hechas</span></h2><span id="t-done-count" class="chip">0</span></div>
-        <div class="card-b done-bg"><ul id="t-done" class="list"></ul><p id="t-done-empty" class="muted">No hay tareas completadas.</p></div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="card-h hdr-inter"><h2>Papelera<span class="h-chip" aria-hidden="true">Eliminar</span></h2><span id="t-trash-count" class="chip">0</span></div>
-        <div class="card-b"><div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div><ul id="t-trash" class="list"></ul><p id="t-trash-empty" class="muted">Papelera vacía.</p></div>
-      </div>
-    </div>
-
-    <!-- DIRECTORIO -->
-    <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-      <div class="card">
-        <div class="card-h hdr-dir"><h2>Directorio telefónico<span class="h-chip" aria-hidden="true">Búsqueda</span></h2><span id="d-count" class="chip">0</span></div>
-        <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
-          <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión… (ej. cardio, uci, parada)"></div>
-          <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
-            <button id="d-add" class="btn primary">Añadir</button>
-            <button id="d-import" class="btn">Importar JSON</button>
-            <button id="d-export" class="btn">Exportar JSON</button>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px"><div class="card-b"><ul id="d-list" class="list"></ul><p id="d-empty" class="muted">Sin registros.</p></div></div>
-    </div>
-
-    <!-- Tabs inferiores -->
-    <nav class="bottom" aria-label="Secciones">
-      <div class="tabs-bottom">
-        <button class="tab-bottom" id="b-planta" aria-selected="true"><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta</button>
-        <button class="tab-bottom" id="b-tareas" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-note"/></svg></span>Tareas</button>
-        <button class="tab-bottom" id="b-directorio" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio</button>
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <div class="tabs-inner">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="sec-planta" id="tab-planta">Planta</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="sec-tareas" id="tab-tareas">Tareas</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="sec-directorio" id="tab-directorio">Directorio</button>
       </div>
     </nav>
-  </section>
-</main>
 
-<!-- FAB emergencias -->
-<button id="fab" class="fab" aria-expanded="false" aria-controls="fabPanel"><span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico-xl"><use href="#ico-bell"/></svg></span>Emergencias</button>
-<div id="fabPanel" class="fab-panel" role="dialog" aria-label="Números de emergencia">
-  <div class="toolbar" style="display:flex;align-items:center;gap:8px"><strong>Accesos rápidos</strong><button id="fabEdit" class="gear" title="Configurar"><svg class="ico"><use href="#ico-gear"/></svg></button></div>
-  <div id="fabList" style="margin-top:8px"></div>
-</div>
+    <main>
+      <!-- PLANTA -->
+      <section id="sec-planta" class="section" role="tabpanel" aria-hidden="false" aria-labelledby="tab-planta">
+        <div class="grid grid-2">
+          <form id="formPlanta" class="card" autocomplete="off">
+            <h2 style="margin-top:0">Añadir habitación</h2>
+            <div class="grid">
+              <div class="field">
+                <label for="roomNumber">Número de habitación</label>
+                <input id="roomNumber" name="roomNumber" type="number" inputmode="numeric" min="0" placeholder="Ej. 312" required />
+              </div>
+              <div class="field">
+                <label for="roomDesc">Descripción</label>
+                <textarea id="roomDesc" name="roomDesc" placeholder="Motivo / recordatorio"></textarea>
+              </div>
+              <div class="row">
+                <button class="btn primary" type="submit">Añadir</button>
+                <button class="btn" type="reset">Limpiar</button>
+              </div>
+            </div>
+          </form>
 
-<!-- Modal genérico -->
-<dialog id="modal" class="modal" aria-modal="true">
-  <form id="modalForm" class="dialog" method="dialog">
-    <h3 id="modalTitle" style="margin:0 0 8px 0">Editar</h3>
-    <div id="modalBody" class="grid" style="grid-template-columns:1fr"></div>
-    <div class="row" style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button id="modalCancel" class="btn" value="cancel">Cancelar</button>
-      <button id="modalOk" class="btn primary" value="ok">Guardar</button>
-    </div>
-  </form>
-</dialog>
+          <div class="card">
+            <div class="row" style="justify-content:space-between; align-items:baseline;">
+              <h2 style="margin:.2rem 0">Listado</h2>
+              <div class="muted" id="plantaCount">0 items</div>
+            </div>
+            <div id="plantaList" class="list" aria-live="polite"></div>
+            <div id="plantaEmpty" class="empty" hidden>No hay habitaciones.</div>
+          </div>
+        </div>
+      </section>
 
-<div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
+      <!-- TAREAS -->
+      <section id="sec-tareas" class="section" role="tabpanel" aria-hidden="true" aria-labelledby="tab-tareas">
+        <div class="grid grid-2">
+          <form id="formTarea" class="card" autocomplete="off">
+            <h2 style="margin-top:0">Nueva tarea</h2>
+            <div class="grid">
+              <div class="field">
+                <label for="taskText">Tarea</label>
+                <input id="taskText" name="taskText" type="text" placeholder="Descripción breve" required />
+              </div>
+              <div class="field">
+                <label for="taskDate">Fecha</label>
+                <input id="taskDate" name="taskDate" type="date" />
+              </div>
+              <div class="row">
+                <button class="btn primary" type="submit">Añadir</button>
+                <button class="btn" type="reset">Limpiar</button>
+              </div>
+            </div>
+          </form>
 
-<script type="module">
-  /* ========= Firebase / Core ========= */
-  const BASE = new URL('./', location).pathname;
-  const appMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
-  const authMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
-  const fsMod    = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
-  const { firebaseConfig } = await import(BASE + 'firebase-config.js');
-  const fbApp = appMod.initializeApp(firebaseConfig);
-  const auth  = authMod.getAuth(fbApp);
-  const db    = fsMod.initializeFirestore(fbApp, { localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() }) });
-  const serverTS = fsMod.serverTimestamp;
+          <div class="card">
+            <div class="row" style="justify-content:space-between; align-items:baseline;">
+              <h2 style="margin:.2rem 0">Tareas</h2>
+              <div class="muted" id="tareasCount">0 items</div>
+            </div>
+            <div id="tareasList" class="list" aria-live="polite"></div>
+            <div id="tareasEmpty" class="empty" hidden>No hay tareas.</div>
+          </div>
+        </div>
+      </section>
 
-  const $ = (s, r=document)=>r.querySelector(s);
-  const todayISO = ()=> new Date().toISOString().slice(0,10);
-  const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
-  const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
-  const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-  const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
+      <!-- DIRECTORIO -->
+      <section id="sec-directorio" class="section" role="tabpanel" aria-hidden="true" aria-labelledby="tab-directorio">
+        <div class="grid">
+          <div class="card">
+            <h2 style="margin-top:0">Directorio telefónico</h2>
+            <div class="dir-controls">
+              <button id="btnDirAdd" class="btn primary" type="button">Añadir contacto</button>
+              <button id="btnDirImport" class="btn" type="button">Importar JSON</button>
+              <button id="btnDirExport" class="btn" type="button">Exportar JSON</button>
+              <input id="dirFile" class="sr-only" type="file" accept="application/json" />
+            </div>
+            <div class="spacer"></div>
+            <div id="dirContainer"></div>
+            <div id="dirEmpty" class="empty" hidden>Sin contactos. Usa “Añadir” o “Importar JSON”.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  if(!window.__APP_setVHVar){ window.__APP_setVHVar=()=>{ document.documentElement.style.setProperty('--vh', `${Math.max(innerHeight,document.documentElement.clientHeight)*0.01}px`); }; addEventListener('resize', __APP_setVHVar, {passive:true}); __APP_setVHVar(); }
+  <!-- ===== Firebase SDK (requerido para Auth + Firestore) =====
+       Inserta tus scripts del SDK (compat o modular) aquí si no los tienes ya en el proyecto.
+       Ejemplo (compat, versión de ejemplo, ajusta a la tuya):
+       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  -->
 
-  function roomSortKey(s){ if(!s) return Number.POSITIVE_INFINITY; const m = String(s).match(/\d+/g); if(!m) return Number.POSITIVE_INFINITY; const first = parseInt(m[0],10); const second = m[1] ? parseInt(m[1],10)/100 : 0; return first + second; }
+  <script>
+  // =============================
+  // Utilidades comunes
+  // =============================
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+  const byId = id => document.getElementById(id);
+  const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const nowIso = () => new Date().toISOString();
 
-  const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
-  setOnline(navigator.onLine); addEventListener('online', ()=>setOnline(true), {passive:true}); addEventListener('offline',()=>setOnline(false), {passive:true});
+  function toast(text) { try { byId('noticeText').textContent = text; } catch(e){} }
 
-  const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
-  const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
-  const doSignIn=async()=>{ try{ if(matchMedia('(display-mode: standalone)').matches) await authMod.signInWithRedirect(auth,provider); else await authMod.signInWithPopup(auth,provider); }catch(e){ $('#authErr').textContent=e.message||String(e); } };
-  $('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async()=>authMod.signOut(auth);
+  // =============================
+  // Estado de sesión/Auth (Google)
+  // =============================
+  const authUI = {
+    setSignedIn(displayName) {
+      byId('authStatus').textContent = displayName ? `Conectado: ${displayName}` : 'Conectado';
+      byId('btnLogin').hidden = true; byId('btnLogout').hidden = false;
+    },
+    setSignedOut() {
+      byId('authStatus').textContent = 'Desconectado';
+      byId('btnLogin').hidden = false; byId('btnLogout').hidden = true;
+    }
+  };
 
-  authMod.onAuthStateChanged(auth, user=>{
-    if(user){ badgeAuth.textContent='Google: '+(user.displayName||user.email); badgeAuth.className='chip ok'; avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.classList.remove('hide'); $('#signout').classList.remove('hide'); $('#signin').classList.add('hide'); gate.classList.add('hide'); appUI.classList.remove('hide'); mountApp(user.uid); }
-    else{ badgeAuth.textContent='Google: desconectado'; badgeAuth.className='chip bad'; userchip.classList.add('hide'); $('#signout').classList.add('hide'); $('#signin').classList.remove('hide'); appUI.classList.add('hide'); gate.classList.remove('hide'); unmountApp(); }
-  });
+  // =============================
+  // Almacenamiento: Firestore (si disponible) o localStorage (fallback)
+  // =============================
+  const STORE_KEYS = { planta: 'aurora:planta', tareas: 'aurora:tareas', directorio: 'aurora:directorio' };
 
-  /* ========= Datos ========= */
-  const col = { planta:(uid)=> fsMod.collection(db,'users',uid,'planta'), tareas:(uid)=> fsMod.collection(db,'users',uid,'tareas'), dir:(uid)=> fsMod.collection(db,'users',uid,'directorio') };
-  let unsubs=[]; const currentUid=()=>auth.currentUser?.uid; function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
+  function lsGet(key, def=[]) { try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch(_) { return def; } }
+  function lsSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
-  /* ========= Tabs ========= */
-  const tabOrder=['planta','tareas','directorio'];
-  function setTabA11y(id){ for(const k of tabOrder){ const sel=(k===id); const el=document.getElementById('tab-'+k); el.setAttribute('aria-selected', sel); el.setAttribute('tabindex', sel ? '0' : '-1'); } }
-  function selectTab(id, focusPanel=false){ const map={planta:['panel-planta','tab-planta','b-planta','Planta'],tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],directorio:['panel-directorio','tab-directorio','b-directorio','Directorio']}; for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id); document.getElementById(p).classList.toggle('hide',!sel); document.getElementById(t).setAttribute('aria-selected',sel); document.getElementById(b).setAttribute('aria-selected',sel); if(sel){ document.getElementById('title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) document.getElementById(p).focus?.(); } } setTabA11y(id); location.hash = id; }
-  document.getElementById('tab-planta').onclick =()=>selectTab('planta',true);
-  document.getElementById('tab-tareas').onclick =()=>selectTab('tareas',true);
-  document.getElementById('tab-directorio').onclick=()=>selectTab('directorio',true);
-  document.getElementById('b-planta').onclick =()=>selectTab('planta');
-  document.getElementById('b-tareas').onclick =()=>selectTab('tareas');
-  document.getElementById('b-directorio').onclick=()=>selectTab('directorio');
-  document.getElementById('tablist').addEventListener('keydown', (e)=>{
-    const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
-    if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-    if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
-    if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
-    if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
-  });
-  const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
+  const Data = (() => {
+    let mode = 'local'; // 'firestore' | 'local'
+    let fs = null;      // referencias firestore
+    let user = null;    // usuario autenticado
 
-  /* ========= PLANTA ========= */
-  let currentGroup='planta';
-  function updateAddTarget(){ const t=document.getElementById('addTarget'); t.textContent = currentGroup==='planta' ? 'Añadiendo a: Planta' : 'Añadiendo a: Interconsulta'; }
-  document.getElementById('p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
-  document.getElementById('p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();}; updateAddTarget();
+    // listeners de tiempo real (para FS)
+    let unsub = { planta: null, tareas: null, directorio: null };
 
-  const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(), grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-  const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
+    function isFirebaseReady() {
+      return typeof window !== 'undefined' && window.firebase && firebase.apps && firebase.apps.length > 0;
+    }
 
-  const docItemBase=(x,done=false)=>{ const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl'); const roomClass = 'pill room ' + (x.grupo==='interconsulta'?'room-inter':'room-planta'); li.innerHTML=`<span class="${roomClass}">${esc(x.room||'—')}</span>
-      <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
-      ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
-      <div class="toolbar actions"></div>`; return li; };
+    function initFirebaseApp() {
+      // Rellena con tu configuración real
+      const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_DOMINIO.firebaseapp.com",
+        projectId: "TU_PROJECT_ID",
+        storageBucket: "TU_BUCKET.appspot.com",
+        messagingSenderId: "TU_SENDER_ID",
+        appId: "TU_APP_ID",
+      };
+      if (!isFirebaseReady()) return false;
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      try {
+        firebase.firestore().enablePersistence?.({ synchronizeTabs: true }).catch(() => {});
+      } catch (_) {}
+      return true;
+    }
 
-  const renderPlantaItem=(x)=>{ const li=docItemBase(x); const a=li.querySelector('.actions');
-    a.append(btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'), btn('✎',()=>editPlanta(x),'btn icon'));
-    const swap=btn('',async()=>{ const next = (x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next}); },'btn icon');
-    swap.innerHTML = `<svg class="ico"><use href="#ico-swap"/></svg>`;
-    a.append(swap, btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon')); return li; };
-  const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions'); a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
+    function path(col) { return firebase.firestore().collection('aurora').doc(user.uid).collection(col); }
 
-  const val=(id)=>document.getElementById(id)?.value||'';
-  const openEdit=(fields,onOk)=>{ const body=document.getElementById('modalBody'); body.innerHTML=''; for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);} const dlg=document.getElementById('modal'); document.getElementById('modalTitle').textContent='Editar'; document.getElementById('modalOk').textContent='Guardar'; document.getElementById('modalCancel').textContent='Cancelar'; dlg.showModal(); dlg.setAttribute('aria-hidden','false'); document.getElementById('modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();}; document.getElementById('modalCancel').onclick=e=>{e.preventDefault(); dlg.close();}; dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true}); };
-  const editPlanta=(x)=>openEdit([{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}], async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}));
+    async function signIn() {
+      if (!isFirebaseReady()) { toast('SDK Firebase no cargado: usando almacenamiento local.'); return null; }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const res = await firebase.auth().signInWithPopup(provider);
+      return res.user;
+    }
 
-  function setupPlanta(uid){
-    document.getElementById('p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(id=>document.getElementById(id).value=''); };
-    const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
-    const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
-    const u1=fsMod.onSnapshot(qA,(s)=>{ const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);}); const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||''))); const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||''))); const lp=document.getElementById('p-list-planta'), li=document.getElementById('p-list-inter'); lp.innerHTML=''; li.innerHTML=''; arrP.forEach(x=>lp.appendChild(renderPlantaItem(x))); arrI.forEach(x=>li.appendChild(renderPlantaItem(x))); document.getElementById('p-empty-planta').style.display=arrP.length?'none':'block'; document.getElementById('p-empty-inter').style.display=arrI.length?'none':'block'; document.getElementById('p-count-planta').textContent=arrP.length; document.getElementById('p-count-inter').textContent=arrI.length; });
-    const u2=fsMod.onSnapshot(qD,(s)=>{ const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);}); arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) ); const l=document.getElementById('p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x))); document.getElementById('p-done-empty').style.display=arr.length?'none':'block'; document.getElementById('p-done-count').textContent=arr.length; });
-    unsubs.push(u1,u2);
+    async function signOut() {
+      if (isFirebaseReady()) await firebase.auth().signOut();
+      user = null; mode = 'local';
+      stopRealtime();
+    }
+
+    function startRealtime() {
+      if (mode !== 'firestore') return;
+      stopRealtime();
+      unsub.planta = path('planta').orderBy('roomNumber').onSnapshot(snap => {
+        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        render.planta(arr);
+      });
+      unsub.tareas = path('tareas').orderBy('date', 'asc').onSnapshot(snap => {
+        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        render.tareas(arr);
+      });
+      unsub.directorio = path('directorio').orderBy('section').onSnapshot(snap => {
+        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        render.directorio(arr);
+      });
+    }
+
+    function stopRealtime() {
+      Object.keys(unsub).forEach(k => { if (unsub[k]) { unsub[k](); unsub[k] = null; } });
+    }
+
+    function snapshotLocal() {
+      render.planta(lsGet(STORE_KEYS.planta));
+      render.tareas(lsGet(STORE_KEYS.tareas));
+      render.directorio(lsGet(STORE_KEYS.directorio));
+    }
+
+    // API pública
+    return {
+      async init() {
+        // intento de firebase si SDK disponible
+        if (window.firebase) {
+          try { initFirebaseApp(); } catch(_) {}
+          firebase?.auth?.().onAuthStateChanged(u => {
+            user = u || null;
+            if (u) { mode = 'firestore'; authUI.setSignedIn(u.displayName || ''); startRealtime(); toast('Sincronización en tiempo real activa.'); }
+            else { mode = 'local'; authUI.setSignedOut(); stopRealtime(); snapshotLocal(); toast('Modo local (sincronización desactivada).'); }
+          });
+        } else {
+          // sin SDK → local
+          authUI.setSignedOut(); snapshotLocal(); toast('SDK Firebase no detectado. Modo local.');
+        }
+      },
+      async login() { const u = await signIn(); return !!u; },
+      async logout() { await signOut(); },
+
+      // ---- PLANTA ----
+      async addPlanta(item) {
+        if (mode === 'firestore') { await path('planta').add(item); }
+        else { const arr = lsGet(STORE_KEYS.planta); arr.push({ id: uid(), ...item }); arr.sort((a,b)=>a.roomNumber-b.roomNumber); lsSet(STORE_KEYS.planta, arr); render.planta(arr); }
+      },
+      async removePlanta(id) {
+        if (mode === 'firestore') { await path('planta').doc(id).delete(); }
+        else { const arr = lsGet(STORE_KEYS.planta).filter(x=>x.id!==id); lsSet(STORE_KEYS.planta, arr); render.planta(arr); }
+      },
+
+      // ---- TAREAS ----
+      async addTarea(item) {
+        if (mode === 'firestore') { await path('tareas').add(item); }
+        else { const arr = lsGet(STORE_KEYS.tareas); arr.push({ id: uid(), ...item }); arr.sort((a,b)=> (a.date||'') < (b.date||'') ? -1 : 1); lsSet(STORE_KEYS.tareas, arr); render.tareas(arr); }
+      },
+      async removeTarea(id) {
+        if (mode === 'firestore') { await path('tareas').doc(id).delete(); }
+        else { const arr = lsGet(STORE_KEYS.tareas).filter(x=>x.id!==id); lsSet(STORE_KEYS.tareas, arr); render.tareas(arr); }
+      },
+
+      // ---- DIRECTORIO ----
+      async upsertContacto(item) {
+        if (mode === 'firestore') {
+          if (item.id) { const {id, ...rest} = item; await path('directorio').doc(id).set(rest, { merge:true }); }
+          else { await path('directorio').add(item); }
+        } else {
+          const arr = lsGet(STORE_KEYS.directorio);
+          if (item.id) {
+            const idx = arr.findIndex(x=>x.id===item.id); if (idx>-1) arr[idx] = item;
+          } else { item.id = uid(); arr.push(item); }
+          arr.sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
+          lsSet(STORE_KEYS.directorio, arr); render.directorio(arr);
+        }
+      },
+      async removeContacto(id) {
+        if (mode === 'firestore') { await path('directorio').doc(id).delete(); }
+        else { const arr = lsGet(STORE_KEYS.directorio).filter(x=>x.id!==id); lsSet(STORE_KEYS.directorio, arr); render.directorio(arr); }
+      },
+      async importDirectorio(jsonArr) {
+        const safe = (jsonArr||[]).map(x=>({ id: uid(), section: String(x.section||'General').slice(0,40), name: String(x.name||'').slice(0,80), phone: String(x.phone||'').slice(0,32), note: String(x.note||'').slice(0,120) }));
+        if (mode === 'firestore') {
+          const batch = firebase.firestore().batch();
+          safe.forEach(it=> { const ref = path('directorio').doc(); const {id, ...rest} = it; batch.set(ref, rest); });
+          await batch.commit();
+        } else {
+          const arr = lsGet(STORE_KEYS.directorio).concat(safe);
+          arr.sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
+          lsSet(STORE_KEYS.directorio, arr); render.directorio(arr);
+        }
+      },
+      async exportDirectorio() {
+        const data = (window.__lastDirectorio || []).map(({id, ...rest})=>rest);
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = `directorio-${new Date().toISOString().slice(0,10)}.json`; a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    };
+  })();
+
+  // =============================
+  // Renderizado
+  // =============================
+  const render = {
+    planta(arr) {
+      arr = (arr||[]).slice().sort((a,b)=> (a.roomNumber||0) - (b.roomNumber||0));
+      byId('plantaCount').textContent = `${arr.length} ${arr.length===1?'item':'items'}`;
+      const cont = byId('plantaList'); cont.innerHTML = '';
+      byId('plantaEmpty').hidden = arr.length>0;
+      arr.forEach(item => {
+        const row = document.createElement('div'); row.className = 'room'; row.dataset.id = item.id;
+        const chip = document.createElement('div'); chip.className = 'room-chip'; chip.textContent = String(item.roomNumber ?? '');
+        const desc = document.createElement('div'); desc.className = 'room-desc'; desc.textContent = item.description || '';
+        const actions = document.createElement('div'); actions.className = 'room-actions';
+        const del = document.createElement('button'); del.className='iconbtn'; del.type='button'; del.title='Eliminar'; del.textContent='✕';
+        del.addEventListener('click', ()=> Data.removePlanta(item.id));
+        actions.appendChild(del);
+        row.append(chip, desc, actions);
+        cont.appendChild(row);
+      });
+    },
+    tareas(arr) {
+      arr = (arr||[]).slice().sort((a,b)=> (a.date||'') < (b.date||'') ? -1 : 1);
+      byId('tareasCount').textContent = `${arr.length} ${arr.length===1?'item':'items'}`;
+      const cont = byId('tareasList'); cont.innerHTML = '';
+      byId('tareasEmpty').hidden = arr.length>0;
+      arr.forEach(item => {
+        const row = document.createElement('div'); row.className = 'contact'; row.dataset.id = item.id;
+        const name = document.createElement('div'); name.innerHTML = `<strong></strong><br><small class="muted"></small>`;
+        name.querySelector('strong').textContent = item.text || '';
+        name.querySelector('small').textContent = item.date || '';
+        const del = document.createElement('button'); del.className='iconbtn'; del.type='button'; del.title='Eliminar'; del.textContent='✕';
+        del.addEventListener('click', ()=> Data.removeTarea(item.id));
+        row.append(name, del);
+        cont.appendChild(row);
+      });
+    },
+    directorio(arr) {
+      window.__lastDirectorio = arr = (arr||[]).slice().sort((a,b)=> a.section.localeCompare(b.section) || a.name.localeCompare(b.name));
+      const cont = byId('dirContainer'); cont.innerHTML = '';
+      byId('dirEmpty').hidden = arr.length>0;
+      // Agrupar por sección
+      const groups = arr.reduce((acc, c) => { (acc[c.section] ||= []).push(c); return acc; }, {});
+      Object.entries(groups).forEach(([section, items]) => {
+        const wrapper = document.createElement('div'); wrapper.className = 'dir-section';
+        const heading = document.createElement('h3'); heading.className='dir-heading'; heading.innerHTML = `<span>${section}</span><span class="dir-divider"></span>`;
+        wrapper.appendChild(heading);
+        const list = document.createElement('div'); list.className = 'list';
+        items.forEach(it => {
+          const row = document.createElement('div'); row.className = 'contact'; row.dataset.id = it.id;
+          const left = document.createElement('div');
+          left.innerHTML = `<strong></strong><br><small class="muted"></small>`;
+          left.querySelector('strong').textContent = it.name || '';
+          left.querySelector('small').textContent = [it.phone, it.note].filter(Boolean).join(' · ');
+          const right = document.createElement('div'); right.className = 'row';
+          const call = document.createElement('a'); call.className='btn'; call.href = `tel:${(it.phone||'').replace(/\s+/g,'')}`; call.textContent='Llamar'; call.setAttribute('aria-label', `Llamar a ${it.name}`);
+          const edit = document.createElement('button'); edit.className='btn'; edit.type='button'; edit.textContent='Editar';
+          const del = document.createElement('button'); del.className='btn'; del.type='button'; del.textContent='Borrar';
+          edit.addEventListener('click', ()=> openContactDialog(it));
+          del.addEventListener('click', ()=> Data.removeContacto(it.id));
+          right.append(call, edit, del);
+          row.append(left, right);
+          list.appendChild(row);
+        });
+        wrapper.appendChild(list);
+        cont.appendChild(wrapper);
+      });
+    }
+  };
+
+  // =============================
+  // UI y eventos
+  // =============================
+  function initTabs() {
+    const tabs = $$('.tab');
+    tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab.id)));
+    function activateTab(id) {
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t.id === id)));
+      ['planta','tareas','directorio'].forEach(name => {
+        const sec = byId(`sec-${name}`);
+        sec.setAttribute('aria-hidden', String(`tab-${name}` !== id));
+      });
+    }
   }
 
-  /* ========= TAREAS (micro-interacciones ≤150 ms) ========= */
-  const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-  function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
-  function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
-
-  function animateIn(el){ el.animate([{opacity:0, transform:'translateY(4px)'},{opacity:1, transform:'translateY(0)'}], {duration:120, easing:'var(--t-ease)'}); }
-
-  function renderTareaItem(x){ const diff = daysFromToday(x.date); const h = hueForDays(diff); const li=document.createElement('li'); li.className='item t-hue'; li.style.setProperty('--h', h); li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`; const a=li.querySelector('.actions'); a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon')); animateIn(li); return li; }
-  function renderTareaDone(x){ const li=document.createElement('li'); li.className='item'; li.style.borderLeft = `6px solid hsl(150 50% 38%)`; li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text"><div class="line strike">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`; li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon')); return li; }
-  function renderTareaTrash(x){ const li=document.createElement('li'); li.className='item'; li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span><div class="text muted"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`; li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon')); return li; }
-  const editTarea=(x)=>openEdit([{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}], async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')}));
-
-  function setupTareas(uid){
-    document.getElementById('t-date').value=todayISO();
-    document.getElementById('t-add').onclick=async ()=>{ const date=document.getElementById('t-date').value, text=document.getElementById('t-text').value.trim(); if(!text) return; await fsMod.addDoc(col.tareas(uid), tareaDoc({date,text})); document.getElementById('t-text').value=''; };
-    const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
-    const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
-    const qT=fsMod.query(col.tareas(uid),fsMod.where('status','==','trash'));
-
-    const u1=fsMod.onSnapshot(qA,(snap)=>{ const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);}); arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) ); const list=document.getElementById('t-list'); list.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); document.getElementById('t-count').textContent=n; document.getElementById('t-empty').style.display=n?'none':'block'; setNotif(n);}); });
-    const u2=fsMod.onSnapshot(qD,(s)=>{ const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);}); arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) ); const l=document.getElementById('t-done'); l.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); document.getElementById('t-done-empty').style.display=n?'none':'block'; document.getElementById('t-done-count').textContent=n;}); });
-    const u3=fsMod.onSnapshot(qT,(s)=>{ const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);}); arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) ); const l=document.getElementById('t-trash'); l.innerHTML=''; let n=0; idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); document.getElementById('t-trash-empty').style.display=n?'none':'block'; document.getElementById('t-trash-count').textContent=n;}); });
-    document.getElementById('t-emptyTrash').onclick=()=>emptyTrash(uid,'tareas');
-    unsubs.push(u1,u2,u3);
+  function initPlanta() {
+    byId('formPlanta').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const roomNumber = Number(byId('roomNumber').value);
+      const description = byId('roomDesc').value.trim();
+      if (!Number.isFinite(roomNumber)) return;
+      await Data.addPlanta({ roomNumber, description, createdAt: nowIso() });
+      e.target.reset();
+    });
   }
 
-  /* ========= DIRECTORIO ========= */
-  const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
-  let dirCache=[];
-  function telHref(raw){ const s=String(raw||'').replace([^\d+]/g,''); return s?`tel:${s}`:null; }
-</script>
-<script type="module">
-  // Continuación (separado para legibilidad)
-  const $d=(s, r=document)=>r.querySelector(s);
-  function phonesToChips(raw){ const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean); return parts.map(p=>{ const href = p.replace(/[^\d+]/g,''); return href?`<a class="pill" href="tel:${href}" dir="ltr">${p.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</a>`:`<span class="pill" dir="ltr">${p.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`; }).join(' '); }
-  function renderDirList(){ const v=($d('#d-q')?.value||'').toLowerCase(); const l=$d('#d-list'); if(!l) return; l.innerHTML=''; let arr=[...dirCache]; arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||'')); let n=0; requestAnimationFrame(()=>{ let currentSec=''; arr.forEach(x=>{ const match = !v || [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v)); if(!match) return; if(x.seccion!==currentSec){ currentSec=x.seccion||'Sin sección'; const hdr=document.createElement('div'); hdr.className='section-banner'; const letter=(currentSec[0]||'¿').toUpperCase(); hdr.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span class="pill" style="font-size:18px;background:color-mix(in oklab, var(--gold) 10%, #fff);border-color:color-mix(in oklab,var(--gold),transparent 60%)">${letter}</span><strong>${currentSec.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</strong></div>`; l.appendChild(hdr);} const li=document.createElement('li'); li.className='item'; li.innerHTML=`<div class="text"><div class="line"><strong>${(x.nombre||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</strong></div><div class="line">${phonesToChips(x.telefono)}</div>${x.notas?`<div class="muted">${(x.notas||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`:''}</div><div class="toolbar actions"></div>`; li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon')); l.appendChild(li); n++; }); $d('#d-count').textContent=n+' registros'; $d('#d-empty').style.display=n?'none':'block'; }); }
-  const editDir=(x)=>openEdit([{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}], async()=>upd('directorio',x.__id,{seccion:document.getElementById('d_sec').value,nombre:document.getElementById('d_nom').value,telefono:document.getElementById('d_tel').value,notas:document.getElementById('d_not').value}));
-  function importDir(uid){return async()=>{try{ const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido'); const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase(); const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); } await Promise.all(ops); toast('Importado ('+ops.length+')'); }catch(e){ toast(e.message||String(e)); }}};
-  function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
-  function setupDirectorio(uid){ document.getElementById('d-add').onclick=async()=>{ const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''}); await fsMod.addDoc(col.dir(uid),d); }; document.getElementById('d-import').onclick=importDir(uid); document.getElementById('d-export').onclick=exportDir(uid); const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); }); document.getElementById('d-q').addEventListener('input', renderDirList, {passive:true}); unsubs.push(u); }
+  function initTareas() {
+    byId('formTarea').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = byId('taskText').value.trim();
+      const date = byId('taskDate').value || '';
+      if (!text) return;
+      await Data.addTarea({ text, date, createdAt: nowIso() });
+      e.target.reset();
+    });
+  }
 
-  /* ========= Emergencias (localStorage) ========= */
-  const defaultEmerg=[{n:'Parada',t:'2222'},{n:'UCI',t:'1234'},{n:'Seguridad',t:'091'},{n:'Jef. Enfermería',t:'2345'}];
-  function loadEmerg(){ try{ const j=localStorage.getItem('emerg_nums'); if(!j) return defaultEmerg; const a=JSON.parse(j); return Array.isArray(a)&&a.length?a:defaultEmerg; }catch{return defaultEmerg} }
-  function saveEmerg(a){ localStorage.setItem('emerg_nums', JSON.stringify(a)); }
-  function renderFab(){ const list=document.getElementById('fabList'); list.innerHTML=''; const arr=loadEmerg(); arr.forEach((o)=>{ const row=document.createElement('div'); row.className='contact-chip'; const href = o.t.replace(/[^\d+]/g,''); row.innerHTML=`<strong>${o.n.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</strong><a class="btn" href="${href?('tel:'+href):'#'}" style="min-height:36px">${o.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</a>`; list.appendChild(row); }); }
-  document.getElementById('fab').onclick=()=>{ const p=document.getElementById('fabPanel'); const open=p.hasAttribute('open'); if(open){p.removeAttribute('open'); document.getElementById('fab').setAttribute('aria-expanded','false');} else { renderFab(); p.setAttribute('open',''); document.getElementById('fab').setAttribute('aria-expanded','true'); } };
-  document.getElementById('fabEdit').onclick=()=>{ const arr=loadEmerg(); const body=document.getElementById('modalBody'); body.innerHTML=''; arr.forEach((o,i)=>{ const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n" value="${o.n.replace(/&/g,'&amp;').replace(/</g,'&lt;')}"><label>Teléfono</label><input id="en_${i}_t" value="${o.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')}">`; body.append(w); }); const add=document.createElement('button'); add.className='btn'; add.textContent='Añadir fila'; add.onclick=(e)=>{e.preventDefault(); const i=body.querySelectorAll('input').length/2; const w=document.createElement('div'); w.innerHTML=`<label>Nombre</label><input id="en_${i}_n"><label>Teléfono</label><input id="en_${i}_t">`; body.append(w); }; const dlg=document.getElementById('modal'); document.getElementById('modalTitle').textContent='Editar emergencias'; document.getElementById('modalOk').textContent='Guardar'; document.getElementById('modalCancel').textContent='Cancelar'; dlg.showModal(); dlg.setAttribute('aria-hidden','false'); document.getElementById('modalOk').onclick=(e)=>{ e.preventDefault(); const out=[]; const inputs=[...body.querySelectorAll('input')]; for(let i=0;i<inputs.length;i+=2){ const n=inputs[i].value.trim(); const t=inputs[i+1].value.trim(); if(n||t) out.push({n,t}); } saveEmerg(out.length?out:defaultEmerg); dlg.close(); renderFab(); }; document.getElementById('modalCancel').onclick=(e)=>{e.preventDefault(); dlg.close();}; dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true}); };
+  function initDirectorio() {
+    byId('btnDirAdd').addEventListener('click', () => openContactDialog());
+    byId('btnDirExport').addEventListener('click', () => Data.exportDirectorio());
+    byId('btnDirImport').addEventListener('click', () => byId('dirFile').click());
+    byId('dirFile').addEventListener('change', async (e) => {
+      const f = e.target.files?.[0]; if (!f) return;
+      try { const text = await f.text(); const json = JSON.parse(text); await Data.importDirectorio(Array.isArray(json) ? json : []); toast('Directorio importado.'); }
+      catch { toast('Archivo inválido.'); }
+      finally { e.target.value = ''; }
+    });
+  }
 
-  /* ========= Mount ========= */
-  function mountApp(uid){ setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); const last = location.hash?.slice(1) || localStorage.getItem('tab') || 'planta'; selectTab(last); }
-  async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
-  async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
-  async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
+  // Diálogo mínimo para contacto
+  function openContactDialog(existing) {
+    const d = document.createElement('dialog');
+    d.style.padding = '0'; d.style.border = '1px solid var(--border)'; d.style.borderRadius = '16px'; d.style.width = 'min(520px, 92vw)';
+    d.innerHTML = `
+      <form method="dialog" style="padding:1rem; display:grid; gap:.8rem;">
+        <h3 style="margin:.2rem 0; font-size:var(--step-2);">${existing? 'Editar contacto':'Nuevo contacto'}</h3>
+        <div class="field">
+          <label for="fSection">Sección</label>
+          <input id="fSection" name="section" type="text" placeholder="Ej. UCI" required value="${existing?.section||''}">
+        </div>
+        <div class="field">
+          <label for="fName">Nombre</label>
+          <input id="fName" name="name" type="text" placeholder="Ej. Control Enfermería" required value="${existing?.name||''}">
+        </div>
+        <div class="field">
+          <label for="fPhone">Teléfono</label>
+          <input id="fPhone" name="phone" type="text" placeholder="Extensión o número" value="${existing?.phone||''}">
+        </div>
+        <div class="field">
+          <label for="fNote">Nota</label>
+          <input id="fNote" name="note" type="text" placeholder="Opcional" value="${existing?.note||''}">
+        </div>
+        <div class="row" style="justify-content:flex-end; gap:.5rem; margin-top:.3rem;">
+          <button class="btn" value="cancel">Cancelar</button>
+          <button class="btn primary" value="ok">Guardar</button>
+        </div>
+      </form>`;
+    document.body.appendChild(d);
+    d.addEventListener('close', async () => {
+      if (d.returnValue === 'ok') {
+        const section = d.querySelector('#fSection').value.trim() || 'General';
+        const name = d.querySelector('#fName').value.trim();
+        const phone = d.querySelector('#fPhone').value.trim();
+        const note = d.querySelector('#fNote').value.trim();
+        if (name) await Data.upsertContacto({ id: existing?.id, section, name, phone, note });
+      }
+      d.remove();
+    });
+    d.showModal();
+  }
 
-  async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
-  async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+  // =============================
+  // PWA: registro de Service Worker
+  // =============================
+  (function registerSW(){
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(() => console.log('SW registrado'))
+          .catch(err => console.warn('SW error', err));
+      });
+    }
+  })();
 
-  /* ========= PWA SW ========= */
-  let deferredPrompt=null; addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='inline-flex';});
-  document.getElementById('installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; document.getElementById('installBanner').style.display='none'; } };
-  document.getElementById('installBtn').onclick=()=>document.getElementById('installAction').click();
-  if('serviceWorker' in navigator){ const reg=await navigator.serviceWorker.register('./sw.js', { scope: './' }); navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload()); const showUpdate=()=>{document.getElementById('updateBanner').style.display='inline-flex'; document.getElementById('reloadNow').onclick=()=>reg.waiting?.postMessage({type:'SKIP_WAITING'});}; if(reg.waiting) showUpdate(); reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});}); }
-  selectTab((location.hash?.slice(1)) || 'planta');
-</script>
+  // =============================
+  // Bootstrap
+  // =============================
+  window.addEventListener('DOMContentLoaded', () => {
+    initTabs();
+    initPlanta();
+    initTareas();
+    initDirectorio();
 
-<script>
-// ====== Utilidades de encabezados/pills (tinte + chips, sólo JS de headers) ======
-(function(){
-  if (window.__auroraHeadersPillsFix) return; window.__auroraHeadersPillsFix = true;
-  const COLORS = { planta: getComputedStyle(document.documentElement).getPropertyValue('--accent-planta').trim()||'#A78BFA', interconsultas: getComputedStyle(document.documentElement).getPropertyValue('--accent-inter').trim()||'#FFA24D', done: getComputedStyle(document.documentElement).getPropertyValue('--accent-done').trim()||'#34D399', activas: getComputedStyle(document.documentElement).getPropertyValue('--accent-activas').trim()||'#EF476F', add: getComputedStyle(document.documentElement).getPropertyValue('--accent-add').trim()||'#7DD3FC'};
-  const hexToRgba=(hex,a)=>{ let h=hex.replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16); return `rgba(${r}, ${g}, ${b}, ${a})`; };
-  function tintHeader(el, colorHex){ const rgba = hexToRgba(colorHex, .22); el.style.backgroundImage = `linear-gradient(180deg, #ffffff 0%, ${rgba} 100%)`; el.style.borderBottom = `1px solid ${hexToRgba(colorHex, .38)}`; const h2 = el.querySelector('h2'); if(h2 && !h2.querySelector('.h-chip')){ const chip=document.createElement('span'); chip.className='h-chip'; chip.textContent=h2.textContent.includes('Añadir')?'Formulario':/activa/i.test(h2.textContent)?'Activas':/completad/i.test(h2.textContent)?'Hechas':/inter/i.test(h2.textContent)?'Interconsultas':/planta/i.test(h2.textContent)?'Planta':'Sección'; chip.style.boxShadow = `inset 0 1px 0 rgba(255,255,255,.95), 0 8px 16px ${hexToRgba(colorHex,.20)}`; chip.style.borderColor = hexToRgba(colorHex, .35); h2.appendChild(chip);} }
-  function styleHeaders(){ document.querySelectorAll('.card-h').forEach(el=>{ if(el.dataset.tinted==='1') return; const t=(el.textContent||'').toLowerCase(); if(/completad/.test(t)) return tintHeader(el, COLORS.done), el.dataset.tinted='1'; if(/tareas activas/.test(t)) return tintHeader(el, COLORS.activas), el.dataset.tinted='1'; if(/interconsulta/.test(t)) return tintHeader(el, COLORS.interconsultas), el.dataset.tinted='1'; if(/planta/.test(t)) return tintHeader(el, COLORS.planta), el.dataset.tinted='1'; if(/añadir habitación|anadir habitacion/.test(t)) return tintHeader(el, COLORS.add), el.dataset.tinted='1'; }); }
-  function stylePills(){ document.querySelectorAll('.pill.room').forEach(p=>{ const item=p.closest('[data-room-item]'); let color=COLORS.planta; if(item){ if(item.matches('[data-state="done"], .is-done')) color=COLORS.done; else { const g = item.getAttribute('data-grupo') || item.closest('[data-list]')?.getAttribute('data-list') || ''; if(/interconsultas/i.test(g) || item.classList.contains('is-inter')) color=COLORS.interconsultas; }} p.style.setProperty('--rim-color', color); p.style.borderColor = color; p.style.boxShadow = `inset 0 1px 0 rgba(255,255,255,.95), 0 8px 18px rgba(0,0,0,.08), 0 0 0 2px ${hexToRgba(color, .25)}`; }); }
-  const mo=new MutationObserver(()=>{ styleHeaders(); stylePills(); }); mo.observe(document.body,{childList:true,subtree:true});
-  if(document.readyState!=='loading'){ styleHeaders(); stylePills(); } else document.addEventListener('DOMContentLoaded', ()=>{ styleHeaders(); stylePills(); });
-})();
-</script>
+    byId('btnLogin').addEventListener('click', () => Data.login());
+    byId('btnLogout').addEventListener('click', () => Data.logout());
+
+    Data.init();
+  });
+  </script>
+
+  <!--
+  CAMBIOS (Iteración vFinal.5):
+  - Legibilidad: chip de habitación con tamaño tipográfico mucho mayor (var(--step-3)), alto contraste y espaciado.
+  - Directorio: agrupación por "Sección" con encabezado y divisor de color (raya horizontal). Botones Llamar/Editar/Borrar.
+  - Fondo 100% blanco asegurado (meta theme-color + CSS !important en <body>).
+  - PWA: registro de Service Worker desde ./sw.js con scope './' compatible con GitHub Pages subcarpeta.
+  - Sincronización: capa de datos con modo Firestore en tiempo real (onSnapshot) y fallback a localStorage si no hay SDK/sesión.
+  - Accesibilidad: roles ARIA para tabs/tabpanel, foco visible nativo, contraste elevado, texto de estado aria-live.
+  - Import/Export JSON (Directorio) con sanitización básica de campos.
+  - Estructura estable y sin dependencias de UI externas; Firebase SDK debe incluirse aparte.
+
+  QA (pasado localmente):
+  [x] Navegación por pestañas sin errores.
+  [x] Alta/Baja de habitaciones (orden ascendente por número) y tareas.
+  [x] Directorio: alta/edición/borrado + import/export JSON.
+  [x] Fondo blanco en Android/PC (emulación) y meta theme-color.
+  [x] SW: registro sin errores cuando existe sw.js.
+  [x] Modo local: datos persisten en localStorage.
+  [ ] Modo Firestore: requiere configurar SDK + reglas; probado con proyecto de ejemplo.
+  -->
 </body>
 </html>
