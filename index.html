@@ -746,7 +746,11 @@
     if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();const n=(cur+1)%tabOrder.length; $('#tab-'+tabOrder[n])?.focus(); $('#tab-'+tabOrder[n])?.click();}
     if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();const n=(cur-1+tabOrder.length)%tabOrder.length; $('#tab-'+tabOrder[n])?.focus(); $('#tab-'+tabOrder[n])?.click();}
     if(e.key==='Home'){e.preventDefault();$('#tab-'+tabOrder[0])?.focus();$('#tab-'+tabOrder[0])?.click();}
-    if(e.key==='End'){e.preventDefault();$('#tab-'+tabOrder.at(-1))?.focus();$('#tab-'+tabOrder.at(-1])?.click();}
+    if (e.key === 'End') {
+  e.preventDefault();
+  $('#tab-' + tabOrder.at(-1))?.focus();
+  $('#tab-' + tabOrder.at(-1))?.click();
+}
   });
 
   /* ===== Utilidades UI ===== */
