@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light" />
+  <title>Infecciosas — Planta · Tareas · Directorio · Biblioteca</title>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    /* ====== Tokens de color / paleta (legibilidad premium) ====== */
+    :root{
+      /* Texto y superficies */
+      --ink:#0b1220;
+      --muted:#596076;
+      --surface:#ffffff;
+      --surface-2:#f6f8fb;
+      --border:#e7ecf3;
+
+      /* Paleta base (ajustada a tu imagen de referencia) */
+      --ivory:#F8FFE5; /* chip marca */
+      --mint:#06D6A0;  /* Planta */
+      --teal:#1B9AAA;  /* Interconsultas / estructura fría */
+      --coral:#EF476F; /* Tareas / alerta suave */
+      --gold:#FFC43D;  /* Directorio / atajo y foco */
+
+      /* Biblioteca (neutro-azulado para leer PDF) */
+      --indigo:#6F7BF7;
+
+      /* Derivados para placas/glow */
+      --mint-plate: color-mix(in oklab, var(--mint) 12%, #fff);
+      --teal-plate: color-mix(in oklab, var(--teal) 12%, #fff);
+      --coral-plate: color-mix(in oklab, var(--coral) 10%, #fff);
+      --gold-plate: color-mix(in oklab, var(--gold) 12%, #fff);
+      --indigo-plate: color-mix(in oklab, var(--indigo) 12%, #fff);
+
+      /* Gradientes aurora para headers (rim light + glow) */
+      --g-mint: linear-gradient(135deg, color-mix(in oklab,#fff 60%,var(--mint)), color-mix(in oklab,#fff 30%,var(--teal)));
+      --g-teal: linear-gradient(135deg, color-mix(in oklab,#fff 58%,var(--teal)), color-mix(in oklab,#fff 28%,var(--mint)));
+      --g-coral:linear-gradient(135deg, color-mix(in oklab,#fff 62%,var(--coral)), color-mix(in oklab,#fff 35%,var(--gold)));
+      --g-gold: linear-gradient(135deg, color-mix(in oklab,#fff 60%,var(--gold)), color-mix(in oklab,#fff 25%,var(--coral)));
+      --g-indigo:linear-gradient(135deg, color-mix(in oklab,#fff 58%,var(--indigo)), color-mix(in oklab,#fff 25%,#3b82f6));
+
+      /* Dimensiones / sombras / halo */
+      --radius:14px; --radius-xl:20px; --app-h:64px; --touch:44px;
+      --shadow-1:0 1px 2px rgba(5,18,35,.06),0 10px 26px rgba(5,18,35,.06);
+      --shadow-2:0 2px 8px rgba(5,18,35,.10),0 18px 36px rgba(5,18,35,.12);
+      --rim: inset 0 1px 0 #fff;
+      --bottom-safe: calc(84px + env(safe-area-inset-bottom));
+    }
+
+    /* ====== Base ====== */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--surface);color:var(--ink);
+      font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      font-size:clamp(15px,1vw + .3vh,18px);line-height:1.65;min-height:100dvh;
+      padding-bottom: var(--bottom-safe); /* evita solape con bottom nav en Android */
+      -webkit-tap-highlight-color:transparent
+    }
+    :focus-visible{outline:3px solid color-mix(in oklab, var(--gold), var(--mint) 30%);outline-offset:2px;border-radius:10px}
+    .hide{display:none !important}
+    .container{max-width:min(1160px,98vw);margin:0 auto;padding:8px clamp(12px,4vw,20px);container-type:inline-size}
+    .grow{flex:1;min-width:0}
+
+    /* ====== AppBar ====== */
+    header.appbar{
+      position:sticky;top:0;z-index:50;min-height:var(--app-h);
+      background:linear-gradient(180deg,#ffffff 55%,#f4f8ff 100%);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:saturate(1.05) blur(6px)
+    }
+    .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .brand-chip{
+      display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;
+      color:#0E121A;background:var(--ivory);border:1px solid #eef4df;box-shadow:var(--shadow-1),var(--rim);
+      font-weight:900;letter-spacing:.3px
+    }
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+    h1{margin:0;font-size:clamp(21px,2.8vw,30px);font-weight:900;letter-spacing:.2px}
+
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
+      border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:var(--rim)
+    }
+    .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
+    .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
+
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
+      padding:10px 12px;border-radius:12px;box-shadow:var(--shadow-1),var(--rim);
+      min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--gold-plate);border-color:color-mix(in oklab,var(--gold),transparent 70%)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:color-mix(in oklab,var(--teal),#000 5%)}
+    .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
+
+    /* ====== Tarjetas + headers aurora (glow, rim, glass) ====== */
+    .card{background:rgba(255,255,255,.82);backdrop-filter: blur(6px) saturate(1.05);
+      border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-1);overflow:hidden;contain:content}
+    .card-h{position:relative;padding:14px 16px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;color:#0c1825;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;text-shadow:0 1px 0 rgba(255,255,255,.8);isolation:isolate}
+    .card-h h2{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:900;letter-spacing:.2px}
+    .card-b{padding:12px}
+    .subtitle{color:var(--muted);font-weight:600}
+    .hdr-planta{background:var(--g-mint)}
+    .hdr-inter  {background:var(--g-teal)}
+    .hdr-tareas {background:var(--g-coral)}
+    .hdr-dir    {background:var(--g-gold)}
+    .hdr-biblio {background:var(--g-indigo)}
+    .hdr-add    {background:linear-gradient(135deg,#ffffff,color-mix(in oklab,#fff 70%,var(--teal)))}
+
+    /* ====== Tabs superiores e inferiores ====== */
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .tab{
+      padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);
+      cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:10px
+    }
+    .tab[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--teal),transparent 65%);box-shadow:0 10px 24px rgba(20,70,120,.08),var(--rim)}
+    nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--border)}
+    .tabs-bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:center;padding:8px 12px}
+    .tab-bottom{
+      padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:800;
+      display:flex;align-items:center;justify-content:center;gap:8px
+    }
+    .tab-bottom[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--gold),transparent 60%);box-shadow:0 8px 22px rgba(0,0,0,.08),var(--rim)}
+
+    /* ====== Listas / Inputs ====== */
+    ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px;content-visibility:auto;contain-intrinsic-size:600px}
+    li.item{display:grid;grid-template-columns:auto minmax(120px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
+    .muted{color:var(--muted)} .text{min-width:0} .line{overflow-wrap:anywhere} .strike{text-decoration:line-through;opacity:.88}
+    label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
+    input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:var(--rim)}
+    textarea{min-height:90px;resize:vertical}
+    input::placeholder,textarea::placeholder{color:color-mix(in oklab,var(--muted),transparent 20%)}
+
+    /* ====== Píldoras ====== */
+    .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;padding:6px 10px;border-radius:12px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:var(--rim)}
+    .pill.room{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;font-size:clamp(18px,2.4vw,22px); padding:10px 14px; border-radius:14px; letter-spacing:.3px;}
+    .room-planta{ background: var(--mint-plate); border-color: color-mix(in oklab,var(--mint),transparent 60%) }
+    .room-inter  { background: var(--teal-plate); border-color: color-mix(in oklab,var(--teal),transparent 60%) }
+
+    /* ====== Cromatismo tareas ====== */
+    .t-hue{ --h:120; border-left:6px solid hsl(var(--h) 72% 46%) }
+    .t-hue .pill.date{ background: hsl(var(--h) 95% 92%); border-color:hsl(var(--h) 70% 72%) }
+    .done-bg{ background: linear-gradient(180deg,#f0fdf4,transparent) }
+
+    /* ====== Secciones / banners de grupo (Directorio) ====== */
+    .section-banner{margin:10px 0 8px;border-radius:16px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--rim);
+      display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .sb-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-weight:700;box-shadow:var(--rim)}
+
+    /* ====== Toast + Modales ====== */
+    #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom) + 84px);transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-2);z-index:80}
+    #toast[hidden]{display:none}
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.35);z-index:90}
+    .modal[open]{display:grid}
+    .dialog{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:16px;width:min(560px,92vw)}
+
+    /* ====== FAB Emergencias ====== */
+    .fab{
+      position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + 84px);z-index:70;border-radius:999px;padding:14px 16px;
+      background:linear-gradient(135deg, var(--coral-plate), color-mix(in oklab,var(--coral),#fff 25%));
+      border:1px solid color-mix(in oklab,var(--coral),transparent 60%);
+      color:#0b1220;box-shadow:0 16px 38px rgba(239,71,111,.3), var(--rim);display:flex;align-items:center;gap:10px;font-weight:900
+    }
+    .fab-panel{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom) + 84px);z-index:69;width:min(420px,92vw);
+      background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-2);padding:12px;display:none}
+    .fab-panel[open]{display:block}
+    .contact-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);box-shadow:var(--rim);margin:6px 0}
+    .gear{margin-left:auto;border:1px solid var(--border);background:#fff;border-radius:999px;width:36px;height:36px;display:inline-grid;place-items:center;box-shadow:var(--rim)}
+
+    /* ====== SVG base para iconos premium ====== */
+    .ico-wrap{position:relative;display:inline-grid;place-items:center}
+    .ico-bg{fill:#fff;filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))}
+    .ico{width:20px;height:20px}
+    .ico-xl{width:22px;height:22px}
+
+    /* ====== Viewer PDF responsive ====== */
+    .viewer{
+      width:100%;
+      block-size: min(70vh, 100dvh - 280px);
+      border:1px solid var(--border);
+      border-radius:16px; background:#fff; box-shadow:var(--shadow-1);
+    }
+
+    /* ====== Responsivo ====== */
+    @media (max-width:520px){
+      .statusRow{order:3;width:100%}
+      #userGroup{order:2;margin-left:auto}
+      .toolbar{order:4;width:100%;justify-content:flex-start}
+      #title{font-size:clamp(18px,5vw,22px)}
+    }
+    @container (max-width:700px){ .g3,.g2{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <!-- ===== SVG: gradientes e iconos (fonendo, post-it, teléfono, 3 libros) ===== -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
+    <defs>
+      <linearGradient id="grad-mint" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#bff5e3"/><stop offset="1" stop-color="#06D6A0"/>
+      </linearGradient>
+      <linearGradient id="grad-teal" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#bfe6ef"/><stop offset="1" stop-color="#1B9AAA"/>
+      </linearGradient>
+      <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffd0dc"/><stop offset="1" stop-color="#EF476F"/>
+      </linearGradient>
+      <linearGradient id="grad-gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/>
+      </linearGradient>
+      <linearGradient id="grad-indigo" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/>
+      </linearGradient>
+
+      <!-- Fonendo -->
+      <symbol id="ico-stetho" viewBox="0 0 24 24">
+        <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
+        <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
+      </symbol>
+      <!-- Post-it -->
+      <symbol id="ico-note" viewBox="0 0 24 24">
+        <path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+        <path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/>
+      </symbol>
+      <!-- Teléfono/libreta -->
+      <symbol id="ico-phone" viewBox="0 0 24 24">
+        <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/>
+        <circle cx="11" cy="7" r="1" fill="#fff"/><rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/>
+        <rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/>
+      </symbol>
+      <!-- 3 libros (Biblioteca) -->
+      <symbol id="ico-books" viewBox="0 0 24 24">
+        <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#grad-indigo)"/>
+        <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#grad-gold)"/>
+        <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#grad-mint)"/>
+        <rect x="3.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+        <rect x="10.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+        <rect x="17.5" y="9" width="2.8" height="1.2" rx=".6" fill="#fff" opacity=".9"/>
+      </symbol>
+      <!-- Campana -->
+      <symbol id="ico-bell" viewBox="0 0 24 24">
+        <path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/>
+        <circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/>
+      </symbol>
+      <!-- Gear -->
+      <symbol id="ico-gear" viewBox="0 0 24 24">
+        <path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0 0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/>
+      </symbol>
+      <!-- Doble flecha -->
+      <symbol id="ico-swap" viewBox="0 0 24 24">
+        <path fill="url(#grad-teal)" d="M7 7h10l-3-3 1.4-1.4L21 8l-5.6 5.4L14 12l3-3H7V7z"/>
+        <path fill="url(#grad-coral)" d="M17 17H7l3 3-1.4 1.4L3 16l5.6-5.4L10 12l-3 3h10v2z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="appbar" role="banner">
+    <div class="container">
+      <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
+      <h1 id="title">Planta · Tareas · Directorio · Biblioteca</h1>
+      <div class="grow"></div>
+
+      <div class="statusRow" aria-live="polite">
+        <span id="badge-online" class="chip bad">Offline</span>
+        <span id="badge-auth" class="chip bad">Google: desconectado</span>
+      </div>
+
+      <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
+          <img id="avatar" class="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
+          <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+          <span id="notifBadge" class="chip" title="Tareas activas">0</span>
+        </div>
+        <button id="installBtn" class="btn ghost" aria-label="Instalar">➕ Instalar</button>
+        <button id="signin"  class="btn primary">Acceder</button>
+        <button id="signout" class="btn hide">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="updateBanner" class="chip" style="display:none">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
+    <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
+
+    <!-- Bienvenida -->
+    <section id="gate" class="card" role="region" aria-live="polite">
+      <div class="card-h hdr-add"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
+      <div class="card-b">
+        <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+        <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
+        <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+      </div>
+    </section>
+
+    <!-- App -->
+    <section id="app" class="hide" aria-labelledby="tabsLabel">
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-b">
+          <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
+          <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
+            <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
+              <span class="ico-wrap" aria-hidden="true">
+                <svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg>
+                <svg class="ico"><use href="#ico-stetho"/></svg>
+              </span>Planta
+            </button>
+            <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true">
+                <svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg>
+                <svg class="ico"><use href="#ico-note"/></svg>
+              </span>Tareas
+            </button>
+            <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true">
+                <svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg>
+                <svg class="ico"><use href="#ico-phone"/></svg>
+              </span>Directorio
+            </button>
+            <button id="tab-biblioteca" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblioteca" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true">
+                <svg class="ico-bg" width="28" height="28"><circle cx="14" cy="14" r="13"/></svg>
+                <svg class="ico"><use href="#ico-books"/></svg>
+              </span>Biblioteca
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PLANTA ===== -->
+      <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
+        <div class="card">
+          <div class="card-h hdr-planta"><h2>Ingresos & Interconsultas</h2><span class="subtitle">Añadir y organizar</span></div>
+          <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+            <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
+            <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
+            <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
+
+            <div class="g2" style="grid-column:1/-1;align-items:end;display:grid;gap:12px;grid-template-columns:1fr 1fr">
+              <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
+              <div>
+                <label>Grupo</label>
+                <div class="segmented" role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:var(--shadow-1),var(--rim)">
+                  <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:var(--mint-plate);border-color:color-mix(in oklab,var(--mint),transparent 60%)">Planta</button>
+                  <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:var(--teal-plate);border-color:color-mix(in oklab,var(--teal),transparent 60%)">Interconsulta</button>
+                </div>
+                <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="chip" aria-live="polite">0</span></div>
+          <div class="card-b">
+            <ul id="p-list-planta" class="list"></ul>
+            <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip" aria-live="polite">0</span></div>
+          <div class="card-b">
+            <ul id="p-list-inter" class="list"></ul>
+            <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-planta"><h2>Completadas</h2><span id="p-done-count" class="chip" aria-live="polite">0</span></div>
+          <div class="card-b done-bg">
+            <ul id="p-done" class="list"></ul>
+            <p id="p-done-empty" class="muted">Nada completado.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TAREAS ===== -->
+      <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
+        <div class="card">
+          <div class="card-h hdr-tareas"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
+          <div class="card-b">
+            <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+              <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
+              <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+              <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-coral"><h2 class="subtitle" style="color:#0c1825">Tareas activas</h2><span id="t-count" class="chip">0</span></div>
+          <div class="card-b">
+            <ul id="t-list" class="list"></ul>
+            <p id="t-empty" class="muted">No hay tareas activas.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-planta"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
+          <div class="card-b done-bg">
+            <ul id="t-done" class="list"></ul>
+            <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
+          <div class="card-b">
+            <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
+            <ul id="t-trash" class="list"></ul>
+            <p id="t-trash-empty" class="muted">Papelera vacía.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DIRECTORIO ===== -->
+      <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
+        <div class="card">
+          <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
+          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
+            <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión… (ej. cardio, uci, parada)"></div>
+            <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap">
+              <button id="d-add" class="btn primary">Añadir</button>
+              <button id="d-import" class="btn">Importar JSON</button>
+              <button id="d-export" class="btn">Exportar JSON</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <div class="card-b"><ul id="d-list" class="list"></ul><p id="d-empty" class="muted">Sin registros.</p></div>
+        </div>
+      </div>
+
+      <!-- ===== BIBLIOTECA ===== -->
+      <div id="panel-biblioteca" class="hide" role="tabpanel" aria-labelledby="tab-biblioteca" tabindex="-1">
+        <div class="card">
+          <div class="card-h hdr-biblio"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
+          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+            <!-- Campo libre / notas -->
+            <div>
+              <label for="b-notes">Notas rápidas</label>
+              <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="b-notes-save" class="btn primary">Guardar notas</button>
+                <button id="b-open-file" class="btn">Abrir PDF local…</button>
+                <button id="b-clear-view" class="btn">Vaciar visor</button>
+              </div>
+            </div>
+
+            <!-- Selector de enlaces -->
+            <div>
+              <label for="b-url">Nuevo enlace (PDF o web)</label>
+              <input id="b-url" type="url" placeholder="https://… ó *.pdf">
+              <label for="b-title">Título</label>
+              <input id="b-title" type="text" placeholder="Nombre del recurso">
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="b-add-link" class="btn primary">Añadir a lista</button>
+                <button id="b-export-links" class="btn">Exportar JSON</button>
+                <button id="b-import-links" class="btn">Importar JSON</button>
+              </div>
+
+              <div style="margin-top:10px">
+                <label for="b-select">Mis enlaces</label>
+                <select id="b-select"></select>
+                <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                  <button id="b-open" class="btn">Abrir en visor</button>
+                  <button id="b-remove" class="btn">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visor embebido -->
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-biblio"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
+          <div class="card-b">
+            <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+            <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”</p>
+          </div>
+        </div>
+
+        <!-- Paleta (imagen descargable con hex) -->
+        <div class="card" style="margin-top:12px">
+          <div class="card-h hdr-biblio"><h2>Paleta de color · Premium</h2><span class="subtitle">Descarga PNG con códigos HEX</span></div>
+          <div class="card-b">
+            <div id="paletteWrap" style="display:grid;gap:10px;grid-template-columns:1fr auto;align-items:center">
+              <svg id="paletteSVG" width="820" height="180" viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-1)">
+                <defs>
+                  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity=".08"/>
+                  </filter>
+                </defs>
+                <!-- filas de 5 swatches -->
+                <g font-family="ui-sans-serif,system-ui" font-weight="700" font-size="16" fill="#0b1220" filter="url(#soft)">
+                  <!-- fila 1 -->
+                  <g transform="translate(10,10)">
+                    <rect rx="12" width="150" height="70" fill="#06D6A0"/><text x="12" y="96">Mint — #06D6A0</text>
+                  </g>
+                  <g transform="translate(170,10)">
+                    <rect rx="12" width="150" height="70" fill="#1B9AAA"/><text x="12" y="96">Teal — #1B9AAA</text>
+                  </g>
+                  <g transform="translate(330,10)">
+                    <rect rx="12" width="150" height="70" fill="#EF476F"/><text x="12" y="96">Coral — #EF476F</text>
+                  </g>
+                  <g transform="translate(490,10)">
+                    <rect rx="12" width="150" height="70" fill="#FFC43D"/><text x="12" y="96">Gold — #FFC43D</text>
+                  </g>
+                  <g transform="translate(650,10)">
+                    <rect rx="12" width="150" height="70" fill="#6F7BF7"/><text x="12" y="96">Indigo — #6F7BF7</text>
+                  </g>
+                  <!-- fila 2 (plates claros) -->
+                  <g transform="translate(10,110)">
+                    <rect rx="12" width="150" height="60" fill="rgba(6,214,160,.14)"/><text x="12" y="146">Mint plate</text>
+                  </g>
+                  <g transform="translate(170,110)">
+                    <rect rx="12" width="150" height="60" fill="rgba(27,154,170,.14)"/><text x="12" y="146">Teal plate</text>
+                  </g>
+                  <g transform="translate(330,110)">
+                    <rect rx="12" width="150" height="60" fill="rgba(239,71,111,.14)"/><text x="12" y="146">Coral plate</text>
+                  </g>
+                  <g transform="translate(490,110)">
+                    <rect rx="12" width="150" height="60" fill="rgba(255,196,61,.14)"/><text x="12" y="146">Gold plate</text>
+                  </g>
+                  <g transform="translate(650,110)">
+                    <rect rx="12" width="150" height="60" fill="rgba(111,123,247,.14)"/><text x="12" y="146">Indigo plate</text>
+                  </g>
+                </g>
+              </svg>
+              <button id="paletteDL" class="btn">Descargar PNG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs inferiores -->
+      <nav class="bottom" aria-label="Secciones">
+        <div class="tabs-bottom">
+          <button class="tab-bottom" id="b-planta" aria-selected="true">
+            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-stetho"/></svg></span>
+            Planta
+          </button>
+          <button class="tab-bottom" id="b-tareas" aria-selected="false">
+            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-note"/></svg></span>
+            Tareas
+          </button>
+          <button class="tab-bottom" id="b-directorio" aria-selected="false">
+            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-phone"/></svg></span>
+            Directorio
+          </button>
+          <button class="tab-bottom" id="b-biblioteca" aria-selected="false">
+            <span class="ico-wrap" aria-hidden="true"><svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg><svg class="ico"><use href="#ico-books"/></svg></span>
+            Biblioteca
+          </button>
+        </div>
+      </nav>
+    </section>
+  </main>
+
+  <!-- FAB emergencias -->
+  <button id="fab" class="fab" aria-expanded="false" aria-controls="fabPanel">
+    <span class="ico-wrap" aria-hidden="true">
+      <svg class="ico-bg" width="26" height="26"><circle cx="13" cy="13" r="12"/></svg>
+      <svg class="ico-xl"><use href="#ico-bell"/></svg>
+    </span>Emergencias
+  </button>
+  <div id="fabPanel" class="fab-panel" role="dialog" aria-label="Números de emergencia">
+    <div class="toolbar" style="display:flex;align-items:center;gap:8px">
+      <strong>Accesos rápidos</strong>
+      <button id="fabEdit" class="gear" title="Configurar"><svg class="ico"><use href="#ico-gear"/></svg></button>
+    </div>
+    <div id="fabList" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Modal genérico -->
+  <dialog id="modal" class="modal" aria-modal="true">
+    <form id="modalForm" class="dialog" method="dialog">
+      <h3 id="modalTitle" style="margin:0 0 8px 0">Editar</h3>
+      <div id="modalBody" class="grid" style="grid-template-columns:1fr"></div>
+      <div class="row" style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button id="modalCancel" class="btn" value="cancel">Cancelar</button>
+        <button id="modalOk" class="btn primary" value="ok">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module">
+    /* ===== Utiles básicos y estabilidad viewport en Android ===== */
+    const BASE = new URL('./', location).pathname;
+    const $ = (s, r=document)=>r.querySelector(s);
+    const todayISO = ()=> new Date().toISOString().slice(0,10);
+    const idle = (fn)=>('requestIdleCallback' in window)? requestIdleCallback(fn,{timeout:120}) : setTimeout(fn,0);
+    const toast = (m)=>{ const t=$('#toast'); t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); };
+    const esc = (s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+    const pillForDate=(iso)=>{ try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,''); }catch{return iso} };
+
+    if(!window.__APP_setVHVar){
+      window.__APP_setVHVar=()=>{ document.documentElement.style.setProperty('--vh', `${Math.max(innerHeight,document.documentElement.clientHeight)*0.01}px`); };
+      addEventListener('resize', __APP_setVHVar, {passive:true}); __APP_setVHVar();
+    }
+
+    const setOnline=(on)=>{ const b=$('#badge-online'); b.textContent=on?'Online':'Offline'; b.className='chip '+(on?'ok':'bad'); };
+    setOnline(navigator.onLine);
+    addEventListener('online', ()=>setOnline(true), {passive:true});
+    addEventListener('offline',()=>setOnline(false), {passive:true});
+
+    /* ===== Firebase (conserva tu patrón original) ===== */
+    const appMod   = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
+    const authMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
+    const fsMod    = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
+    const { firebaseConfig } = await import(BASE + 'firebase-config.js');
+
+    const fbApp = appMod.initializeApp(firebaseConfig);
+    const auth  = authMod.getAuth(fbApp);
+    const db    = fsMod.initializeFirestore(fbApp, {
+      localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() })
+    });
+    const serverTS = fsMod.serverTimestamp;
+
+    /* ===== AUTH ===== */
+    const badgeAuth=$('#badge-auth'), userchip=$('#userchip'), avatar=$('#avatar'), displayname=$('#displayname');
+    const gate=$('#gate'), appUI=$('#app'); const provider=new authMod.GoogleAuthProvider();
+
+    const doSignIn=async()=>{ try{
+      if(matchMedia('(display-mode: standalone)').matches) await authMod.signInWithRedirect(auth,provider);
+      else await authMod.signInWithPopup(auth,provider);
+    }catch(e){ $('#authErr').textContent=e.message||String(e); } };
+
+    $('#signin').onclick=doSignIn; $('#signin2').onclick=doSignIn; $('#signout').onclick=async()=>authMod.signOut(auth);
+
+    authMod.onAuthStateChanged(auth, user=>{
+      if(user){
+        badgeAuth.textContent='Google: '+(user.displayName||user.email); badgeAuth.className='chip ok';
+        avatar.src=user.photoURL||''; displayname.textContent=user.displayName||user.email||''; userchip.classList.remove('hide');
+        $('#signout').classList.remove('hide'); $('#signin').classList.add('hide'); gate.classList.add('hide'); appUI.classList.remove('hide');
+        mountApp(user.uid);
+      }else{
+        badgeAuth.textContent='Google: desconectado'; badgeAuth.className='chip bad';
+        userchip.classList.add('hide'); $('#signout').classList.add('hide'); $('#signin').classList.remove('hide'); appUI.classList.add('hide'); gate.classList.remove('hide');
+        unmountApp();
+      }
+    });
+
+    /* ===== Firestore rutas ===== */
+    const col = {
+      planta  : (uid)=> fsMod.collection(db,'users',uid,'planta'),
+      tareas  : (uid)=> fsMod.collection(db,'users',uid,'tareas'),
+      dir     : (uid)=> fsMod.collection(db,'users',uid,'directorio'),
+      biblio  : (uid)=> fsMod.collection(db,'users',uid,'biblioteca'), // NUEVO
+      notes   : (uid)=> fsMod.doc(db,'users',uid,'biblioteca','__notes__'), // notas libres
+    };
+    let unsubs=[]; const currentUid=()=>auth.currentUser?.uid;
+    function unmountApp(){ unsubs.forEach(u=>u&&u()); unsubs=[]; }
+
+    /* ===== Tabs (ahora 4 secciones) ===== */
+    const tabOrder=['planta','tareas','directorio','biblioteca'];
+    function setTabA11y(id){
+      for(const k of tabOrder){
+        const sel = (k===id);
+        const el = document.getElementById('tab-'+k);
+        el.setAttribute('aria-selected', sel);
+        el.setAttribute('tabindex', sel ? '0' : '-1');
+      }
+    }
+    function selectTab(id, focusPanel=false){
+      const map={
+        planta:['panel-planta','tab-planta','b-planta','Planta'],
+        tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],
+        directorio:['panel-directorio','tab-directorio','b-directorio','Directorio'],
+        biblioteca:['panel-biblioteca','tab-biblioteca','b-biblioteca','Biblioteca']
+      };
+      for(const k in map){ const [p,t,b,l]=map[k]; const sel=(k===id);
+        document.getElementById(p).classList.toggle('hide',!sel);
+        document.getElementById(t).setAttribute('aria-selected',sel);
+        document.getElementById(b).setAttribute('aria-selected',sel);
+        if(sel){ document.getElementById('title').textContent=l; localStorage.setItem('tab', k); if(focusPanel) document.getElementById(p).focus?.(); }
+      }
+      setTabA11y(id);
+      location.hash = id;
+    }
+    $('#tab-planta').onclick =()=>selectTab('planta',true);
+    $('#tab-tareas').onclick =()=>selectTab('tareas',true);
+    $('#tab-directorio').onclick=()=>selectTab('directorio',true);
+    $('#tab-biblioteca').onclick=()=>selectTab('biblioteca',true);
+    $('#b-planta').onclick =()=>selectTab('planta');
+    $('#b-tareas').onclick =()=>selectTab('tareas');
+    $('#b-directorio').onclick=()=>selectTab('directorio');
+    $('#b-biblioteca').onclick=()=>selectTab('biblioteca');
+
+    document.getElementById('tablist').addEventListener('keydown', (e)=>{
+      const cur = tabOrder.findIndex(k => document.getElementById('tab-'+k).getAttribute('aria-selected')==='true');
+      if(e.key==='ArrowRight' || e.key==='ArrowDown'){ e.preventDefault(); const n=(cur+1)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+      if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ e.preventDefault(); const n=(cur-1+tabOrder.length)%tabOrder.length; document.getElementById('tab-'+tabOrder[n]).focus(); document.getElementById('tab-'+tabOrder[n]).click(); }
+      if(e.key==='Home'){ e.preventDefault(); document.getElementById('tab-'+tabOrder[0]).focus(); document.getElementById('tab-'+tabOrder[0]).click(); }
+      if(e.key==='End'){ e.preventDefault(); document.getElementById('tab-'+tabOrder.at(-1)).focus(); document.getElementById('tab-'+tabOrder.at(-1)).click(); }
+    });
+
+    const setNotif = (n)=>{ const el=document.getElementById('notifBadge'); el.textContent=String(n); el.title=n?`${n} tareas activas`:'Sin avisos'; };
+
+    /* ===== Utilidades comunes ===== */
+    function roomSortKey(s){
+      if(!s) return Number.POSITIVE_INFINITY;
+      const m = String(s).match(/\d+/g);
+      if(!m) return Number.POSITIVE_INFINITY;
+      const first = parseInt(m[0],10);
+      const second = m[1] ? parseInt(m[1],10)/100 : 0;
+      return first + second;
+    }
+    const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
+    const openEdit=(fields,onOk)=>{
+      const body=document.getElementById('modalBody'); body.innerHTML='';
+      for(const f of fields){ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}">`; body.append(w);}
+      const dlg=document.getElementById('modal'); document.getElementById('modalTitle').textContent='Editar'; document.getElementById('modalOk').textContent='Guardar'; document.getElementById('modalCancel').textContent='Cancelar';
+      dlg.showModal(); dlg.setAttribute('aria-hidden','false');
+      document.getElementById('modalOk').onclick=async e=>{e.preventDefault(); await onOk(); dlg.close();};
+      document.getElementById('modalCancel').onclick=e=>{e.preventDefault(); dlg.close();};
+      dlg.addEventListener('close',()=>dlg.setAttribute('aria-hidden','true'),{once:true});
+    };
+
+    async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); await fsMod.updateDoc(ref,{...patch,updatedAt:serverTS()}); }
+    async function del(kind,id){ await fsMod.deleteDoc(fsMod.doc(db,'users',auth.currentUser?.uid,kind,id)); }
+
+    /* ===== PLANTA ===== */
+    let currentGroup='planta';
+    function updateAddTarget(){ $('#addTarget').textContent = currentGroup==='planta' ? 'Añadiendo a: Planta' : 'Añadiendo a: Interconsulta'; }
+    $('#p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
+    $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
+    updateAddTarget();
+
+    const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(),
+      grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+
+    const docItemBase=(x,done=false)=>{
+      const li=document.createElement('li'); li.className='item ' + (x.grupo==='interconsulta'?'ic':'pl');
+      const roomClass = 'pill room ' + (x.grupo==='interconsulta'?'room-inter':'room-planta');
+      li.innerHTML=`<span class="${roomClass}">${esc(x.room||'—')}</span>
+        <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
+        ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
+        <div class="toolbar actions"></div>`;
+      return li;
+    };
+
+    const renderPlantaItem=(x)=>{
+      const li=docItemBase(x);
+      const a=li.querySelector('.actions');
+      a.append(
+        btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'),
+        btn('✎',()=>editPlanta(x),'btn icon')
+      );
+      const swap=btn('',async()=>{ const next = (x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next}); },'btn icon');
+      swap.innerHTML = `<svg class="ico"><use href="#ico-swap"/></svg>`;
+      a.append(swap, btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon'));
+      return li;
+    };
+    const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions');
+      a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
+    const val=(id)=>document.getElementById(id)?.value||'';
+    const editPlanta=(x)=>openEdit(
+      [{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}],
+      async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')})
+    );
+
+    function setupPlanta(uid){
+      $('#p-add').onclick=async()=>{
+        const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup});
+        if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(id=>document.getElementById(id).value='');
+      };
+      const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
+      const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
+
+      const u1=fsMod.onSnapshot(qA,(s)=>{
+        const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x);});
+        const arrP = all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+        const arrI = all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=> roomSortKey(a.room)-roomSortKey(b.room) || String(a.room||'').localeCompare(String(b.room||'')));
+        const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML='';
+        arrP.forEach(x=>lp.appendChild(renderPlantaItem(x)));
+        arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
+        $('#p-empty-planta').style.display=arrP.length?'none':'block'; $('#p-empty-inter').style.display=arrI.length?'none':'block';
+        $('#p-count-planta').textContent=arrP.length; $('#p-count-inter').textContent=arrI.length;
+      });
+
+      const u2=fsMod.onSnapshot(qD,(s)=>{
+        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+        const l=$('#p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x)));
+        $('#p-done-empty').style.display=arr.length?'none':'block'; $('#p-done-count').textContent=arr.length;
+      });
+      unsubs.push(u1,u2);
+    }
+
+    /* ===== TAREAS ===== */
+    const tareaDoc = (d)=>({ date:d.date||todayISO(), text:(d.text||'').trim(), status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+    function daysFromToday(iso){ try{ const d = new Date(iso+'T00:00:00'); const t = new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24)); }catch{return 0} }
+    function hueForDays(diff){ if(isNaN(diff)) return 205; if(diff <= -7) return 0; if(diff < 0) return 10; const max=30; return Math.round(10 + (Math.min(diff,max)/max)*120); }
+
+    function renderTareaItem(x){
+      const diff = daysFromToday(x.date);
+      const h = hueForDays(diff);
+      const li=document.createElement('li'); li.className='item t-hue'; li.style.setProperty('--h', h);
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
+        <div class="text"><div class="line">${esc(x.text||'')}</div></div>
+        <div class="toolbar actions"></div>`;
+      const a=li.querySelector('.actions');
+      a.append(btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editTarea(x),'btn icon'),btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'));
+      return li;
+    }
+    function renderTareaDone(x){
+      const li=document.createElement('li'); li.className='item'; li.style.borderLeft = `6px solid hsl(150 50% 38%)`;
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
+        <div class="text"><div class="line strike">${esc(x.text||'')}</div></div>
+        <div class="toolbar actions"></div>`;
+      li.querySelector('.actions').append(btn('↩',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+      return li;
+    }
+    function renderTareaTrash(x){
+      const li=document.createElement('li'); li.className='item';
+      li.innerHTML=`<span class="pill date">${pillForDate(x.date)}</span>
+        <div class="text muted"><div class="line">${esc(x.text||'')}</div></div>
+        <div class="toolbar actions"></div>`;
+      li.querySelector('.actions').append(btn('⤴',()=>upd('tareas',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('tareas',x.__id),'btn icon'));
+      return li;
+    }
+    const editTarea=(x)=>openEdit(
+      [{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'Descripción',id:'t_text',v:x.text||''}],
+      async()=>upd('tareas',x.__id,{date:val('t_date'),text:val('t_text')})
+    );
+    function setupTareas(uid){
+      $('#t-date').value=todayISO();
+      $('#t-add').onclick=async ()=>{
+        const date=$('#t-date').value, text=$('#t-text').value.trim(); if(!text) return;
+        await fsMod.addDoc(col.tareas(uid), tareaDoc({date,text})); $('#t-text').value='';
+      };
+      const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
+      const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
+      const qT=fsMod.query(col.tareas(uid),fsMod.where('status','==','trash'));
+
+      const u1=fsMod.onSnapshot(qA,(snap)=>{
+        const arr=[]; snap.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort((a,b)=> daysFromToday(a.date)-daysFromToday(b.date) || (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0) );
+        const list=$('#t-list'); list.innerHTML=''; let n=0;
+        idle(()=>{arr.forEach(x=>{list.appendChild(renderTareaItem(x)); n++;}); $('#t-count').textContent=n; $('#t-empty').style.display=n?'none':'block'; setNotif(n);});
+      });
+      const u2=fsMod.onSnapshot(qD,(s)=>{
+        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+        const l=$('#t-done'); l.innerHTML=''; let n=0;
+        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaDone(x)); n++;}); $('#t-done-empty').style.display=n?'none':'block'; $('#t-done-count').textContent=n;});
+      });
+      const u3=fsMod.onSnapshot(qT,(s)=>{
+        const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x);});
+        arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0) );
+        const l=$('#t-trash'); l.innerHTML=''; let n=0;
+        idle(()=>{arr.forEach(x=>{l.appendChild(renderTareaTrash(x)); n++;}); $('#t-trash-empty').style.display=n?'none':'block'; $('#t-trash-count').textContent=n;});
+      });
+      $('#t-emptyTrash').onclick=()=>emptyTrash(uid,'tareas');
+      unsubs.push(u1,u2,u3);
+    }
+    async function emptyTrash(uid,kind){ const q=fsMod.query(fsMod.collection(db,'users',uid,kind),fsMod.where('status','==','trash')); const s=await fsMod.getDocs(q); await Promise.all(s.docs.map(x=>fsMod.deleteDoc(x.ref))); toast('Papelera vaciada'); }
+
+    /* ===== DIRECTORIO ===== */
+    const dirDoc=(d)=>({ seccion:String(d.seccion||'').trim()||'Sin sección', nombre:String(d.nombre||'').trim()||'Sin nombre', telefono:String(d.telefono||'').trim(), notas:String(d.notas||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS(), deviceId:navigator.userAgent.slice(0,64) });
+    let dirCache=[];
+    function telHref(raw){ const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
+    function setupDirectorio(uid){
+      $('#d-add').onclick=async()=>{
+        const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos (formato libre)')||'',notas:''});
+        await fsMod.addDoc(col.dir(uid),d);
+      };
+      $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
+      const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{ dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x);}); renderDirList(); });
+      $('#d-q').addEventListener('input', renderDirList, {passive:true});
+      unsubs.push(u);
+    }
+    function phonesToChips(raw){
+      const parts = String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
+      return parts.map(p=>{ const href = telHref(p); return href?`<a class="pill" href="${href}" dir="ltr">${esc(p)}</a>`:`<span class="pill" dir="ltr">${esc(p)}</span>`; }).join(' ');
+    }
+    function renderDirList(){
+      const v=($('#d-q')?.value||'').toLowerCase(); const l=$('#d-list'); if(!l) return; l.innerHTML='';
+      let arr=[...dirCache]; arr.sort((a,b)=> (a.seccion||'').localeCompare(b.seccion||'') || (a.nombre||'').localeCompare(b.nombre||''));
+      let n=0; idle(()=>{ 
+        let currentSec='';
+        arr.forEach(x=>{
+          const match = !v || [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>String(y||'').toLowerCase().includes(v));
+          if(!match) return;
+          if(x.seccion!==currentSec){
+            currentSec=x.seccion||'Sin sección';
+            const hdr=document.createElement('div'); hdr.className='section-banner'; 
+            const letter=(currentSec[0]||'¿').toUpperCase();
+            hdr.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span class="pill" style="font-size:18px;background:var(--gold-plate);border-color:color-mix(in oklab,var(--gold),transparent 60%)">${letter}</span><strong>${esc(currentSec)}</strong></div>`;
+            l.appendChild(hdr);
+          }
+          const li=document.createElement('li'); li.className='item';
+          li.innerHTML=`<div class="text"><div class="line"><strong>${esc(x.nombre||'')}</strong></div>
+            <div class="line">${phonesToChips(x.telefono)}</div>
+            ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}</div>
+            <div class="toolbar actions"></div>`;
+          li.querySelector('.actions').append(btn('✎',()=>editDir(x),'btn icon'),btn('🗑️',()=>del('directorio',x.__id),'btn icon'));
+          l.appendChild(li); n++;
+        });
+        $('#d-count').textContent=n+' registros'; $('#d-empty').style.display=n?'none':'block';
+      });
+    }
+    const editDir=(x)=>openEdit(
+      [{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}],
+      async()=>upd('directorio',x.__id,{seccion:val('d_sec'),nombre:val('d_nom'),telefono:val('d_tel'),notas:val('d_not')})
+    );
+    function importDir(uid){return async()=>{try{
+      const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
+      const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase();
+      const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); }
+      await Promise.all(ops); toast('Importado ('+ops.length+')');
+    }catch(e){ toast(e.message||String(e)); }}};
+    function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
+
+    /* ===== BIBLIOTECA ===== */
+    const bDoc = (d)=>({ title:String(d.title||'').trim()||'Sin título', url:String(d.url||'').trim(), createdAt:d.createdAt||serverTS(), updatedAt:serverTS() });
+    let bCache=[]; let localObjectURL=null;
+
+    function setViewer(src){
+      const iframe=$('#b-viewer');
+      if(!src){ iframe.removeAttribute('src'); return; }
+      // PDFs externos con CORS pueden no previsualizar; aún así intentamos embebido.
+      iframe.src = src;
+    }
+    function clearLocalURL(){ if(localObjectURL){ URL.revokeObjectURL(localObjectURL); localObjectURL=null; } }
+
+    function renderBiblioSelect(){
+      const sel=$('#b-select'); sel.innerHTML='';
+      bCache.sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+      bCache.forEach(x=>{ const o=document.createElement('option'); o.value=x.__id; o.textContent=x.title; sel.appendChild(o); });
+    }
+
+    function setupBiblioteca(uid){
+      // Notas libres
+      fsMod.getDoc(col.notes(uid)).then(s=>{
+        const data=s.exists()?s.data():{text:''};
+        $('#b-notes').value = String(data.text||'');
+      });
+      $('#b-notes-save').onclick=async()=>{
+        await fsMod.setDoc(col.notes(uid),{text:$('#b-notes').value, updatedAt:serverTS()},{merge:true});
+        toast('Notas guardadas');
+      };
+
+      // Enlaces
+      $('#b-add-link').onclick=async()=>{
+        const url=$('#b-url').value.trim(); const title=$('#b-title').value.trim();
+        if(!url) return;
+        await fsMod.addDoc(col.biblio(uid), bDoc({url,title}));
+        $('#b-url').value=''; $('#b-title').value='';
+      };
+      $('#b-open').onclick=async()=>{
+        const id=$('#b-select').value; const item=bCache.find(x=>x.__id===id); if(!item) return;
+        clearLocalURL(); setViewer(item.url);
+      };
+      $('#b-remove').onclick=async()=>{
+        const id=$('#b-select').value; if(!id) return;
+        await fsMod.deleteDoc(fsMod.doc(db,'users',uid,'biblioteca',id));
+      };
+      $('#b-open-file').onclick=async()=>{
+        try{
+          const [h]=await showOpenFilePicker({types:[{description:'PDF',accept:{'application/pdf':['.pdf']}}]});
+          const f=await h.getFile();
+          clearLocalURL();
+          localObjectURL = URL.createObjectURL(f);
+          setViewer(localObjectURL);
+        }catch{}
+      };
+      $('#b-clear-view').onclick=()=>{ clearLocalURL(); setViewer(null); };
+
+      // Import/Export links JSON
+      $('#b-export-links').onclick=async()=>{
+        const snap=await fsMod.getDocs(fsMod.query(col.biblio(uid)));
+        const out=snap.docs.map(d=>({id:d.id,...d.data()}));
+        const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+        await pickWriteBlob(blob,'biblioteca-links-'+todayISO()+'.json'); toast('Exportado');
+      };
+      $('#b-import-links').onclick=async()=>{
+        try{
+          const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
+          const snap=await fsMod.getDocs(col.biblio(uid));
+          const key=o=>(String(o.title||'').trim()+'|'+String(o.url||'').trim()).toLowerCase();
+          const set=new Set(snap.docs.map(d=>key(d.data())));
+          const ops=[]; for(const o of arr){ const k=key(o); if(!set.has(k)) ops.push(fsMod.addDoc(col.biblio(uid), bDoc(o))); }
+          await Promise.all(ops); toast('Importado ('+ops.length+')');
+        }catch(e){ toast(e.message||String(e)); }
+      };
+
+      // Realtime
+      const u=fsMod.onSnapshot(fsMod.query(col.biblio(uid)),(s)=>{
+        bCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; bCache.push(x);});
+        renderBiblioSelect();
+      });
+      unsubs.push(u);
+    }
+
+    /* ===== Picker helpers ===== */
+    async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text(); } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f); }; i.click(); }); }
+    async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+
+    /* ===== PWA + SW ===== */
+    let deferredPrompt=null;
+    addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;$('#installBanner').style.display='inline-flex';});
+    $('#installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').style.display='none'; } };
+    $('#installBtn').onclick=()=>$('#installAction').click();
+
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.register(BASE+'sw.js');
+      navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
+      const showUpdate=()=>{$('#updateBanner').style.display='inline-flex'; $('#reloadNow').onclick=()=>reg.waiting?.postMessage({type:'SKIP_WAITING'});};
+      if(reg.waiting) showUpdate();
+      reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate();});});
+    }
+
+    /* ===== Montaje ===== */
+    function mountApp(uid){
+      setupPlanta(uid); setupTareas(uid); setupDirectorio(uid); setupBiblioteca(uid);
+      const last = location.hash?.slice(1) || localStorage.getItem('tab') || 'planta';
+      selectTab(last);
+    }
+
+    /* ===== Paleta → PNG ===== */
+    $('#paletteDL').onclick=async()=>{
+      const svg=$('#paletteSVG');
+      const blob=new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const img=new Image(); img.onload=()=>{
+        const c=document.createElement('canvas'); c.width=svg.viewBox.baseVal.width||820; c.height=svg.viewBox.baseVal.height||180;
+        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0); URL.revokeObjectURL(url);
+        c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='paleta-premium.png'; a.click(); },'image/png',1);
+      }; img.src=url;
+    };
+
+    /* ===== Helpers de lectura de inputs ===== */
+    const val=(id)=>document.getElementById(id)?.value||'';
+  </script>
+</body>
+</html>
