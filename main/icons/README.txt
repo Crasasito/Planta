@@ -1,1 +1,0 @@
-Coloca aquí tus iconos: icon-192.png, icon-512.png, maskable192.png, maskable512.png
