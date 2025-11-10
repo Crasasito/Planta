@@ -6,45 +6,37 @@
   <meta name="theme-color" content="#ffffff"/>
   <meta name="color-scheme" content="light"/>
   <title>Aurora UI — Infecciosas · Planta · Tareas · Directorio · Biblioteca · *</title>
+
   <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest"/>
   <link rel="icon" href="icons/icon-192.png" sizes="192x192"/>
   <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+
   <style>
-    /* ===================  TOKENS · One UI 8 Premium  =================== */
+    /* ===================  TOKENS · One UI 8 · Premium Legible  =================== */
     :root{
       --ink:#0b1220;           /* texto principal */
       --muted:#5b677c;         /* texto secundario */
       --surface:#ffffff;       /* fondo base */
       --surface-2:#f7f9fc;     /* paneles sutiles */
-      --border:#e6ecf3;        /* bordes claros */
-      --brand-1:#1B9AAA;       /* teal */
-      --brand-2:#06D6A0;       /* mint */
-      --brand-3:#FACC15;       /* gold */
-      --brand-4:#EF476F;       /* coral */
-      --brand-5:#6F7BF7;       /* indigo */
+      --border:#e6ecf3;
 
-      /* Gradientes por sección (afinados) */
-      --g-add:     linear-gradient(135deg,#E0F2FF 0%, #38BDF8 55%, #0EA5E9 100%);
-      --g-planta:  linear-gradient(135deg,#E9D5FF 0%, #A78BFA 55%, #7C3AED 100%);
-      --g-inter:   linear-gradient(135deg,#FFE5B4 0%, #FB923C 55%, #F97316 100%);
-      --g-tareas:  linear-gradient(135deg,#FFD1D9 0%, #FB7185 55%, #F43F5E 100%);
-      --g-green:   linear-gradient(135deg,#DCFCE7 0%, #34D399 55%, #10B981 100%);
-      --g-dir:     linear-gradient(135deg,#FFF1B6 0%, #FACC15 55%, #EAB308 100%);
-      --g-biblio:  linear-gradient(135deg,#E0E7FF 0%, #818CF8 55%, #6366F1 100%);
-      --g-extra:   linear-gradient(135deg,#fdf2ff 0%, #f0abfc 55%, #d946ef 100%);
+      /* Acentos pastel (desaturados + luminosos) */
+      --teal:#39b4c1; --mint:#59e0c6; --gold:#f4d35e; --coral:#f58aa1; --indigo:#93a0ff;
+      --violet:#a18bff; --amber:#f6cc6a; --emerald:#4bd4a3; --rose:#ffa1b3; --slate:#7a879a;
 
       /* Dimensiones */
-      --radius:14px; --radius-xl:22px; --appbar:64px; --touch:44px; --safe-bottom:calc(88px + env(safe-area-inset-bottom));
+      --radius:14px; --radius-xl:22px; --appbar:64px; --touch:44px;
+      --safe-bottom:calc(88px + env(safe-area-inset-bottom));
 
-      /* Sombras premium (sutil glow) */
+      /* Sombras premium (rim light + elevación suave) */
       --shadow-1: 0 1px 2px rgba(6,16,30,.05),0 8px 24px rgba(6,16,30,.06);
       --shadow-2: 0 2px 10px rgba(6,16,30,.10),0 20px 40px rgba(6,16,30,.14);
       --glow: 0 0 0 1px rgba(255,255,255,.70) inset, 0 12px 26px rgba(16,40,80,.12);
 
-      /* Tipografía fluida + viewport real en Android */
+      /* Tipografía fluida + ajustes ópticos */
       --fs: clamp(15px, 0.85vw + 0.35vh, 18px);
-      --h2: clamp(20px, 2.6vw, 26px);
+      --h2: clamp(20px, 2.4vw, 26px);
       --vh: 1vh;
     }
 
@@ -54,20 +46,24 @@
       margin:0; color:var(--ink); background:var(--surface);
       font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
       font-size:var(--fs); line-height:1.65; min-height:calc(var(--vh) * 100);
-      padding-bottom: var(--safe-bottom);
+      font-synthesis-weight:none; text-rendering:optimizeLegibility;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      letter-spacing:.1px; word-spacing:.02em;
+      padding-bottom: var(--safe-bottom);
       -webkit-tap-highlight-color:transparent; overflow-x:hidden;
     }
-    :focus-visible{outline:3px solid color-mix(in oklab,var(--brand-3),var(--brand-2) 35%); outline-offset:2px; border-radius:12px}
+    :focus-visible{outline:3px solid color-mix(in oklab,var(--gold),var(--mint) 35%); outline-offset:2px; border-radius:12px}
     .container{max-width:min(1180px,98vw); margin:0 auto; padding:8px clamp(12px,4vw,20px); container-type:inline-size}
     .grow{flex:1;min-width:0}
     .hide{display:none !important}
 
-    /* ===================  GLASS APPBAR =================== */
+    /* ===================  APP BAR · Glass + Stroke de texto  =================== */
     header.appbar{
       position:sticky; top:0; z-index:50; min-height:var(--appbar);
-      backdrop-filter: blur(8px) saturate(1.06);
-      background:linear-gradient(180deg,rgba(255,255,255,.92) 0%, rgba(247,249,252,.82) 100%);
+      backdrop-filter: blur(10px) saturate(1.06);
+      background:
+        radial-gradient(120% 60% at 50% -30%, rgba(255,255,255,.92) 0%, rgba(247,249,252,.84) 60%, rgba(247,249,252,.90) 100%),
+        linear-gradient(180deg,rgba(255,255,255,.92) 0%, rgba(247,249,252,.86) 100%);
       border-bottom:1px solid var(--border);
     }
     .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -77,87 +73,122 @@
       background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);
       border:1px solid #eef4df; box-shadow: var(--shadow-1), inset 0 1px 0 #fff;
     }
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--brand-3);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.06)}
     header.appbar h1{
-      margin:0; font-size:clamp(18px,2.2vw,22px); font-weight:1000; letter-spacing:.2px;
-      color:#0d1726;
-      /* RIM-LIGHT + stroke para legibilidad premium */
-      -webkit-text-stroke:.45px rgba(255,255,255,.85);
+      margin:0; font-size:clamp(18px,2.2vw,22px); font-weight:1000; letter-spacing:.2px; color:#0d1726;
+      -webkit-text-stroke:.5px rgba(255,255,255,.9);
       text-shadow:
-        0 0 1px rgba(255,255,255,.9),
-        0 1px 0 rgba(255,255,255,.9),
-        0 8px 22px rgba(0,0,0,.12);
+        0 0 1px rgba(255,255,255,1),
+        0 1px 0 rgba(255,255,255,.95),
+        0 10px 28px rgba(0,0,0,.12);
     }
 
     .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
-      border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
+      border-radius:999px;font-size:.86rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
     .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
     .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
 
     .btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
       padding:10px 12px;border-radius:14px;box-shadow:var(--shadow-1);
       min-height:var(--touch);min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:800}
-    .btn.primary{background:linear-gradient(180deg,#fffdf3 0%, #fff7d1 100%); border-color:color-mix(in oklab,var(--brand-3),transparent 65%); box-shadow:var(--shadow-2)}
+    .btn.primary{background:linear-gradient(180deg,#fffdf3 0%, #fff7d1 100%); border-color:color-mix(in oklab,var(--gold),transparent 65%); box-shadow:var(--shadow-2)}
     .btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
 
-    /* ===================  TARJETAS GLASMORFISMO =================== */
+    /* ===================  CARDS · Neoglass + “metal gloss” premium =================== */
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.78) 100%);
+      position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.84) 100%);
       backdrop-filter: blur(8px) saturate(1.06);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       box-shadow: var(--glow);
       overflow:hidden; contain:content;
+      isolation:isolate;
+    }
+    /* Sutil brillo metálico envolvente */
+    .card::before{
+      content:""; position:absolute; inset:-30% -40% auto -40%; height:140%;
+      background: radial-gradient(120% 60% at 50% -20%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 60%);
+      mix-blend-mode:soft-light; pointer-events:none;
     }
     .card-b{padding:12px}
+
+    /* =================== ENCABEZADOS · Gloss iOS + etiqueta en relieve =================== */
     .card-h{
-      position:relative; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      position:relative; padding:16px 18px; display:flex; flex-direction:column; align-items:flex-start; gap:8px;
       border-bottom:1px solid color-mix(in oklab,#000,transparent 90%);
+      background:
+        /* brillo redondeado tipo “glass icon” */
+        radial-gradient(90% 140% at 50% -40%, rgba(255,255,255,.85) 0%, rgba(255,255,255,.30) 55%, rgba(255,255,255,0) 62%) ,
+        linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
       isolation:isolate; overflow:hidden;
     }
+    /* Barra superior acento (pastel) */
+    .card-h::before{
+      content:""; position:absolute; inset:0; height:4px; background:var(--tone, linear-gradient(90deg,var(--teal),var(--mint)));
+    }
+    /* Sutileza de metal “brushed” */
+    .card-h::after{
+      content:""; position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 1px, rgba(255,255,255,0) 1px 6px);
+      opacity:.35; mix-blend-mode:overlay; pointer-events:none;
+    }
+    .tone-planta { --tone: linear-gradient(90deg,#a08df6,#7ad7e4) }
+    .tone-inter  { --tone: linear-gradient(90deg,#ffc9a3,#f7a8b8) }
+    .tone-tareas { --tone: linear-gradient(90deg,#94e7d7,#ffd889) }
+    .tone-green  { --tone: linear-gradient(90deg,#a8f0c9,#6de1b1) }
+    .tone-dir    { --tone: linear-gradient(90deg,#ffd889,#f0cf6b) }
+    .tone-biblio { --tone: linear-gradient(90deg,#b9c1ff,#7ad7e4) }
+    .tone-extra  { --tone: linear-gradient(90deg,#ffb8d4,#b8a2ff) }
+
     .card-h h2{
       margin:0; font-size:var(--h2); font-weight:1000; letter-spacing:.2px; color:#0b1220;
-      -webkit-text-stroke:.45px rgba(255,255,255,.85);
+      -webkit-text-stroke:.45px rgba(255,255,255,.9);
       text-shadow:
-        0 0 1px rgba(255,255,255,.95),
-        0 1px 0 rgba(255,255,255,.95),
+        0 0 1px rgba(255,255,255,1),
+        0 1px 0 rgba(255,255,255,1),
         0 2px 12px rgba(0,0,0,.14),
         0 16px 32px rgba(0,0,0,.08);
     }
+    /* Etiqueta bajo el h2 (relieve, un punto más clara) */
+    .h-tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:10px;
+      font-weight:900; letter-spacing:.2px; color:#0c1525;
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f1f4fa 100%);
+      border:1px solid color-mix(in oklab, var(--ink), transparent 88%);
+      box-shadow:
+        inset 0 1px 0 #fff,
+        0 1px 0 rgba(255,255,255,.9),
+        0 6px 14px rgba(10,20,30,.08);
+    }
     .subtitle{ color:#06121fcc; font-weight:800 }
 
-    .hdr-add{    background:var(--g-add) }
-    .hdr-planta{ background:var(--g-planta) }
-    .hdr-inter{  background:var(--g-inter) }
-    .hdr-tareas{ background:var(--g-tareas) }
-    .hdr-green{  background:var(--g-green) }
-    .hdr-dir{    background:var(--g-dir) }
-    .hdr-biblio{ background:var(--g-biblio) }
-    .hdr-extra{  background:var(--g-extra) }
-
-    /* ===================  TABS =================== */
+    /* ===================  TABS accesibles y modernos =================== */
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
     .tab{
       padding:12px;border-radius:16px;border:1px solid var(--border);background:var(--surface-2);
       cursor:pointer;font-weight:900;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:12px
     }
-    .tab[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--brand-1),transparent 65%);box-shadow:0 10px 24px rgba(20,70,120,.08), inset 0 1px 0 #fff}
+    .tab[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--teal),transparent 65%);box-shadow:0 10px 24px rgba(20,70,120,.08), inset 0 1px 0 #fff}
     nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--border)}
     .tabs-bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:center;padding:8px 12px}
     .tab-bottom{
       padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;font-weight:800;
       display:flex;align-items:center;justify-content:center;gap:10px
     }
-    .tab-bottom[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--brand-3),transparent 60%);box-shadow:0 8px 22px rgba(0,0,0,.08), inset 0 1px 0 #fff}
+    .tab-bottom[aria-selected="true"]{background:#fff;border-color:color-mix(in oklab,var(--gold),transparent 60%);box-shadow:0 8px 22px rgba(0,0,0,.08), inset 0 1px 0 #fff}
 
-    .ico{ width:30px; height:30px }
+    /* Iconos: mayor visibilidad (drop-shadow + halo) */
+    .ico{ width:30px; height:30px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.10)) }
     .tab-bottom .ico{ width:26px; height:26px }
     .ico-wrap{ position:relative; display:inline-grid; place-items:center }
     .ico-wrap::before{
       content:""; position:absolute; inset:-8px; border-radius:14px;
-      /* halo suave alrededor del icono para sensación premium */
-      background: radial-gradient(60% 60% at 50% 40%, #ffffff 0%, #ffffff 55%, rgba(255,255,255,0) 100%);
+      background: radial-gradient(60% 60% at 50% 35%, #ffffff 0%, #ffffff 52%, rgba(255,255,255,0) 100%);
       box-shadow: 0 12px 28px rgba(0,0,0,.10); z-index:0;
     }
     .ico-wrap > svg{ position:relative; z-index:1 }
@@ -175,10 +206,8 @@
       font-family: ui-monospace,Consolas,Menlo,monospace;
       font-size:clamp(22px,3.2vw,26px);
       padding:12px 16px; letter-spacing:.3px;
-      color:#07101f;
-      background: linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
-      border:1px solid color-mix(in oklab,var(--brand-2),transparent 75%);
-      /* aro exterior + interior para legibilidad */
+      color:#07101f; background: linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
+      border:1px solid color-mix(in oklab,var(--mint),transparent 75%);
       box-shadow:
         0 0 0 1px color-mix(in oklab,#000,transparent 90%),
         0 0 0 6px rgba(6,214,160,.12),
@@ -189,12 +218,11 @@
 
     .viewer{ width:100%; block-size:min(70vh, 100dvh - 280px); border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1); }
 
-    /* ===================  DIRECTORIO: LAYOUT + A-Z (sticky headers que no tapan) =================== */
+    /* DIRECTORIO: títulos sticky y A–Z */
     .dir-wrap{display:grid;grid-template-columns:1fr min(36px,8vw);gap:12px;align-items:start}
     .az{position:sticky; top:calc(var(--appbar) + 10px); display:grid; grid-template-columns:1fr; gap:4px; align-content:start}
     .az a{display:grid;place-items:center; width:100%; aspect-ratio:1/1; border:1px solid var(--border); border-radius:10px; text-decoration:none; color:#263041; font-weight:900; background:#fff; box-shadow:inset 0 1px 0 #fff}
     .az a:focus-visible{outline-offset:0}
-    /* Encabezado de sección con fondo sólido y borde, y margen de scroll para no solapar */
     .section-tag{
       position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
       margin:-12px; margin-bottom:8px; padding:6px 12px;
@@ -202,10 +230,9 @@
       color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
       border:1px solid var(--border); box-shadow:var(--shadow-1)
     }
-    /* Empuje de anclaje para evitar que el sticky tape el primer elemento */
     section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px); }
 
-    /* ===================  RESPONSIVE FINO =================== */
+    /* ===================  RESPONSIVE =================== */
     @media (max-width:560px){
       .statusRow{order:4;width:100%}
       #userGroup{order:5;width:100%;justify-content:flex-start}
@@ -216,310 +243,391 @@
   </style>
 </head>
 <body>
-  <!-- Gradientes para iconos -->
+  <!-- Gradientes para iconos (acento, no para encabezados) -->
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
     <defs>
-      <linearGradient id="grad-mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bff5e3"/><stop offset="1" stop-color="#06D6A0"/></linearGradient>
-      <linearGradient id="grad-teal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfe6ef"/><stop offset="1" stop-color="#1B9AAA"/></linearGradient>
-      <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd0dc"/><stop offset="1" stop-color="#EF476F"/></linearGradient>
-      <linearGradient id="grad-gold"  x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FFC43D"/></linearGradient>
-      <linearGradient id="grad-indigo"x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
-  <symbol id="ico-stetho" viewBox="0 0 24 24">
-    <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
-    <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
-  </symbol>
-  <symbol id="ico-note" viewBox="0 0 24 24">
-    <path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
-    <path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/>
-  </symbol>
-  <symbol id="ico-phone" viewBox="0 0 24 24">
-    <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/>
-    <circle cx="11" cy="7" r="1" fill="#fff"/>
-    <rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/>
-    <rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/>
-  </symbol>
-  <symbol id="ico-books" viewBox="0 0 24 24">
-    <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#grad-indigo)"/>
-    <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#grad-gold)"/>
-    <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#grad-mint)"/>
-    <rect x="3.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
-    <rect x="10.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
-    <rect x="17.5" y="9" width="2.8" height="1.2" rx=".6" fill="#fff" opacity=".9"/>
-  </symbol>
-  <symbol id="ico-bell" viewBox="0 0 24 24">
-    <path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/>
-    <circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/>
-  </symbol>
-  <symbol id="ico-gear" viewBox="0 0 24 24">
-    <path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0 0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/>
-  </symbol>
-  <symbol id="ico-star" viewBox="0 0 24 24">
-    <path fill="url(#grad-gold)" d="M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 8.8l6.5-.9L12 2z"/>
-  </symbol>
-</defs>
+      <linearGradient id="grad-mint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6faf0"/><stop offset="1" stop-color="#59e0c6"/></linearGradient>
+      <linearGradient id="grad-teal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5f0f4"/><stop offset="1" stop-color="#39b4c1"/></linearGradient>
+      <linearGradient id="grad-coral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffdbe4"/><stop offset="1" stop-color="#f58aa1"/></linearGradient>
+      <linearGradient id="grad-gold"  x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3c9"/><stop offset="1" stop-color="#f4d35e"/></linearGradient>
+      <linearGradient id="grad-indigo"x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2e6ff"/><stop offset="1" stop-color="#93a0ff"/></linearGradient>
 
+      <!-- Iconos -->
+      <symbol id="ico-stetho" viewBox="0 0 24 24">
+        <path fill="url(#grad-mint)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
+        <path fill="url(#grad-teal)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
+        <!-- brillo en borde -->
+        <circle cx="12" cy="12" r="10.2" fill="none" stroke="white" stroke-opacity=".35"/>
+      </symbol>
+      <symbol id="ico-note" viewBox="0 0 24 24">
+        <path fill="url(#grad-coral)" d="M5 3h10a1 1 0 0 1 1 1v9l-4 4H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+        <path fill="url(#grad-gold)" d="M16 13v3a1 1 0 0 1-1 1h-3l4-4z"/>
+        <rect x="6.2" y="6.2" width="8.6" height="1.6" rx=".8" fill="#fff" opacity=".9"/>
+      </symbol>
+      <symbol id="ico-phone" viewBox="0 0 24 24">
+        <rect x="5" y="3" width="12" height="18" rx="2" fill="url(#grad-teal)"/>
+        <circle cx="11" cy="7" r="1" fill="#fff"/>
+        <rect x="8" y="10" width="6" height="1.6" rx=".8" fill="#fff"/>
+        <rect x="8" y="13" width="6" height="1.6" rx=".8" fill="#fff"/>
+        <rect x="7" y="4.5" width="8" height="0.8" rx="0.4" fill="#ffffff" opacity=".6"/>
+      </symbol>
+      <symbol id="ico-books" viewBox="0 0 24 24">
+        <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#grad-indigo)"/>
+        <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#grad-gold)"/>
+        <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#grad-mint)"/>
+        <rect x="3.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+        <rect x="10.5" y="8.5" width="3.5" height="1.4" rx=".7" fill="#fff" opacity=".9"/>
+        <rect x="17.5" y="9" width="2.8" height="1.2" rx=".6" fill="#fff" opacity=".9"/>
+      </symbol>
+      <symbol id="ico-bell" viewBox="0 0 24 24">
+        <path fill="url(#grad-coral)" d="M12 3a5 5 0 0 0-5 5v3.6l-1.6 2.6A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .9-1.5L17 11.6V8a5 5 0 0 0-5-5z"/>
+        <circle cx="12" cy="19" r="1.8" fill="url(#grad-gold)"/>
+      </symbol>
+      <symbol id="ico-gear" viewBox="0 0 24 24">
+        <path fill="url(#grad-teal)" d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm9 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.6-1.9-3.3-2.4 1a8 8 0 0 0-2.8-1.6l-.4-2.6H9.7l-.4 2.6a8 8 0 0 0-2.8 1.6l-2.4-1L2.2 8.7l2 1.6a8 8 0 0 0 0 3.4l-2 1.6 1.9 3.3 2.4-1a8 8 0 0 0 2.8 1.6l.4 2.6h4.6l.4-2.6a8 8 0 0 0 2.8-1.6l2.4 1 1.9-3.3-2-1.6c.1-.5.1-1.1.1-1.7Z"/>
+      </symbol>
+      <symbol id="ico-star" viewBox="0 0 24 24">
+        <path fill="url(#grad-gold)" d="M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 8.8l6.5-.9L12 2z"/>
+      </symbol>
+      <!-- NUEVO: Icono “cambio” (dos flechas circulares) para Planta/Interconsulta -->
+      <symbol id="ico-swap" viewBox="0 0 24 24">
+        <defs>
+          <linearGradient id="swapA" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#a08df6"/><stop offset="1" stop-color="#7ad7e4"/>
+          </linearGradient>
+          <linearGradient id="swapB" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffc9a3"/><stop offset="1" stop-color="#f7a8b8"/>
+          </linearGradient>
+        </defs>
+        <path d="M6 12a6 6 0 0 1 10-4.2" fill="none" stroke="url(#swapA)" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M16 5.5v3.6h-3.6" fill="none" stroke="url(#swapA)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18 12a6 6 0 0 1-10 4.2" fill="none" stroke="url(#swapB)" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M8 18.5v-3.6h3.6" fill="none" stroke="url(#swapB)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="12" r="10.2" fill="none" stroke="white" stroke-opacity=".25"/>
+      </symbol>
+    </defs>
   </svg>
+
   <header class="appbar" role="banner">
     <div class="container">
       <span class="brand-chip"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
-  <!-- Botón * entre marca y título -->
-  <button id="extraToggle" class="btn icon" aria-label="Abrir sección *" title="Sección * (personalizable)">
-    <svg class="ico" aria-hidden="true"><use href="#ico-star"/></svg>
-  </button>
 
-  <h1 id="title">Planta</h1>
-  <div class="grow"></div>
+      <button id="extraToggle" class="btn icon" aria-label="Abrir sección *" title="Sección * (personalizable)">
+        <svg class="ico" aria-hidden="true"><use href="#ico-star"/></svg>
+      </button>
 
-  <div class="statusRow" aria-live="polite" style="margin-left:12px">
-    <span id="badge-online" class="chip bad">Offline</span>
-    <span id="badge-auth" class="chip bad">Google: desconectado</span>
-  </div>
+      <h1 id="title">Planta</h1>
+      <div class="grow"></div>
 
-  <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
-    <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
-      <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
-      <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
-      <span id="notifBadge" class="chip" title="Tareas activas">0</span>
+      <div class="statusRow" aria-live="polite" style="margin-left:12px">
+        <span id="badge-online" class="chip bad">Offline</span>
+        <span id="badge-auth" class="chip bad">Google: desconectado</span>
+      </div>
+
+      <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+        <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
+          <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
+          <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+          <span id="notifBadge" class="chip" title="Tareas activas">0</span>
+        </div>
+        <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
+        <button id="signin"  class="btn primary">Acceder</button>
+        <button id="signout" class="btn hide">Salir</button>
+      </div>
     </div>
-    <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
-    <button id="signin"  class="btn primary">Acceder</button>
-    <button id="signout" class="btn hide">Salir</button>
-  </div>
-</div>
-
   </header>
+
   <main class="container">
     <div id="updateBanner" class="chip" style="display:none">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
     <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
-<!-- Gate -->
-<section id="gate" class="card" role="region" aria-live="polite">
-  <div class="card-h hdr-add"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
-  <div class="card-b">
-    <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
-    <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
-    <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
-  </div>
-</section>
 
-<!-- App -->
-<section id="app" class="hide" aria-labelledby="tabsLabel">
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-b">
-      <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
-      <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal">
-        <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="0">
-          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta
-        </button>
-        <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
-          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas
-        </button>
-        <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
-          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio
-        </button>
-        <button id="tab-biblioteca" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblioteca" tabindex="-1">
-          <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca
-        </button>
+    <!-- Gate -->
+    <section id="gate" class="card" role="region" aria-live="polite">
+      <div class="card-h tone-tareas">
+        <h2>Bienvenido</h2>
+        <span class="h-tag">Primer paso: Accede</span>
+        <span class="subtitle">Sincroniza con Google</span>
       </div>
-    </div>
-  </div>
+      <div class="card-b">
+        <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+        <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
+        <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+      </div>
+    </section>
 
-  <!-- ===== PLANTA ===== -->
-  <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
-    <div class="card">
-      <div class="card-h hdr-add"><h2>Añadir habitación</h2><span class="subtitle">Planta e interconsultas</span></div>
-      <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-        <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
-        <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
-        <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
-        <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr">
-          <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
-          <div>
-            <label>Grupo</label>
-            <div role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 #fff">
-              <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#efe9ff;border-color:#d7c8ff">Planta</button>
-              <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#ffedd5;border-color:#fdba74">Interconsulta</button>
-            </div>
-            <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
+    <!-- App -->
+    <section id="app" class="hide" aria-labelledby="tabsLabel">
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-b">
+          <div id="tabsLabel" class="muted" style="font-weight:700; margin-bottom:8px">Secciones</div>
+          <div role="tablist" class="tabs" aria-label="Secciones" id="tablist" aria-orientation="horizontal" tabindex="0">
+            <button id="tab-planta" class="tab" role="tab" aria-selected="true" aria-controls="panel-planta" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta
+            </button>
+            <button id="tab-tareas" class="tab" role="tab" aria-selected="false" aria-controls="panel-tareas" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas
+            </button>
+            <button id="tab-directorio" class="tab" role="tab" aria-selected="false" aria-controls="panel-directorio" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio
+            </button>
+            <button id="tab-biblioteca" class="tab" role="tab" aria-selected="false" aria-controls="panel-biblioteca" tabindex="-1">
+              <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
-      <div class="card-b">
-        <ul id="p-list-planta" class="list"></ul>
-        <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
-      <div class="card-b">
-        <ul id="p-list-inter" class="list"></ul>
-        <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
-      <div class="card-b">
-        <ul id="p-done" class="list"></ul>
-        <p id="p-done-empty" class="muted">Nada completado.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== TAREAS ===== -->
-  <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
-    <div class="card">
-      <div class="card-h hdr-tareas"><h2>Añadir tarea</h2><span class="subtitle" id="t-status">Fecha → Descripción</span></div>
-      <div class="card-b">
-        <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-          <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
-          <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
-          <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
-      <div class="card-b">
-        <ul id="t-list" class="list"></ul>
-        <p id="t-empty" class="muted">No hay tareas activas.</p>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
-      <div class="card-b">
-        <ul id="t-done" class="list"></ul>
-        <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
-      <div class="card-b">
-        <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
-        <ul id="t-trash" class="list"></ul>
-        <p id="t-trash-empty" class="muted">Papelera vacía.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== DIRECTORIO ===== -->
-  <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
-    <div class="card">
-      <div class="card-h hdr-dir"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
-      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
-        <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
-        <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap; gap:6px">
-          <button id="d-add" class="btn primary">Añadir</button>
-          <button id="d-import" class="btn">Importar JSON</button>
-          <button id="d-export" class="btn">Exportar JSON</button>
-          <button id="d-dedupe" class="btn">Eliminar duplicados</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="card-b dir-wrap">
-        <div>
-          <div id="d-list-wrap"></div>
-          <p id="d-empty" class="muted">Sin registros.</p>
-        </div>
-        <nav class="az" aria-label="Índice alfabético" id="d-az"></nav>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== BIBLIOTECA ===== -->
-  <div id="panel-biblioteca" class="hide" role="tabpanel" aria-labelledby="tab-biblioteca" tabindex="-1">
-    <div class="card">
-      <div class="card-h hdr-biblio"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
-      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
-        <div>
-          <label for="b-notes">Notas rápidas</label>
-          <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
-          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-            <button id="b-notes-save" class="btn primary">Guardar notas</button>
-            <button id="b-open-file" class="btn">Abrir PDF local…</button>
-            <button id="b-clear-view" class="btn">Vaciar visor</button>
+      <!-- ===== PLANTA ===== -->
+      <div id="panel-planta" role="tabpanel" aria-labelledby="tab-planta" tabindex="-1">
+        <div class="card">
+          <div class="card-h tone-planta">
+            <h2>Añadir habitación</h2>
+            <span class="h-tag">Planta / Interconsulta</span>
+            <span class="subtitle">Entrada rápida</span>
           </div>
-        </div>
-
-        <div>
-          <label for="b-url">Nuevo enlace (PDF o web)</label>
-          <input id="b-url" type="url" placeholder="https://… o *.pdf">
-          <label for="b-title">Título</label>
-          <input id="b-title" type="text" placeholder="Nombre del recurso">
-          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-            <button id="b-add-link" class="btn primary">Añadir a lista</button>
-            <button id="b-export-links" class="btn">Exportar JSON</button>
-            <button id="b-import-links" class="btn">Importar JSON</button>
-          </div>
-
-          <div style="margin-top:10px">
-            <label for="b-select">Mis enlaces</label>
-            <select id="b-select"></select>
-            <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-              <button id="b-open" class="btn">Abrir en visor</button>
-              <button id="b-remove" class="btn">Eliminar</button>
+          <div class="card-b grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+            <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
+            <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
+            <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
+            <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr auto">
+              <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
+              <div>
+                <label>Grupo</label>
+                <div role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 #fff">
+                  <button id="p-group-planta" type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#efe9ff;border-color:#d7c8ff">Planta</button>
+                  <button id="p-group-inter"  type="button" class="btn" style="min-height:36px;padding:8px 12px;background:#ffedd5;border-color:#fdba74">Interconsulta</button>
+                </div>
+                <span id="addTarget" class="chip" aria-live="polite" style="margin-left:8px">Añadiendo a: Planta</span>
+              </div>
+              <div style="align-self:end;display:flex;gap:8px">
+                <!-- Botón “cambio” restaurado con icono de flechas circulares -->
+                <button id="p-swap" class="btn icon" title="Cambiar grupo Planta/Interconsulta">
+                  <svg class="ico" aria-hidden="true"><use href="#ico-swap"/></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="card" style="margin-top:12px">
-      <div class="card-h hdr-biblio"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
-      <div class="card-b">
-        <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
-        <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SECCIÓN * (EXTRA) ===== -->
-  <div id="panel-extra" class="hide" role="region" aria-labelledby="lbl-extra" tabindex="-1">
-    <div class="card">
-      <div class="card-h hdr-extra"><h2 id="lbl-extra">*</h2><span class="subtitle">Espacio personalizable</span></div>
-      <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
-        <div>
-          <label for="x-notes">Lienzo libre</label>
-          <textarea id="x-notes" placeholder="Texto libre, snippets, recordatorios…"></textarea>
-          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-            <button id="x-notes-save" class="btn primary">Guardar lienzo</button>
-            <button id="x-clear" class="btn">Vaciar</button>
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-planta">
+            <h2>Planta</h2>
+            <span class="h-tag">Listado activo</span>
+            <span id="p-count-planta" class="chip">0</span>
+          </div>
+          <div class="card-b">
+            <ul id="p-list-planta" class="list"></ul>
+            <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
           </div>
         </div>
-        <div>
-          <label>Accesos rápidos (widgets)</label>
-          <div id="x-widgets"></div>
-          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-            <button id="x-edit" class="btn">Editar widgets</button>
-            <button id="x-reset" class="btn">Restaurar</button>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-inter">
+            <h2>Interconsultas</h2>
+            <span class="h-tag">Listado activo</span>
+            <span id="p-count-inter" class="chip">0</span>
           </div>
-          <p class="muted" style="margin-top:6px">Formato por línea: <code>Etiqueta | URL o tel</code></p>
+          <div class="card-b">
+            <ul id="p-list-inter" class="list"></ul>
+            <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-green">
+            <h2>Completados</h2>
+            <span class="h-tag">Histórico breve</span>
+            <span id="p-done-count" class="chip">0</span>
+          </div>
+          <div class="card-b">
+            <ul id="p-done" class="list"></ul>
+            <p id="p-done-empty" class="muted">Nada completado.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Tabs inferiores -->
-  <nav class="bottom" aria-label="Secciones">
-    <div class="tabs-bottom">
-      <button class="tab-bottom" id="b-planta" aria-selected="true"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta</button>
-      <button class="tab-bottom" id="b-tareas" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas</button>
-      <button class="tab-bottom" id="b-directorio" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio</button>
-      <button class="tab-bottom" id="b-biblioteca" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca</button>
-    </div>
-  </nav>
-</section>
+      <!-- ===== TAREAS ===== -->
+      <div id="panel-tareas" class="hide" role="tabpanel" aria-labelledby="tab-tareas" tabindex="-1">
+        <div class="card">
+          <div class="card-h tone-tareas">
+            <h2>Añadir tarea</h2>
+            <span class="h-tag">Fecha → Descripción</span>
+            <span class="subtitle" id="t-status">Plan diario/semanal</span>
+          </div>
+          <div class="card-b">
+            <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+              <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
+              <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+              <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+            </div>
+          </div>
+        </div>
 
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-tareas">
+            <h2>Tareas activas</h2>
+            <span class="h-tag">Pendientes</span>
+            <span id="t-count" class="chip">0</span>
+          </div>
+          <div class="card-b">
+            <ul id="t-list" class="list"></ul>
+            <p id="t-empty" class="muted">No hay tareas activas.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-green">
+            <h2>Completadas</h2>
+            <span class="h-tag">Hecho</span>
+            <span id="t-done-count" class="chip">0</span>
+          </div>
+          <div class="card-b">
+            <ul id="t-done" class="list"></ul>
+            <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-inter">
+            <h2>Papelera</h2>
+            <span class="h-tag">Recuperables</span>
+            <span id="t-trash-count" class="chip">0</span>
+          </div>
+          <div class="card-b">
+            <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
+            <ul id="t-trash" class="list"></ul>
+            <p id="t-trash-empty" class="muted">Papelera vacía.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DIRECTORIO ===== -->
+      <div id="panel-directorio" class="hide" role="tabpanel" aria-labelledby="tab-directorio" tabindex="-1">
+        <div class="card">
+          <div class="card-h tone-dir">
+            <h2>Directorio telefónico</h2>
+            <span class="h-tag">A–Z · Búsqueda</span>
+            <span id="d-count" class="chip">0</span>
+          </div>
+          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
+            <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
+            <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap; gap:6px">
+              <button id="d-add" class="btn primary">Añadir</button>
+              <button id="d-import" class="btn">Importar JSON</button>
+              <button id="d-export" class="btn">Exportar JSON</button>
+              <button id="d-dedupe" class="btn">Eliminar duplicados</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-b dir-wrap">
+            <div>
+              <div id="d-list-wrap"></div>
+              <p id="d-empty" class="muted">Sin registros.</p>
+            </div>
+            <nav class="az" aria-label="Índice alfabético" id="d-az"></nav>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BIBLIOTECA ===== -->
+      <div id="panel-biblioteca" class="hide" role="tabpanel" aria-labelledby="tab-biblioteca" tabindex="-1">
+        <div class="card">
+          <div class="card-h tone-biblio">
+            <h2>Biblioteca</h2>
+            <span class="h-tag">Notas + Enlaces + Visor</span>
+            <span class="subtitle">Campo libre + visor PDF</span>
+          </div>
+          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+            <div>
+              <label for="b-notes">Notas rápidas</label>
+              <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="b-notes-save" class="btn primary">Guardar notas</button>
+                <button id="b-open-file" class="btn">Abrir PDF local…</button>
+                <button id="b-clear-view" class="btn">Vaciar visor</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="b-url">Nuevo enlace (PDF o web)</label>
+              <input id="b-url" type="url" placeholder="https://… o *.pdf">
+              <label for="b-title">Título</label>
+              <input id="b-title" type="text" placeholder="Nombre del recurso">
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="b-add-link" class="btn primary">Añadir a lista</button>
+                <button id="b-export-links" class="btn">Exportar JSON</button>
+                <button id="b-import-links" class="btn">Importar JSON</button>
+              </div>
+
+              <div style="margin-top:10px">
+                <label for="b-select">Mis enlaces</label>
+                <select id="b-select"></select>
+                <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                  <button id="b-open" class="btn">Abrir en visor</button>
+                  <button id="b-remove" class="btn">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-h tone-biblio">
+            <h2>Visor</h2>
+            <span class="h-tag">PDF / Web</span>
+            <span class="subtitle">Detecta PDF y lo muestra integrado</span>
+          </div>
+          <div class="card-b">
+            <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
+            <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECCIÓN * (EXTRA) ===== -->
+      <div id="panel-extra" class="hide" role="region" aria-labelledby="lbl-extra" tabindex="-1">
+        <div class="card">
+          <div class="card-h tone-extra">
+            <h2 id="lbl-extra">*</h2>
+            <span class="h-tag">Espacio personalizable</span>
+            <span class="subtitle">Widgets & notas</span>
+          </div>
+          <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+            <div>
+              <label for="x-notes">Lienzo libre</label>
+              <textarea id="x-notes" placeholder="Texto libre, snippets, recordatorios…"></textarea>
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="x-notes-save" class="btn primary">Guardar lienzo</button>
+                <button id="x-clear" class="btn">Vaciar</button>
+              </div>
+            </div>
+            <div>
+              <label>Accesos rápidos (widgets)</label>
+              <div id="x-widgets"></div>
+              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+                <button id="x-edit" class="btn">Editar widgets</button>
+                <button id="x-reset" class="btn">Restaurar</button>
+              </div>
+              <p class="muted" style="margin-top:6px">Formato por línea: <code>Etiqueta | URL o tel</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs inferiores -->
+      <nav class="bottom" aria-label="Secciones">
+        <div class="tabs-bottom">
+          <button class="tab-bottom" id="b-planta" aria-selected="true"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-stetho"/></svg></span>Planta</button>
+          <button class="tab-bottom" id="b-tareas" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-note"/></svg></span>Tareas</button>
+          <button class="tab-bottom" id="b-directorio" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-phone"/></svg></span>Directorio</button>
+          <button class="tab-bottom" id="b-biblioteca" aria-selected="false"><span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-books"/></svg></span>Biblioteca</button>
+        </div>
+      </nav>
+    </section>
   </main>
+
   <!-- FAB emergencias -->
   <button id="fab" class="btn primary" style="position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + 84px);z-index:70;border-radius:999px;padding:14px 16px;display:flex;align-items:center;gap:10px">
     <span class="ico-wrap" aria-hidden="true"><svg class="ico"><use href="#ico-bell"/></svg></span>Emergencias
@@ -533,7 +641,9 @@
       <div id="fabList" style="margin-top:8px"></div>
     </div>
   </div>
+
   <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
+
   <script type="module">
     /* ===================  HELPERS BÁSICOS  =================== */
     const BASE = new URL('./', location).pathname;
@@ -615,7 +725,7 @@
       tareas:['panel-tareas','tab-tareas','b-tareas','Tareas'],
       directorio:['panel-directorio','tab-directorio','b-directorio','Directorio'],
       biblioteca:['panel-biblioteca','tab-biblioteca','b-biblioteca','Biblioteca'],
-      extra:['panel-extra',null,null,'*'] // sección independiente
+      extra:['panel-extra',null,null,'*']
     };
 
     function selectTab(id){
@@ -670,6 +780,7 @@
 
     /* ===================  HELPERS COMUNES  =================== */
     const btn = (t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; b.type='button'; return b;};
+    const btnI = (svgHref, title, fn)=>{ const b=document.createElement('button'); b.className='btn icon'; b.title=title||''; b.innerHTML=`<svg class="ico" aria-hidden="true"><use href="${svgHref}"/></svg>`; b.onclick=(e)=>{e.preventDefault(); fn?.(e)}; return b; };
     const val=(id)=>document.getElementById(id)?.value||'';
     function roomSortKey(s){ if(!s) return 1e9; const m=String(s).match(/\d+/g); if(!m) return 1e9; const a=parseInt(m[0],10); const b=m[1]?parseInt(m[1],10)/100:0; return a+b; }
     async function upd(kind,id,patch){ const ref=fsMod.doc(db,'users',auth.currentUser?.uid,kind,id); const data={...patch,updatedAt:serverTS()}; try{ await fsMod.updateDoc(ref,data); }catch{ pushRetry({path:ref.path,data}); toast('Se guardará al recuperar conexión'); } }
@@ -680,13 +791,24 @@
     const updateAddTarget=()=>$('#addTarget').textContent = currentGroup==='planta'?'Añadiendo a: Planta':'Añadiendo a: Interconsulta';
     $('#p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
     $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
+    $('#p-swap').onclick = ()=>{ currentGroup = (currentGroup==='planta') ? 'interconsulta' : 'planta'; updateAddTarget(); toast('Grupo: ' + (currentGroup==='planta'?'Planta':'Interconsulta')); };
 
     const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(), grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS() });
     const docItemBase=(x,done=false)=>{ const li=document.createElement('li'); li.className='item'; li.innerHTML=`<span class="pill room">${esc(x.room||'—')}</span>
       <div class="text">${done?`<div class="line strike">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
       ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
-      <div class="toolbar actions"></div>`; return li; };
-    const renderPlantaItem=(x)=>{ const li=docItemBase(x); const a=li.querySelector('.actions'); a.append(btn('✓',()=>upd('planta',x.__id,{status:'done'}),'btn icon'),btn('✎',()=>editPlanta(x),'btn icon')); const swap=btn('',async()=>{const next=(x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next});},'btn icon'); swap.innerHTML=`<svg class="ico"><use href="#ico-swap"/></svg>`; a.append(swap, btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon')); return li; };
+      <div class="toolbar actions" style="display:flex;gap:6px"></div>`; return li; };
+    const renderPlantaItem=(x)=>{ 
+      const li=docItemBase(x);
+      const a=li.querySelector('.actions');
+      a.append(
+        btnI('#ico-star','Completar',()=>upd('planta',x.__id,{status:'done'})),
+        btn('✎',()=>editPlanta(x),'btn icon'),
+        btnI('#ico-swap','Cambiar de grupo',async()=>{const next=(x.grupo==='interconsulta')?'planta':'interconsulta'; await upd('planta',x.__id,{grupo:next});}),
+        btn('🗑️',()=>upd('planta',x.__id,{status:'trash'}),'btn icon')
+      );
+      return li; 
+    };
     const renderPlantaDone=(x)=>{const li=docItemBase(x,true); const a=li.querySelector('.actions'); a.append(btn('↩',()=>upd('planta',x.__id,{status:'active'}),'btn icon'),btn('✖',()=>del('planta',x.__id),'btn icon')); return li;};
     const editPlanta=(x)=>openEdit([{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}], async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}));
 
@@ -694,9 +816,14 @@
       $('#p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(i=>document.getElementById(i).value=''); };
       const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
       const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
-      const u1=fsMod.onSnapshot(qA,(s)=>{ const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x)}); const arrP=all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=>roomSortKey(a.room)-roomSortKey(b.room)||String(a.room||'').localeCompare(String(b.room||''))); const arrI=all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=>roomSortKey(a.room)-roomSortKey(b.room)||String(a.room||'').localeCompare(String(b.room||'')));
-        const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML=''; arrP.forEach(x=>lp.appendChild(renderPlantaItem(x))); arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
-        $('#p-empty-planta').style.display=arrP.length?'none':'block'; $('#p-empty-inter').style.display=arrI.length?'none':'block'; $('#p-count-planta').textContent=arrP.length; $('#p-count-inter').textContent=arrI.length; });
+      const u1=fsMod.onSnapshot(qA,(s)=>{ const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x)}); 
+        const arrP=all.filter(x=>(x.grupo||'planta')==='planta').sort((a,b)=>roomSortKey(a.room)-roomSortKey(b.room)||String(a.room||'').localeCompare(String(b.room||'')));
+        const arrI=all.filter(x=>(x.grupo||'planta')==='interconsulta').sort((a,b)=>roomSortKey(a.room)-roomSortKey(b.room)||String(a.room||'').localeCompare(String(b.room||'')));
+        const lp=$('#p-list-planta'), li=$('#p-list-inter'); lp.innerHTML=''; li.innerHTML='';
+        arrP.forEach(x=>lp.appendChild(renderPlantaItem(x))); arrI.forEach(x=>li.appendChild(renderPlantaItem(x)));
+        $('#p-empty-planta').style.display=arrP.length?'none':'block'; $('#p-empty-inter').style.display=arrI.length?'none':'block';
+        $('#p-count-planta').textContent=arrP.length; $('#p-count-inter').textContent=arrI.length; 
+      });
       const u2=fsMod.onSnapshot(qD,(s)=>{ const arr=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; arr.push(x)}); arr.sort((a,b)=> (b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0)); const l=$('#p-done'); l.innerHTML=''; arr.forEach(x=>l.appendChild(renderPlantaDone(x))); $('#p-done-empty').style.display=arr.length?'none':'block'; $('#p-done-count').textContent=arr.length; });
       unsubs.push(u1,u2);
     }
@@ -752,21 +879,16 @@
       const v=norm($('#d-q')?.value||'');
       const wrap = $('#d-list-wrap'); if(!wrap) return; wrap.innerHTML='';
       let arr=[...dirCache];
-      // Orden por nombre, fallback sección
       arr.sort((a,b)=> (a.nombre||'').localeCompare(b.nombre||'') || (a.seccion||'').localeCompare(b.seccion||''));
 
-      // Filtrado
       const filtered = v? arr.filter(x=> [x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v)) ) : arr;
 
-      // Agrupar por primera letra (A-Z, #)
       const groups = new Map();
       for(const x of filtered){ const k = /^[A-Za-zÁÉÍÓÚÜÑ]/.test(x.nombre||'') ? norm(x.nombre)[0].toUpperCase() : '#'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x); }
 
-      // A-Z sidebar
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
       const az = $('#d-az'); az.innerHTML = letters.map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`).join('');
 
-      // Render grupos
       let total=0;
       for(const ch of letters){ const list = groups.get(ch)||[]; if(!list.length) continue; total+=list.length;
         const sec = document.createElement('section'); sec.id = `sec-${ch}`; sec.setAttribute('aria-labelledby',`lbl-${ch}`);
@@ -794,7 +916,7 @@
     function importDir(uid){return async()=>{try{ const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
       const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase();
       const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))); }
-      await Promise.all(ops); toast('Importado ('+ops.length+')'); }catch(e){ toast(e.message||String(e)); }}}
+      await Promise.all(ops); toast('Importado ('+ops.length+')'); }catch(e){ toast(e.message||String(e)); }}} 
 
     function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado'); }};
 
@@ -832,7 +954,7 @@
     function renderXWidgets(){
       const box = $('#x-widgets'); if(!box) return;
       box.innerHTML = xWidgets.length
-        ? xWidgets.map((w,i)=>`<div class="item" style="display:flex;align-items:center;gap:10px"><span class="pill">${esc(w.label||'')}</span>${w.href?`<a class="pill" href="${esc(w.href)}" target="_blank" rel="noopener">${esc(w.href)}</a>`:''}<button class="btn icon" data-i="${i}">✖</button></div>`).join('')
+        ? xWidgets.map((w,i)=>`<div class="item" style="display:flex;align-items:center;gap:10px;margin:6px 0"><span class="pill">${esc(w.label||'')}</span>${w.href?`<a class="pill" href="${esc(w.href)}" target="_blank" rel="noopener">${esc(w.href)}</a>`:''}<button class="btn icon" data-i="${i}">✖</button></div>`).join('')
         : '<p class="muted">Sin widgets. Pulsa “Editar widgets”.</p>';
       box.querySelectorAll('button[data-i]').forEach(b=>{
         b.onclick=async()=>{ const i=+b.dataset.i; xWidgets.splice(i,1); await fsMod.setDoc(col.extra(currentUid()), { widgets:xWidgets }, { merge:true }); renderXWidgets(); };
