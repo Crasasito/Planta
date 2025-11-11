@@ -11,11 +11,12 @@
 
 <style>
 /* =========================================
-   AURORA UI v3.3 — Ajustes mínimos pedidos
-   - Swap 15% mayor (no gigante)
-   - Directorio: A–Z y headers sin solapes + contadores por letra
-   - H2 un poco por encima del borde de color
-   - Ocultar textos “a la derecha” de los headers indicados
+   AJUSTES PRECISOS (solicitudes)
+   - Fix JS: paréntesis extra (import links)
+   - Headers: texto/contadores por delante, subrayado glow, colores intactos
+   - Swap +15% respecto a editar/completar (sin ser descomunal)
+   - Directorio: A–Z no tapa; cabeceras con contador visible y alineado
+   - Icono herramientas con pequeños brillos (mismo tamaño)
    ========================================= */
 
 /* ---------- TOKENS & BASE ---------- */
@@ -29,7 +30,7 @@
   --indigo-600:#6366F1; --gold-500:#FACC15;
   --mint-600:#06D6A0; --teal-600:#1B9AAA;
 
-  /* Gradientes por sección (existentes) */
+  /* Gradientes por sección (mantenidos) */
   --gx-planta: linear-gradient(135deg,#F5F0FF 0%, #EAE2FF 55%, #C7B8FF 100%);
   --gx-inter:  linear-gradient(135deg,#FFF3E4 0%, #FFE5D1 55%, #FFD0A3 100%);
   --gx-tareas: linear-gradient(135deg,#FFE4E9 0%, #FFC9D4 55%, #FFA9B9 100%);
@@ -38,7 +39,7 @@
   --gx-bib:    linear-gradient(135deg,#EDF2FF 0%, #DDE4FF 55%, #C7D3FF 100%);
   --gx-extra:  linear-gradient(135deg,#FDE7FA 0%, #F9CEF5 55%, #F3B1EF 100%);
 
-  /* Nuevos para los dos primeros headers solicitados */
+  /* Colores solicitados para los 3 headers concretos */
   --gx-celeste: linear-gradient(135deg,#E9F4FF 0%, #D6ECFF 55%, #BCE2FF 100%);
   --gx-turq:    linear-gradient(135deg,#E8FFFB 0%, #CFFAF2 55%, #B3F4E9 100%);
   --gx-coral:   linear-gradient(135deg,#FFE8EC 0%, #FFC9D3 55%, #FFA9B9 100%);
@@ -47,7 +48,6 @@
   --rim-ambient: radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.38), rgba(255,255,255,0));
   --shadow-1: 0 1px 2px rgba(7,16,31,.05), 0 8px 24px rgba(7,16,31,.06);
   --shadow-2: 0 2px 10px rgba(7,16,31,.10), 0 20px 40px rgba(7,16,31,.14);
-  --u-glow: rgba(60,100,180,.16);
 
   --radius:14px; --radius-xl:22px; --appbar:64px; --touch:44px;
   --fs: clamp(15px, 0.85vw + 0.35vh, 18px);
@@ -115,34 +115,47 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
   overflow:hidden; contain:content;
 }
 .card-h{
-  position:relative; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  position:relative; padding:16px 18px 18px 18px; /* +2px abajo para subrayado */
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
   border-bottom:1px solid color-mix(in oklab,#000,transparent 90%);
   background:#fff; isolation:isolate; overflow:hidden;
   box-shadow:
     inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%),
-    inset 0 0 0 8px rgba(255,255,255,.65),
-    inset 0 -10px 16px -12px var(--u-glow, rgba(60,100,180,.16)); /* subrayado premium */
+    inset 0 0 0 8px rgba(255,255,255,.65);
   outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px;
 }
-.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.9; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%));}
+/* Fondo de color + luz ambiente */
+.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%));}
 .card-h::after{content:""; position:absolute; inset:-20% -10% auto -10%; height:160%; background: var(--rim-ambient); mix-blend-mode:screen; opacity:.6; z-index:0;}
-.card-h h2{margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;position:relative;z-index:1;transform:translateY(-1px)} /* subir “una chispa” */
+/* Todo el contenido por delante del fondo y su luz */
+.card-h > *{position:relative; z-index:2}
+.card-h h2{
+  margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;
+  line-height:1.15;transform:translateY(-1px) /* “una chispa” por encima del borde */;
+}
+/* Subrayado con glow que contrasta con el header */
+.card-h h2::after{
+  content:""; position:absolute; left:-2px; right:-2px; bottom:-8px; height:6px; border-radius:999px;
+  background: color-mix(in oklab, var(--accent, #6b7280), white 45%);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--accent, #6b7280), white 10%);
+  z-index:-1; pointer-events:none;
+}
 .card-b{position:relative;z-index:1;padding:12px}
 .subtitle{ color:#06121fcc; font-weight:800 }
 
-/* Mapas de banda */
-.h-planta{ --gx-neutral: var(--gx-planta) }
-.h-inter { --gx-neutral: var(--gx-inter) }
-.h-tareas{ --gx-neutral: var(--gx-tareas) }
-.h-green { --gx-neutral: var(--gx-green) }
-.h-dir   { --gx-neutral: var(--gx-dir) }
-.h-bib   { --gx-neutral: var(--gx-bib) }
-.h-extra { --gx-neutral: var(--gx-extra) }
-.h-celeste{ --gx-neutral: var(--gx-celeste); --u-glow: rgba(56,149,255,.22) }
-.h-turq   { --gx-neutral: var(--gx-turq);    --u-glow: rgba(20,184,166,.22) }
-.h-coral  { --gx-neutral: var(--gx-coral);   --u-glow: rgba(244,63,94,.22) }
+/* Mapas de banda + acentos para subrayado */
+.h-planta{ --gx-neutral: var(--gx-planta); --accent: var(--lav-700) }
+.h-inter { --gx-neutral: var(--gx-inter);  --accent: var(--ora-700) }
+.h-tareas{ --gx-neutral: var(--gx-tareas); --accent: var(--coral-700) }
+.h-green { --gx-neutral: var(--gx-green);  --accent: var(--green-700) }
+.h-dir   { --gx-neutral: var(--gx-dir);    --accent: var(--gold-500) }
+.h-bib   { --gx-neutral: var(--gx-bib);    --accent: var(--indigo-600) }
+.h-extra { --gx-neutral: var(--gx-extra);  --accent: var(--indigo-600) }
+.h-celeste{ --gx-neutral: var(--gx-celeste); --accent:#3B82F6 }
+.h-turq   { --gx-neutral: var(--gx-turq);    --accent: var(--mint-600) }
+.h-coral  { --gx-neutral: var(--gx-coral);   --accent: var(--coral-700) }
 
-/* Ocultar textos “a la derecha” de los dos primeros headers (evitar ‘Fecha → Descripción’, etc.) */
+/* Quitar textos residuales a la derecha en los 2 primeros headers */
 #panel-planta .card:first-of-type .card-h .subtitle,
 #panel-tareas .card:first-of-type .card-h .subtitle{ display:none }
 
@@ -192,9 +205,12 @@ textarea{min-height:90px;resize:vertical}
   border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1);
 }
 
-/* ---------- DIRECTORIO: layout + A–Z + headers ---------- */
+/* ---------- DIRECTORIO ---------- */
 .dir-wrap{display:grid;grid-template-columns:1fr min(28px,7vw);gap:12px;align-items:start}
-.az{position:sticky; top:calc(var(--appbar) + 10px); display:grid; grid-template-columns:1fr; gap:4px; align-content:start; z-index:0}
+.az{
+  position:sticky; top:calc(var(--appbar) + 10px);
+  display:grid; grid-template-columns:1fr; gap:4px; align-content:start; z-index:0;
+}
 .az a{
   display:grid;place-items:center; width:100%; aspect-ratio:1/1;
   border:1px solid var(--border); border-radius:8px; text-decoration:none;
@@ -209,21 +225,8 @@ textarea{min-height:90px;resize:vertical}
   border:1px solid var(--border); box-shadow:var(--shadow-1); backdrop-filter: blur(6px);
 }
 .section-tag .count{font-weight:900; opacity:.75}
-.section-tag + .list{ padding-top:14px } /* evita que tape el primer item */
+.section-tag + .list{ padding-top:14px } /* despega el primer ítem */
 section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
-
-/* ---------- RESPONSIVE ---------- */
-@media (max-width:800px){
-  #panel-directorio .card:first-of-type .card-b{display:grid;grid-template-columns:1fr;}
-  #panel-directorio .card:first-of-type .toolbar{justify-content:flex-start}
-}
-@media (max-width:560px){
-  .statusRow{order:4;width:100%}
-  #userGroup{order:5;width:100%;justify-content:flex-start}
-  #title{font-size:clamp(18px,5vw,22px)}
-  .dir-wrap{grid-template-columns:1fr min(26px,8vw)}
-  li.item{grid-template-columns:auto 1fr auto}
-}
 
 /* ---------- REDUCED MOTION ---------- */
 @media (prefers-reduced-motion: reduce){
@@ -231,9 +234,10 @@ section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
   header.appbar, .card{backdrop-filter:none}
 }
 
-/* ---------- Swap 15% mayor (y no más) ---------- */
-.item .actions .ico{width:20px;height:20px}
-.item .actions .btn.icon.swap .ico{width:23px;height:23px} /* +15% aprox */
+/* ---------- Tamaño acciones y swap (+15%) ---------- */
+.item .actions .btn.icon{min-width:36px;height:36px;padding:0}
+.item .actions .btn.icon .ico{width:18px;height:18px}
+.item .actions .btn.icon.swap .ico{width:21px;height:21px} /* ~+15% */
 </style>
 </head>
 
@@ -246,21 +250,31 @@ section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
     <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
     <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
 
+    <!-- swap -->
     <symbol id="i-swap" viewBox="0 0 24 24">
       <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
       <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
     </symbol>
+    <!-- Estetoscopio (Planta) -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
       <path fill="url(#gLav)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
       <path fill="url(#gInd)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
     </symbol>
+    <!-- Herramientas (Tareas) – mismo tamaño, más “premium” con brillos suaves -->
     <symbol id="i-tools" viewBox="0 0 24 24">
+      <!-- base -->
       <path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/>
       <path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/>
+      <!-- brillo superior sutil -->
+      <path fill="#ffffff" opacity=".35" d="M9 3.6c1-.6 2.4-.8 3.6-.4l-1.6 1.6 1.1 1.1 1.6-1.6c.3.9.2 2-.2 2.8-1.2-1.2-3.1-2.9-4.5-3.5z"/>
+      <!-- sombreado interior sutil -->
+      <path fill="#000000" opacity=".10" d="M6 13.8l4.2 4.2.8-.8-4.2-4.2-0.8.8z"/>
     </symbol>
+    <!-- Handset (Directorio) -->
     <symbol id="i-handset" viewBox="0 0 24 24">
       <path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/>
     </symbol>
+    <!-- Libros (Biblioteca) -->
     <symbol id="i-books" viewBox="0 0 24 24">
       <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/>
       <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/>
@@ -612,7 +626,7 @@ function plantaItem(x,done=false){
   ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
   <div class="toolbar actions"></div>`;
   const a=li.querySelector('.actions');
-  const swap=document.createElement('button'); swap.className='btn icon swap'; /* <-- clase para controlar tamaño */
+  const swap=document.createElement('button'); swap.className='btn icon swap';
   swap.innerHTML=`<svg class="ico"><use href="#i-swap"/></svg>`;
   swap.onclick=()=>upd('planta',x.__id,{grupo:(x.grupo==='interconsulta')?'planta':'interconsulta'});
   a.append(swap, btn('✎',()=>editPlanta(x),'btn icon'), btn(done?'✖':'✓',()=> done?del('planta',x.__id):upd('planta',x.__id,{status:'done'}),'btn icon'));
@@ -704,7 +718,7 @@ function renderDir(){
     const list=groups.get(ch)||[]; if(!list.length) continue; total+=list.length;
     const sec=document.createElement('section'); sec.id=`sec-${ch}`; sec.setAttribute('aria-labelledby',`lbl-${ch}`);
     const header=document.createElement('div'); header.className='section-tag'; header.id=`lbl-${ch}`;
-    header.innerHTML = `<span class="lbl">${ch}</span><span class="count">${list.length}</span>`; /* contador a la derecha */
+    header.innerHTML = `<span class="lbl">${ch}</span><span class="count">${list.length}</span>`;
     sec.appendChild(header);
     const ul=document.createElement('ul'); ul.className='list';
     list.forEach(x=>{
@@ -749,7 +763,15 @@ function setupBiblio(uid){
   $('#b-open-file').onclick=async()=>{try{const [h]=await showOpenFilePicker({types:[{description:'PDF',accept:{'application/pdf':['.pdf']}}]}); const f=await h.getFile(); clearLocalURL(); localObjectURL=URL.createObjectURL(f); setViewer(localObjectURL)}catch{}};
   $('#b-clear-view').onclick=()=>{clearLocalURL(); setViewer(null)} ;
   $('#b-export-links').onclick=async()=>{const snap=await fsMod.getDocs(fsMod.query(col.biblio(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'biblioteca-links-'+todayISO()+'.json'); toast('Exportado')};
-  $('#b-import-links').onclick=async()=>{try{const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido'); const snap=await fsMod.getDocs(col.biblio(uid)); const key=o=>(String(o.title||'').trim()+'|'+String(o.url||'').trim()).toLowerCase(); const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[]; for(const o of arr){const k=key(o); if(!set.has(k)) ops.push(fsMod.addDoc(col.biblio(uid), bDoc(o)))} await Promise.all(ops); toast('Importado ('+ops.length) )}catch(e){toast(e.message||String(e))}};
+  /* FIX paréntesis extra aquí */
+  $('#b-import-links').onclick=async()=>{try{
+    const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
+    const snap=await fsMod.getDocs(col.biblio(uid));
+    const key=o=>(String(o.title||'').trim()+'|'+String(o.url||'').trim()).toLowerCase();
+    const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[];
+    for(const o of arr){const k=key(o); if(!set.has(k)) ops.push(fsMod.addDoc(col.biblio(uid), bDoc(o)))}
+    await Promise.all(ops); toast('Importado ('+ops.length+')');
+  }catch(e){toast(e.message||String(e))}};
   const u=fsMod.onSnapshot(fsMod.query(col.biblio(uid)),(s)=>{bCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; bCache.push(x)}); renderBiblioSelect()}); unsubs.push(u);
 }
 
