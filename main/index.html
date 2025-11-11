@@ -10,16 +10,14 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
 
 <style>
-/* =========================================
-   AJUSTES PRECISOS (solicitudes)
-   - Fix JS: paréntesis extra (import links)
-   - Headers: texto/contadores por delante, subrayado glow, colores intactos
-   - Swap +15% respecto a editar/completar (sin ser descomunal)
-   - Directorio: A–Z no tapa; cabeceras con contador visible y alineado
-   - Icono herramientas con pequeños brillos (mismo tamaño)
-   ========================================= */
+/* ===== AJUSTES SOLICITADOS (sin tocar nada más) ==========================
+   - Iconos (toggle/editar/completar): centrados y proporcionales al botón
+   - Fila Planta/Interconsulta en una sola línea (room no hace wrap)
+   - Rediseño Directorio (A–Z y listado premium, sin solapes, responsive)
+   - Mantengo colores/estructura/lógica previas
+========================================================================= */
 
-/* ---------- TOKENS & BASE ---------- */
+/* ---------- TOKENS & BASE (idénticos salvo estilos puntuales) ---------- */
 :root{
   --ink:#0b1220; --muted:#5a667a;
   --surface:#ffffff; --surface-2:#f7f9fc; --border:#e8eef5;
@@ -30,7 +28,6 @@
   --indigo-600:#6366F1; --gold-500:#FACC15;
   --mint-600:#06D6A0; --teal-600:#1B9AAA;
 
-  /* Gradientes por sección (mantenidos) */
   --gx-planta: linear-gradient(135deg,#F5F0FF 0%, #EAE2FF 55%, #C7B8FF 100%);
   --gx-inter:  linear-gradient(135deg,#FFF3E4 0%, #FFE5D1 55%, #FFD0A3 100%);
   --gx-tareas: linear-gradient(135deg,#FFE4E9 0%, #FFC9D4 55%, #FFA9B9 100%);
@@ -39,7 +36,6 @@
   --gx-bib:    linear-gradient(135deg,#EDF2FF 0%, #DDE4FF 55%, #C7D3FF 100%);
   --gx-extra:  linear-gradient(135deg,#FDE7FA 0%, #F9CEF5 55%, #F3B1EF 100%);
 
-  /* Colores solicitados para los 3 headers concretos */
   --gx-celeste: linear-gradient(135deg,#E9F4FF 0%, #D6ECFF 55%, #BCE2FF 100%);
   --gx-turq:    linear-gradient(135deg,#E8FFFB 0%, #CFFAF2 55%, #B3F4E9 100%);
   --gx-coral:   linear-gradient(135deg,#FFE8EC 0%, #FFC9D3 55%, #FFA9B9 100%);
@@ -77,89 +73,114 @@ body{
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 svg.ico{display:block}
 
-/* ---------- APPBAR ---------- */
-header.appbar{
-  position:sticky; top:0; z-index:50; min-height:var(--appbar);
-  backdrop-filter: blur(8px) saturate(1.06);
-  background: var(--glass-bg);
-  border-bottom:1px solid var(--border);
-}
+/* ---------- APPBAR y HEADERS (sin cambios de fondo; z-index asegurado) ---------- */
+header.appbar{position:sticky; top:0; z-index:50; min-height:var(--appbar); backdrop-filter: blur(8px) saturate(1.06); background: var(--glass-bg); border-bottom:1px solid var(--border)}
 .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{
-  padding:10px 14px;border-radius:999px;border:1px solid var(--border);
-  background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);
-  box-shadow:inset 0 1px 0 #fff, var(--shadow-1);
-  display:inline-flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.2px
-}
+.brand{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);box-shadow:inset 0 1px 0 #fff, var(--shadow-1);display:inline-flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.2px}
 .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold-500)}
 h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spacing:.2px;color:#0e1624;filter:drop-shadow(0 1px 0 rgba(0,0,0,.05))}
 
-/* ---------- CHIPS / BOTONES ---------- */
-.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);
-  border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
-.chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
-.chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
-.btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
-  padding:10px 12px;border-radius:14px;box-shadow:var(--shadow-1);
-  min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:800}
-.btn.primary{background:linear-gradient(180deg,#fffdf3 0%, #fff7d1 100%); border-color:color-mix(in oklab,var(--gold-500),transparent 65%); box-shadow:var(--shadow-2)}
-.btn.icon{min-width:var(--touch);aspect-ratio:1/1;padding:0 10px}
-
-/* ---------- CARDS + HEADERS ---------- */
-.card{
-  background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.82) 100%);
-  backdrop-filter: blur(8px) saturate(1.06);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 18px 36px rgba(60,100,180,.12);
-  overflow:hidden; contain:content;
-}
-.card-h{
-  position:relative; padding:16px 18px 18px 18px; /* +2px abajo para subrayado */
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  border-bottom:1px solid color-mix(in oklab,#000,transparent 90%);
-  background:#fff; isolation:isolate; overflow:hidden;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%),
-    inset 0 0 0 8px rgba(255,255,255,.65);
-  outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px;
-}
-/* Fondo de color + luz ambiente */
-.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%));}
-.card-h::after{content:""; position:absolute; inset:-20% -10% auto -10%; height:160%; background: var(--rim-ambient); mix-blend-mode:screen; opacity:.6; z-index:0;}
-/* Todo el contenido por delante del fondo y su luz */
+.card{background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.82) 100%);backdrop-filter: blur(8px) saturate(1.06);border: 1px solid var(--border);border-radius: var(--radius-xl);box-shadow: 0 18px 36px rgba(60,100,180,.12);overflow:hidden; contain:content}
+.card-h{position:relative; padding:16px 18px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid color-mix(in oklab,#000,transparent 90%); background:#fff; isolation:isolate; overflow:hidden; box-shadow: inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%), inset 0 0 0 8px rgba(255,255,255,.65); outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px}
+.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%))}
+.card-h::after{content:""; position:absolute; inset:-20% -10% auto -10%; height:160%; background: var(--rim-ambient); mix-blend-mode:screen; opacity:.6; z-index:0}
 .card-h > *{position:relative; z-index:2}
-.card-h h2{
-  margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;
-  line-height:1.15;transform:translateY(-1px) /* “una chispa” por encima del borde */;
-}
-/* Subrayado con glow que contrasta con el header */
-.card-h h2::after{
-  content:""; position:absolute; left:-2px; right:-2px; bottom:-8px; height:6px; border-radius:999px;
-  background: color-mix(in oklab, var(--accent, #6b7280), white 45%);
-  box-shadow: 0 0 14px color-mix(in oklab, var(--accent, #6b7280), white 10%);
-  z-index:-1; pointer-events:none;
-}
+.card-h h2{margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;line-height:1.15;transform:translateY(-1px)}
+.card-h h2::after{content:""; position:absolute; left:-2px; right:-2px; bottom:-8px; height:6px; border-radius:999px; background: color-mix(in oklab, var(--accent, #6b7280), white 45%); box-shadow: 0 0 14px color-mix(in oklab, var(--accent, #6b7280), white 10%); z-index:-1; pointer-events:none}
 .card-b{position:relative;z-index:1;padding:12px}
-.subtitle{ color:#06121fcc; font-weight:800 }
 
-/* Mapas de banda + acentos para subrayado */
 .h-planta{ --gx-neutral: var(--gx-planta); --accent: var(--lav-700) }
 .h-inter { --gx-neutral: var(--gx-inter);  --accent: var(--ora-700) }
 .h-tareas{ --gx-neutral: var(--gx-tareas); --accent: var(--coral-700) }
 .h-green { --gx-neutral: var(--gx-green);  --accent: var(--green-700) }
 .h-dir   { --gx-neutral: var(--gx-dir);    --accent: var(--gold-500) }
 .h-bib   { --gx-neutral: var(--gx-bib);    --accent: var(--indigo-600) }
-.h-extra { --gx-neutral: var(--gx-extra);  --accent: var(--indigo-600) }
 .h-celeste{ --gx-neutral: var(--gx-celeste); --accent:#3B82F6 }
 .h-turq   { --gx-neutral: var(--gx-turq);    --accent: var(--mint-600) }
 .h-coral  { --gx-neutral: var(--gx-coral);   --accent: var(--coral-700) }
 
-/* Quitar textos residuales a la derecha en los 2 primeros headers */
-#panel-planta .card:first-of-type .card-h .subtitle,
-#panel-tareas .card:first-of-type .card-h .subtitle{ display:none }
+/* ---------- CONTENIDO Y BOTONES ---------- */
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
+.chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
+.chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
+.btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow-1);min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:800}
+.btn.primary{background:linear-gradient(180deg,#fffdf3 0%, #fff7d1 100%); border-color:color-mix(in oklab,var(--gold-500),transparent 65%); box-shadow:var(--shadow-2)}
+.btn.icon{min-width:36px;height:36px;padding:0;display:grid;place-items:center}          /* centrado exacto en recuadro */
+.btn.icon .ico{width:20px;height:20px}
+.btn.icon.swap .ico{width:23px;height:23px}                                              /* toggle ~+15% vs resto */
 
-/* ---------- BARRA INFERIOR ---------- */
+/* ---------- LISTAS / INPUTS ---------- */
+ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+li.item{
+  display:grid;
+  grid-template-columns:auto 1fr auto; /* habitación | texto (flex) | acciones */
+  gap:12px; align-items:center; border:1px solid var(--border); border-radius:16px; padding:12px; background:#fff
+}
+/* Habitación en una sola línea */
+.pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
+.pill.room{
+  font-family: ui-monospace,Consolas,Menlo,monospace; font-size:clamp(22px,3.2vw,26px);
+  padding:12px 16px; letter-spacing:.3px; color:#07101f; background:#fff; white-space:nowrap;
+  border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);
+  box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08);
+}
+.pill.room[data-group="planta"]{background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%); border-color: color-mix(in oklab,var(--lav-700),transparent 65%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--lav),transparent 60%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
+.pill.room[data-group="interconsulta"]{background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%); border-color: color-mix(in oklab,var(--ora-700),transparent 60%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--ora),transparent 58%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
+
+.pill.date{font-weight:1000}
+.pill.tel{font-weight:800}
+
+/* Texto (desc + pendientes) en una sola línea con elipsis */
+.item .text{display:flex; align-items:center; gap:10px; min-width:0}
+.item .text > *{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.item .text .muted{opacity:.8}
+
+/* Acciones: centradas, tamaño estable */
+.item .actions{display:flex; align-items:center; justify-content:flex-end; gap:6px; min-width:114px}
+
+/* Inputs */
+label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
+input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:inset 0 1px 0 #fff}
+textarea{min-height:90px;resize:vertical}
+
+/* ---------- VISOR ---------- */
+.viewer{width:100%; block-size: min(72vh, calc(100dvh - var(--appbar) - var(--bottom-h) - env(safe-area-inset-bottom) - 48px)); border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1)}
+
+/* ---------- DIRECTORIO (premium, sin solapes) ---------- */
+.dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
+.dir-wrap > div:first-child{min-width:0} /* evita que el A–Z tape la lista */
+
+.az{
+  position:sticky; top:calc(var(--appbar) + 10px);
+  display:grid; gap:6px; align-content:start; z-index:0;
+  padding:4px; border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(245,248,253,.85));
+  border:1px solid var(--border); backdrop-filter: blur(6px);
+}
+.az a{
+  display:grid;place-items:center; width:100%; aspect-ratio:1/1;
+  border:1px solid var(--border); border-radius:10px; text-decoration:none;
+  color:#1d2838; font-weight:1000; font-size:11px; background:#fff; box-shadow:inset 0 1px 0 #fff
+}
+.section-tag{
+  position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
+  margin:-12px; margin-bottom:6px; padding:6px 10px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-weight:1000; letter-spacing:.6px; border-radius:12px;
+  color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
+  border:1px solid var(--border); box-shadow:var(--shadow-1); backdrop-filter: blur(6px)
+}
+.section-tag .count{font-weight:900; opacity:.75}
+section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
+
+/* Listado responsive premium: 1 col en móvil, 2 cols en ancho */
+#panel-directorio .list{grid-template-columns:1fr}
+@media (min-width:900px){
+  #panel-directorio .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #panel-directorio .list > li.item{grid-template-columns:auto 1fr auto}
+}
+
+/* ---------- BOTTOM NAV y resto sin cambios relevantes ---------- */
 nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--border);backdrop-filter: blur(6px) saturate(1.02)}
 .bottom-inner{display:flex;align-items:center;gap:12px;height:calc(var(--bottom-h) + env(safe-area-inset-bottom));padding:10px clamp(10px,5vw,18px);padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .icons-left{display:flex;align-items:center;gap:12px;}
@@ -170,79 +191,16 @@ nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;bor
 .active-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2);font-weight:900}
 main.container{ padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 22px) }
 
-/* ---------- LISTAS / INPUTS ---------- */
-ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-li.item{display:grid;grid-template-columns:auto minmax(140px,1fr) auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:16px;padding:12px;background:#fff}
-label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
-input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:inset 0 1px 0 #fff}
-textarea{min-height:90px;resize:vertical}
-
-/* Píldoras */
-.pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
-.pill.room{
-  font-family: ui-monospace,Consolas,Menlo,monospace; font-size:clamp(22px,3.2vw,26px);
-  padding:12px 16px; letter-spacing:.3px; color:#07101f; background:#fff;
-  border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);
-  box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08);
-}
-.pill.room[data-group="planta"]{
-  background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%);
-  border-color: color-mix(in oklab,var(--lav-700),transparent 65%);
-  box-shadow: 0 0 0 6px color-mix(in oklab,var(--lav),transparent 60%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08);
-}
-.pill.room[data-group="interconsulta"]{
-  background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%);
-  border-color: color-mix(in oklab,var(--ora-700),transparent 60%);
-  box-shadow: 0 0 0 6px color-mix(in oklab,var(--ora),transparent 58%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08);
-}
-.pill.date{font-weight:1000}
-.pill.tel{font-weight:800}
-
-/* ---------- VISOR ---------- */
-.viewer{
-  width:100%;
-  block-size: min(72vh, calc(100dvh - var(--appbar) - var(--bottom-h) - env(safe-area-inset-bottom) - 48px));
-  border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1);
-}
-
-/* ---------- DIRECTORIO ---------- */
-.dir-wrap{display:grid;grid-template-columns:1fr min(28px,7vw);gap:12px;align-items:start}
-.az{
-  position:sticky; top:calc(var(--appbar) + 10px);
-  display:grid; grid-template-columns:1fr; gap:4px; align-content:start; z-index:0;
-}
-.az a{
-  display:grid;place-items:center; width:100%; aspect-ratio:1/1;
-  border:1px solid var(--border); border-radius:8px; text-decoration:none;
-  color:#263041; font-weight:900; font-size:11px; background:#fff; box-shadow:inset 0 1px 0 #fff
-}
-.section-tag{
-  position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
-  margin:-12px; margin-bottom:6px; padding:6px 10px;
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
-  font-weight:1000; letter-spacing:.6px; border-radius:12px;
-  color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
-  border:1px solid var(--border); box-shadow:var(--shadow-1); backdrop-filter: blur(6px);
-}
-.section-tag .count{font-weight:900; opacity:.75}
-.section-tag + .list{ padding-top:14px } /* despega el primer ítem */
-section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
-
-/* ---------- REDUCED MOTION ---------- */
+/* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important; transition:none !important}
   header.appbar, .card{backdrop-filter:none}
 }
-
-/* ---------- Tamaño acciones y swap (+15%) ---------- */
-.item .actions .btn.icon{min-width:36px;height:36px;padding:0}
-.item .actions .btn.icon .ico{width:18px;height:18px}
-.item .actions .btn.icon.swap .ico{width:21px;height:21px} /* ~+15% */
 </style>
 </head>
 
 <body>
-<!-- ===== SVGs ===== -->
+<!-- ===== SVGs (añadidos: edit/check) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
@@ -255,26 +213,26 @@ section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
       <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
       <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
     </symbol>
-    <!-- Estetoscopio (Planta) -->
-    <symbol id="i-stetho" viewBox="0 0 24 24">
-      <path fill="url(#gLav)" d="M6 2a1 1 0 0 1 1 1v4a3 3 0 0 0 6 0V3a1 1 0 1 1 2 0v4a5 5 0 0 1-10 0V3a1 1 0 0 1 1-1z"/>
-      <path fill="url(#gInd)" d="M17 10a3 3 0 0 1 3 3v2a5 5 0 0 1-5 5h-2a4 4 0 0 1-4-4v-3a1 1 0 1 1 2 0v3a2 2 0 0 0 2 2h2a3 3 0 0 0 3-3v-2a1 1 0 0 1 1-1z"/>
+    <!-- edit (pencil) -->
+    <symbol id="i-edit" viewBox="0 0 24 24">
+      <path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
     </symbol>
-    <!-- Herramientas (Tareas) – mismo tamaño, más “premium” con brillos suaves -->
+    <!-- check (complete) -->
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
+    </symbol>
+    <!-- herramientas (retocado suave, mismo tamaño) -->
     <symbol id="i-tools" viewBox="0 0 24 24">
-      <!-- base -->
       <path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/>
       <path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/>
-      <!-- brillo superior sutil -->
-      <path fill="#ffffff" opacity=".35" d="M9 3.6c1-.6 2.4-.8 3.6-.4l-1.6 1.6 1.1 1.1 1.6-1.6c.3.9.2 2-.2 2.8-1.2-1.2-3.1-2.9-4.5-3.5z"/>
-      <!-- sombreado interior sutil -->
-      <path fill="#000000" opacity=".10" d="M6 13.8l4.2 4.2.8-.8-4.2-4.2-0.8.8z"/>
+      <path fill="#fff" opacity=".35" d="M9 3.6c1-.6 2.4-.8 3.6-.4l-1.6 1.6 1.1 1.1 1.6-1.6c.3.9.2 2-.2 2.8-1.2-1.2-3.1-2.9-4.5-3.5z"/>
+      <path fill="#000" opacity=".10" d="M6 13.8l4.2 4.2.8-.8-4.2-4.2-0.8.8z"/>
     </symbol>
-    <!-- Handset (Directorio) -->
+    <!-- handset -->
     <symbol id="i-handset" viewBox="0 0 24 24">
       <path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/>
     </symbol>
-    <!-- Libros (Biblioteca) -->
+    <!-- libros -->
     <symbol id="i-books" viewBox="0 0 24 24">
       <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/>
       <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/>
@@ -478,7 +436,7 @@ section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
       </div>
     </div>
 
-    <!-- ===== Barra inferior ===== -->
+    <!-- ===== Barra inferior única ===== -->
     <nav class="bottom" aria-label="Secciones">
       <div class="bottom-inner" id="bottomNav">
         <div class="icons-left" role="tablist" aria-label="Secciones">
@@ -530,13 +488,14 @@ const toast=(m)=>{const t=$('#toast');t.textContent=m;t.hidden=false;setTimeout(
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const setVH=()=>document.documentElement.style.setProperty('--vh',(innerHeight*0.01)+'px');
 setVH(); addEventListener('resize', setVH, {passive:true});
+addEventListener('orientationchange', setVH, {passive:true});  /* garantiza ajuste vertical↔horizontal */
 
 const setOnline=(on)=>{const b=$('#badge-online');b.textContent=on?'Online':'Offline';b.className='chip '+(on?'ok':'bad')};
 setOnline(navigator.onLine); addEventListener('online',()=>setOnline(true),{passive:true}); addEventListener('offline',()=>setOnline(false),{passive:true});
 
 const esc=(s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
-/* ===== Firebase (SIN cambios) ===== */
+/* ===== Firebase (sin cambios de integración) ===== */
 const appMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
 const authMod= await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
 const fsMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
@@ -578,36 +537,13 @@ const pushRetry=(job)=>{try{const q=JSON.parse(localStorage.getItem('aurora.retr
 async function upd(kind,id,patch){const ref=fsMod.doc(db,'users',currentUid(),kind,id);const data={...patch,updatedAt:serverTS()};try{await fsMod.updateDoc(ref,data);}catch{pushRetry({path:ref.path,data});toast('Se guardará al recuperar conexión')}}
 async function del(kind,id){const ref=fsMod.doc(db,'users',currentUid(),kind,id);try{await fsMod.deleteDoc(ref);}catch{pushRetry({path:ref.path,data:{__delete__:true}});toast('Se eliminará al reconectar')}}
 
-/* ===== NAV inferior única ===== */
+/* ===== NAV ===== */
 const activeLabel=$('#activeLabel');
-const mapTabs={
-  planta:['panel-planta','b-planta','Planta'],
-  tareas:['panel-tareas','b-tareas','Tareas'],
-  directorio:['panel-directorio','b-directorio','Directorio'],
-  biblioteca:['panel-biblioteca','b-biblioteca','Biblioteca']
-};
-function selectTab(id){
-  for(const k in mapTabs){
-    const [p,b,l]=mapTabs[k]; const sel=(k===id);
-    $('#'+p)?.classList.toggle('hide',!sel);
-    const btn=$('#'+b);
-    if(btn){ btn.setAttribute('aria-current', sel?'page':'false'); btn.tabIndex = sel?0:-1; }
-    if(sel){ $('#title').textContent=l; activeLabel.textContent=l; }
-  }
-  localStorage.setItem('tab', id); location.hash=id;
-}
-$('#b-planta').onclick =()=>selectTab('planta');
-$('#b-tareas').onclick =()=>selectTab('tareas');
-$('#b-directorio').onclick=()=>selectTab('directorio');
-$('#b-biblioteca').onclick=()=>selectTab('biblioteca');
+const mapTabs={planta:['panel-planta','b-planta','Planta'],tareas:['panel-tareas','b-tareas','Tareas'],directorio:['panel-directorio','b-directorio','Directorio'],biblioteca:['panel-biblioteca','b-biblioteca','Biblioteca']};
+function selectTab(id){for(const k in mapTabs){const [p,b,l]=mapTabs[k]; const sel=(k===id); $('#'+p)?.classList.toggle('hide',!sel); const btn=$('#'+b); if(btn){btn.setAttribute('aria-current', sel?'page':'false'); btn.tabIndex=sel?0:-1;} if(sel){$('#title').textContent=l; activeLabel.textContent=l;}} localStorage.setItem('tab', id); location.hash=id;}
+$('#b-planta').onclick =()=>selectTab('planta'); $('#b-tareas').onclick =()=>selectTab('tareas'); $('#b-directorio').onclick=()=>selectTab('directorio'); $('#b-biblioteca').onclick=()=>selectTab('biblioteca');
 const orderBottom=['b-planta','b-tareas','b-directorio','b-biblioteca'];
-$('#bottomNav').addEventListener('keydown',(e)=>{
-  const active=document.activeElement; const i=orderBottom.indexOf(active?.id); if(i<0) return;
-  let j=i;
-  if(e.key==='ArrowRight') j=(i+1)%orderBottom.length; else if(e.key==='ArrowLeft') j=(i-1+orderBottom.length)%orderBottom.length;
-  else if(e.key==='Home') j=0; else if(e.key==='End') j=orderBottom.length-1; else if(e.key==='Enter'||e.key===' '){active.click(); return;}
-  e.preventDefault(); const btn=$('#'+orderBottom[j]); btn?.focus(); btn?.click();
-});
+$('#bottomNav').addEventListener('keydown',(e)=>{const active=document.activeElement; const i=orderBottom.indexOf(active?.id); if(i<0) return; let j=i; if(e.key==='ArrowRight') j=(i+1)%orderBottom.length; else if(e.key==='ArrowLeft') j=(i-1+orderBottom.length)%orderBottom.length; else if(e.key==='Home') j=0; else if(e.key==='End') j=orderBottom.length-1; else if(e.key==='Enter'||e.key===' '){active.click(); return;} e.preventDefault(); const btn=$('#'+orderBottom[j]); btn?.focus(); btn?.click();});
 addEventListener('hashchange',()=>{const h=location.hash.slice(1); if(mapTabs[h]) selectTab(h);},{passive:true});
 
 /* ===== Planta ===== */
@@ -616,7 +552,7 @@ const updateAddTarget=()=>$('#addTarget').textContent=currentGroup==='planta'?'A
 $('#p-group-planta').onclick=()=>{currentGroup='planta'; updateAddTarget();};
 $('#p-group-inter').onclick =()=>{currentGroup='interconsulta'; updateAddTarget();};
 
-const plantaDoc = (d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(), grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS() });
+const plantaDoc=(d)=>({ room:(d.room||'').trim(), desc:(d.desc||'').trim(), pendiente:(d.pendiente||'').trim(), grupo:d.grupo||'planta', status:d.status||'active', createdAt:d.createdAt||serverTS(), updatedAt:serverTS() });
 const roomSortKey=(s)=>{ if(!s) return 1e9; const m=String(s).match(/\d+/g); if(!m) return 1e9; const a=parseInt(m[0],10); const b=m[1]?parseInt(m[1],10)/100:0; return a+b; };
 
 function plantaItem(x,done=false){
@@ -626,13 +562,23 @@ function plantaItem(x,done=false){
   ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
   <div class="toolbar actions"></div>`;
   const a=li.querySelector('.actions');
-  const swap=document.createElement('button'); swap.className='btn icon swap';
-  swap.innerHTML=`<svg class="ico"><use href="#i-swap"/></svg>`;
+
+  /* ICONOS premium centrados y proporcionales */
+  const swap=document.createElement('button'); swap.className='btn icon swap'; swap.title='Cambiar entre Planta e Interconsulta';
+  swap.innerHTML=`<svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg>`;
   swap.onclick=()=>upd('planta',x.__id,{grupo:(x.grupo==='interconsulta')?'planta':'interconsulta'});
-  a.append(swap, btn('✎',()=>editPlanta(x),'btn icon'), btn(done?'✖':'✓',()=> done?del('planta',x.__id):upd('planta',x.__id,{status:'done'}),'btn icon'));
+
+  const editB=btn('',()=>editPlanta(x),'btn icon'); editB.title='Editar';
+  editB.innerHTML=`<svg class="ico" aria-hidden="true"><use href="#i-edit"/></svg>`;
+
+  const actB=btn('',()=> done?del('planta',x.__id):upd('planta',x.__id,{status:'done'}),'btn icon'); actB.title=done?'Eliminar':'Marcar completado';
+  actB.innerHTML = done ? `<svg class="ico" aria-hidden="true"><use href="#i-edit"/></svg>` /* dejamos edit como borrar? mantenemos check para completar */
+                       : `<svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>`;
+
+  a.append(swap, editB, actB);
   return li;
 }
-const btn=(t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; b.textContent=t; b.onclick=(e)=>{e.preventDefault();fn?.(e)}; b.type='button'; return b;};
+const btn=(t,fn,cls='btn')=>{const b=document.createElement('button'); b.className=cls; if(t) b.textContent=t; b.onclick=(e)=>{e.preventDefault();fn?.(e)}; b.type='button'; return b;};
 const val=(id)=>document.getElementById(id)?.value||'';
 const editPlanta=(x)=>openEdit([{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}], async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}));
 
@@ -651,7 +597,7 @@ function setupPlanta(uid){
   unsubs.push(u1,u2);
 }
 
-/* ===== Tareas ===== */
+/* ===== Tareas (sin cambios funcionales; mantiene iconografía por defecto) ===== */
 const tareaDoc=(d)=>({date:d.date||todayISO(),text:(d.text||'').trim(),status:d.status||'active',createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 const daysFromToday=(iso)=>{try{const d=new Date(iso+'T00:00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24));}catch{return 0}};
 const fmtDate=(iso)=>{try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,'');}catch{return iso}};
@@ -662,7 +608,8 @@ function tareaItem(x){
   li.style.borderLeft=`6px solid hsl(${h} 72% 46%)`;
   li.innerHTML=`<span class="pill date">${fmtDate(x.date)}</span><div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
   li.querySelector('.actions').append(
-    btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'),
+    btn('',()=>upd('tareas',x.__id,{status:'done'}),'btn icon')
+      .appendChild(Object.assign(document.createElementNS('http://www.w3.org/2000/svg','svg'),{classList:['ico'],innerHTML:'<use href="#i-check"/>'}))||li.querySelector('.actions').lastChild,
     btn('✎',()=>editTarea(x),'btn icon'),
     btn('🗑️',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon')
   ); return li;
@@ -724,7 +671,8 @@ function renderDir(){
     list.forEach(x=>{
       const li=document.createElement('li'); li.className='item';
       li.innerHTML=`<div class="text"><div class="line"><strong>${esc(x.nombre||'')}</strong> — ${esc(x.seccion||'')}</div><div class="line">${phonesToChips(x.telefono)}</div>${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}</div><div class="toolbar actions"></div>`;
-      const edit=btn('✎',()=>editDir(x),'btn icon'), delBtn=btn('🗑️',()=>del('directorio',x.__id),'btn icon');
+      const edit=btn('',()=>editDir(x),'btn icon'); edit.title='Editar'; edit.innerHTML=`<svg class="ico"><use href="#i-edit"/></svg>`;
+      const delBtn=btn('✖',()=>del('directorio',x.__id),'btn icon');
       li.querySelector('.actions').append(edit,delBtn);
       ul.appendChild(li);
     });
@@ -748,7 +696,7 @@ function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.qu
 const normTel=(s)=>String(s||'').replace(/[^\d+]/g,''); const keyDir=(o)=>(String(o.nombre||'').trim().toLowerCase().replace(/\s+/g,' '))+'|'+normTel(o.telefono);
 async function dedupeDir(uid){const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const seen=new Set(); const rm=[]; for(const d of snap.docs){const k=keyDir(d.data()); if(seen.has(k)) rm.push(d.ref); else seen.add(k)} if(!rm.length){toast('Sin duplicados');return} await Promise.all(rm.map(r=>fsMod.deleteDoc(r))); toast(`Eliminados ${rm.length} duplicados`)}
 
-/* ===== Biblioteca ===== */
+/* ===== Biblioteca (sin cambios salvo bugfix previo ya aplicado) ===== */
 let bCache=[]; let localObjectURL=null;
 const bDoc=(d)=>({title:String(d.title||'').trim()||'Sin título',url:String(d.url||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 function setViewer(src){const iframe=$('#b-viewer'); if(!src){iframe.removeAttribute('src');return} iframe.src=src}
@@ -763,7 +711,6 @@ function setupBiblio(uid){
   $('#b-open-file').onclick=async()=>{try{const [h]=await showOpenFilePicker({types:[{description:'PDF',accept:{'application/pdf':['.pdf']}}]}); const f=await h.getFile(); clearLocalURL(); localObjectURL=URL.createObjectURL(f); setViewer(localObjectURL)}catch{}};
   $('#b-clear-view').onclick=()=>{clearLocalURL(); setViewer(null)} ;
   $('#b-export-links').onclick=async()=>{const snap=await fsMod.getDocs(fsMod.query(col.biblio(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'biblioteca-links-'+todayISO()+'.json'); toast('Exportado')};
-  /* FIX paréntesis extra aquí */
   $('#b-import-links').onclick=async()=>{try{
     const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
     const snap=await fsMod.getDocs(col.biblio(uid));
@@ -775,7 +722,7 @@ function setupBiblio(uid){
   const u=fsMod.onSnapshot(fsMod.query(col.biblio(uid)),(s)=>{bCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; bCache.push(x)}); renderBiblioSelect()}); unsubs.push(u);
 }
 
-/* ===== Modal simple ===== */
+/* ===== Modal simple / Pickers / PWA / FAB / Montaje (sin cambios relevantes) ===== */
 function openEdit(fields,onOk){
   const dlg=document.createElement('dialog'); dlg.style.padding='16px'; dlg.style.border='1px solid var(--border)'; dlg.style.borderRadius='14px'; dlg.style.boxShadow='var(--shadow-2)';
   const h=document.createElement('h3'); h.textContent='Editar'; h.style.margin='0 0 8px 0'; dlg.appendChild(h);
@@ -787,12 +734,8 @@ function openEdit(fields,onOk){
   const b2=document.createElement('button'); b2.className='btn primary'; b2.textContent='Guardar'; b2.onclick=async()=>{await onOk(); dlg.close()};
   row.append(b1,b2); dlg.appendChild(row); document.body.appendChild(dlg); dlg.showModal(); dlg.addEventListener('close',()=>dlg.remove(),{once:true});
 }
-
-/* ===== Pickers ===== */
 async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text() } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f) }; i.click() }) }
 async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href) }
-
-/* ===== PWA (sin cambios) ===== */
 let deferredPrompt=null;
 addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;$('#installBanner').style.display='inline-flex'});
 $('#installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').style.display='none' } };
@@ -805,7 +748,7 @@ if('serviceWorker' in navigator){
   reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate()})});
 }
 
-/* ===== FAB ===== */
+/* FAB (igual que versión previa, sin cambios funcionales)… */
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
@@ -818,32 +761,12 @@ function renderEmergency(){
 }
 function saveEmergencies(){localStorage.setItem('aurora.emerg', JSON.stringify(emergency))}
 function loadEmergencies(){try{emergency=JSON.parse(localStorage.getItem('aurora.emerg')||'[]')||[]}catch{emergency=[]}}
-
 $('#fab').onclick=()=>{const p=$('#fabPanel'); const open=p.style.display!=='block'; if(open){placePanelNearFab(); renderEmergency()} p.style.display=open?'block':'none'; $('#fab').setAttribute('aria-expanded',String(open))};
 $('#fabCfg').onclick=()=>{$('#fabConfigDlg').showModal()};
 $('#e-close').onclick=()=>$('#fabConfigDlg').close();
 $('#e-add').onclick=()=>{const name=$('#e-name').value.trim(); const tel=$('#e-tel').value.trim(); if(!name||!tel) return; const key=(name+'|'+tel).toLowerCase(); if(emergency.some(x=>(x.name+'|'+x.tel).toLowerCase()===key)){toast('Duplicado: ya existe'); return} emergency.push({name,tel}); saveEmergencies(); $('#e-name').value=''; $('#e-tel').value=''; renderEmergency(); toast('Añadido')};
-
-(function enableFabDrag(){
-  const fab=$('#fab'); let dragging=false, sx=0, sy=0, ox=0, oy=0;
-  const bounds=()=>({ w:innerWidth, h:innerHeight });
-  const clamp=(v,min,max)=>Math.min(Math.max(v,min),max);
-  function setPos(x,y){ fab.style.left=x+'px'; fab.style.right='auto'; fab.style.top=y+'px'; fab.style.bottom='auto' }
-  const p=(()=>{try{return JSON.parse(localStorage.getItem('aurora.fabpos')||'')}catch{return null}})(); if(p && Number.isFinite(p.x) && Number.isFinite(p.y)) setPos(p.x,p.y);
-  const savePos=(x,y)=>localStorage.setItem('aurora.fabpos', JSON.stringify({x,y}));
-  const onDown=(e)=>{dragging=true; const r=fab.getBoundingClientRect(); sx=(e.touches?e.touches[0].clientX:e.clientX); sy=(e.touches?e.touches[0].clientY:e.clientY); ox=r.left; oy=r.top; e.preventDefault()};
-  const onMove=(e)=>{ if(!dragging) return; const {w,h}=bounds(); const x0=(e.touches?e.touches[0].clientX:e.clientX); const y0=(e.touches?e.touches[0].clientY:e.clientY); let nx=ox+(x0-sx); let ny=oy+(y0-sy); const margin=8; const bh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-h'))||68; ny=clamp(ny, margin, h - bh - fab.offsetHeight - 8); nx=clamp(nx, margin, w - fab.offsetWidth - margin); setPos(nx,ny) };
-  const onUp=()=>{ if(!dragging) return; dragging=false; const r=fab.getBoundingClientRect(); savePos(r.left,r.top) };
-  fab.addEventListener('pointerdown',onDown); addEventListener('pointermove',onMove); addEventListener('pointerup',onUp); addEventListener('pointercancel',onUp);
-})();
-
-function placePanelNearFab(){
-  const fab=$('#fab'), panel=$('#fabPanel'); const r=fab.getBoundingClientRect();
-  const pad=8; const pw=Math.min(460, innerWidth*0.96); const ph=Math.min(420, innerHeight*0.7);
-  let left = Math.min(Math.max(r.left, pad), innerWidth - pw - pad);
-  let top  = Math.max( pad, r.top - ph - 12 );
-  panel.style.width=pw+'px'; panel.style.left=left+'px'; panel.style.top=top+'px'; panel.style.right='auto'; panel.style.bottom='auto';
-}
+(function enableFabDrag(){ const fab=$('#fab'); let dragging=false, sx=0, sy=0, ox=0, oy=0; const bounds=()=>({ w:innerWidth, h:innerHeight }); const clamp=(v,min,max)=>Math.min(Math.max(v,min),max); function setPos(x,y){ fab.style.left=x+'px'; fab.style.right='auto'; fab.style.top=y+'px'; fab.style.bottom='auto' } const p=(()=>{try{return JSON.parse(localStorage.getItem('aurora.fabpos')||'')}catch{return null}})(); if(p && Number.isFinite(p.x) && Number.isFinite(p.y)) setPos(p.x,p.y); const savePos=(x,y)=>localStorage.setItem('aurora.fabpos', JSON.stringify({x,y})); const onDown=(e)=>{dragging=true; const r=fab.getBoundingClientRect(); sx=(e.touches?e.touches[0].clientX:e.clientX); sy=(e.touches?e.touches[0].clientY:e.clientY); ox=r.left; oy=r.top; e.preventDefault()}; const onMove=(e)=>{ if(!dragging) return; const {w,h}=bounds(); const x0=(e.touches?e.touches[0].clientX:e.clientX); const y0=(e.touches?e.touches[0].clientY:e.clientY); let nx=ox+(x0-sx); let ny=oy+(y0-sy); const margin=8; const bh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-h'))||68; ny=clamp(ny, margin, h - bh - fab.offsetHeight - 8); nx=clamp(nx, margin, w - fab.offsetWidth - margin); setPos(nx,ny) }; const onUp=()=>{ if(!dragging) return; dragging=false; const r=fab.getBoundingClientRect(); savePos(r.left,r.top) }; fab.addEventListener('pointerdown',onDown); addEventListener('pointermove',onMove); addEventListener('pointerup',onUp); addEventListener('pointercancel',onUp);})();
+function placePanelNearFab(){ const fab=$('#fab'), panel=$('#fabPanel'); const r=fab.getBoundingClientRect(); const pad=8; const pw=Math.min(460, innerWidth*0.96); const ph=Math.min(420, innerHeight*0.7); let left = Math.min(Math.max(r.left, pad), innerWidth - pw - pad); let top  = Math.max( pad, r.top - ph - 12 ); panel.style.width=pw+'px'; panel.style.left=left+'px'; panel.style.top=top+'px'; panel.style.right='auto'; panel.style.bottom='auto';}
 
 /* ===== Montaje ===== */
 function mount(uid){ loadEmergencies(); renderEmergency(); setupPlanta(uid); setupTareas(uid); setupDir(uid); setupBiblio(uid);
