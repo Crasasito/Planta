@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
 
 <style>
-/* ====== Base y tokens (sin cambios globales relevantes) ====== */
+/* ===== Design tokens ===== */
 :root{
   --ink:#0b1220; --muted:#5a667a;
   --surface:#ffffff; --surface-2:#f7f9fc; --border:#e8eef5;
@@ -19,7 +19,7 @@
   --ora:#FFE5D1; --ora-700:#FB923C;
   --coral-700:#F43F5E; --green-700:#10B981;
   --indigo-600:#6366F1; --gold-500:#FACC15;
-  --mint-600:#06D6A0;
+  --turq-700:#0FB; --turq-600:#06D6A0;
 
   --gx-planta: linear-gradient(135deg,#F5F0FF 0%, #EAE2FF 55%, #C7B8FF 100%);
   --gx-inter:  linear-gradient(135deg,#FFF3E4 0%, #FFE5D1 55%, #FFD0A3 100%);
@@ -27,6 +27,8 @@
   --gx-green:  linear-gradient(135deg,#E9FFF1 0%, #CFFAE2 55%, #B2F5D4 100%);
   --gx-dir:    linear-gradient(135deg,#FFFBE5 0%, #FFF1B5 55%, #FFE783 100%);
   --gx-bib:    linear-gradient(135deg,#EDF2FF 0%, #DDE4FF 55%, #C7D3FF 100%);
+  --gx-coral:  linear-gradient(135deg,#FFE8EC 0%, #FFD1DA 55%, #FFBAC8 100%);
+  --gx-turq:   linear-gradient(135deg,#E8FFF8 0%, #CCFFF0 55%, #B6FAE8 100%);
 
   --glass-bg: linear-gradient(180deg,rgba(255,255,255,.92) 0%, rgba(247,249,252,.82) 100%);
   --rim-ambient: radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.38), rgba(255,255,255,0));
@@ -84,6 +86,8 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
 .h-green { --gx-neutral: var(--gx-green);  --accent: var(--green-700) }
 .h-dir   { --gx-neutral: var(--gx-dir);    --accent: var(--gold-500) }
 .h-bib   { --gx-neutral: var(--gx-bib);    --accent: var(--indigo-600) }
+.h-coral { --gx-neutral: var(--gx-coral);  --accent: var(--coral-700) }
+.h-turq  { --gx-neutral: var(--gx-turq);   --accent: var(--turq-600) }
 
 /* Botones / chips */
 .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
@@ -95,11 +99,21 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
 .btn.icon .ico{width:20px;height:20px}
 .btn.icon.swap .ico{width:23px;height:23px}
 
-/* Listas / inputs generales */
+/* Inputs premium SOLO para +Número, Añadir tarea y Búsqueda contacto */
+.input-prem{
+  width:100%; padding:12px 14px; border-radius:14px;
+  border:1px solid color-mix(in oklab,#6b7280,white 82%);
+  background:linear-gradient(180deg,#ffffff 0%, #fafcff 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(10,20,35,.02);
+  transition:border-color .2s, box-shadow .2s, background .2s;
+}
+.input-prem:focus{outline:0; border-color:color-mix(in oklab,var(--indigo-600),white 55%); box-shadow:0 0 0 4px color-mix(in oklab,var(--indigo-600),white 80%), inset 0 1px 0 #fff}
+
+/* Listas / ítems */
 ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
 li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:16px;padding:12px;background:#fff}
 
-/* Habitación en una línea */
+/* Habitación una línea */
 .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
 .pill.room{font-family:ui-monospace,Consolas,Menlo,monospace;font-size:clamp(22px,3.2vw,26px);padding:12px 16px;letter-spacing:.3px;color:#07101f;background:#fff;white-space:nowrap;border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
 .pill.room[data-group="planta"]{background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%); border-color: color-mix(in oklab,var(--lav-700),transparent 65%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--lav),transparent 60%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
@@ -108,22 +122,19 @@ li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:ce
 .pill.date{font-weight:1000}
 .pill.tel{font-weight:800}
 
-/* Texto en ítems (una línea con elipsis en Planta/Tareas) */
+/* Ítems texto */
 .item .text{display:flex;align-items:center;gap:10px;min-width:0}
 .item .text > *{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.item .text .muted{opacity:.8}
-
-/* Acciones compactas */
 .item .actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:114px}
 
 /* Visor */
 .viewer{width:100%;block-size:min(72vh, calc(100dvh - var(--appbar) - var(--bottom-h) - env(safe-area-inset-bottom) - 48px));border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow-1)}
 
-/* ===== Directorio (premium, sin solapes) ===== */
+/* ===== Directorio — UNA LÍNEA por contacto, máxima visibilidad ===== */
 .dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
 .dir-wrap > div:first-child{min-width:0}
 
-/* Cabecera de letra: sin márgenes negativos para evitar solape */
+/* Cabecera letra */
 .section-tag{
   position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
   margin:4px 0 10px 0; padding:6px 10px;
@@ -149,26 +160,25 @@ section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 56px)}
   color:#1d2838;font-weight:1000;font-size:11px;background:#fff;box-shadow:inset 0 1px 0 #fff
 }
 
-/* Listado del directorio con dos líneas (Nombre/Sección + Teléfonos) */
+/* UNA LÍNEA por contacto */
 #panel-directorio .list{grid-template-columns:1fr}
-#panel-directorio .item{grid-template-columns:1fr auto}
-#panel-directorio .item .text.dir{display:block}
-#panel-directorio .item .text.dir .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:900}
-#panel-directorio .item .text.dir .name .sec{font-weight:700;opacity:.7}
-#panel-directorio .item .text.dir .phones{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-#panel-directorio .pill.tel{background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);border-color:color-mix(in oklab,var(--indigo-600),transparent 70%)}
+#panel-directorio .item{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) auto; align-items:center}
+#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0}
+#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+#panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap}
+#panel-directorio .item .phones{display:flex; gap:6px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch}
+#panel-directorio .pill.tel{background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);border-color:color-mix(in oklab,var(--indigo-600),transparent 70%); padding:6px 10px; font-weight:900}
 
-/* Búsqueda y acciones del directorio: input arriba, acciones debajo (mobile); lado a lado en desktop */
+/* Búsqueda (input premium arriba; acciones debajo en móvil) */
 .dir-search{display:grid;gap:8px;grid-template-columns:1fr}
 .dir-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start}
 #d-q{width:100%;min-inline-size:15ch}
 @media (min-width:900px){
   .dir-search{grid-template-columns:1fr auto;align-items:end}
   .dir-actions{justify-content:flex-end}
-  #panel-directorio .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 }
 
-/* ===== Bottom nav (iconos) ===== */
+/* ===== Bottom nav ===== */
 nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--border);backdrop-filter: blur(6px) saturate(1.02)}
 .bottom-inner{display:flex;align-items:center;gap:12px;height:calc(var(--bottom-h) + env(safe-area-inset-bottom));padding:10px clamp(10px,5vw,18px);padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .icons-left{display:flex;align-items:center;gap:12px;}
@@ -179,28 +189,43 @@ nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;bor
 .active-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2);font-weight:900}
 main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom) + 22px)}
 
-/* ===== Accesibilidad / orientación ===== */
+/* A11y / orientación */
 @media (prefers-reduced-motion: reduce){
-  *{animation:none !important; transition:none !important}
+  *{animation:none !important; transition:none !重要}
   header.appbar, .card{backdrop-filter:none}
 }
 </style>
 </head>
 
 <body>
-<!-- ===== SVGs (añadidos: stetho y hourglass; se mantiene el resto) ===== -->
+<!-- ===== SVGs (stetho mejorado + resto) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
     <linearGradient id="gOra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd7b0"/><stop offset="1" stop-color="#FB923C"/></linearGradient>
     <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
     <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
+    <linearGradient id="gTurq" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7fff0"/><stop offset="1" stop-color="#06d6a0"/></linearGradient>
 
-    <!-- Fonendo -->
+    <!-- Fonendo premium (duotono, rim-light, strokes + fill) -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
-      <path fill="url(#gInd)" d="M7 3a2 2 0 0 1 2 2v5a4 4 0 1 0 8 0V5h2v5a6 6 0 0 1-12 0V5a2 2 0 0 1 2-2z"/>
-      <circle cx="6" cy="6" r="2" fill="url(#gLav)"/>
-      <path fill="url(#gLav)" d="M14 14a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-2v-2h2v-1a2 2 0 0 0-2-2h-1a3 3 0 0 1-3-3h2a1 1 0 0 0 1 1z"/>
+      <!-- aro auriculares -->
+      <path d="M6 4c.6-1 2-1 2.6 0l.4.8c.3.6.5 1.2.5 1.9v2.3a4.5 4.5 0 1 0 9 0V6.7" fill="none" stroke="url(#gInd)" stroke-width="1.6" stroke-linecap="round"/>
+      <!-- copa -->
+      <circle cx="18.5" cy="6.7" r="2.2" fill="url(#gLav)"/>
+      <circle cx="18.5" cy="6.7" r="2.2" fill="url(#gInd)" opacity=".10"/>
+      <!-- tubo y asa -->
+      <path d="M13.2 14.2a3.8 3.8 0 0 0 3.8 3.8h.8a2 2 0 0 1 2 2v.6a2 2 0 0 1-2 2h-3.7" fill="none" stroke="url(#gTurq)" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- campana -->
+      <g transform="translate(6.2 16.5)">
+        <circle cx="4.2" cy="3.5" r="3.5" fill="url(#gTurq)" />
+        <circle cx="4.2" cy="3.5" r="3.5" fill="#fff" opacity=".22"/>
+        <circle cx="4.2" cy="3.5" r="1.6" fill="url(#gGold)"/>
+        <path d="M0.9 1.6c.7-.9 1.9-1.6 3.3-1.6" fill="none" stroke="#fff" stroke-opacity=".6" stroke-linecap="round"/>
+      </g>
+      <!-- ear tips -->
+      <circle cx="6.1" cy="5.1" r="1.5" fill="url(#gLav)"/>
+      <circle cx="8.2" cy="5.1" r="1.5" fill="url(#gLav)"/>
     </symbol>
 
     <!-- Swap -->
@@ -214,12 +239,12 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
       <path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
     </symbol>
 
-    <!-- Check redondo (lo mantenemos para Planta/Completar) -->
+    <!-- Check -->
     <symbol id="i-check" viewBox="0 0 24 24">
       <path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
     </symbol>
 
-    <!-- Herramientas (se conserva para otros usos) -->
+    <!-- Herramientas -->
     <symbol id="i-tools" viewBox="0 0 24 24">
       <path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/>
       <path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/>
@@ -286,13 +311,13 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <!-- ===== PLANTA ===== -->
     <div id="panel-planta" role="region" aria-label="Planta" tabindex="-1">
       <div class="card">
-        <div class="card-h h-celeste"><h2>Añadir habitación</h2><span class="subtitle">Planta e Interconsulta</span></div>
+        <div class="card-h h-turq"><h2>+Número</h2><span class="subtitle">Planta e Interconsulta</span></div>
         <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-          <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
-          <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
+          <div><label for="p-room">Habitación</label><input id="p-room" class="input-prem" placeholder="Ej. 421-2" autocomplete="off"></div>
+          <div><label for="p-desc">Descripción</label><input id="p-desc" class="input-prem" placeholder="Resumen clínico, motivo…"></div>
           <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
           <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr">
-            <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" placeholder="Rx, analítica… (opcional)"></div>
+            <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" class="input-prem" placeholder="Rx, analítica… (opcional)"></div>
             <div>
               <label>Grupo</label>
               <div role="group" aria-label="Grupo" style="display:inline-flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px;box-shadow:inset 0 1px 0 #fff">
@@ -336,8 +361,8 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         <div class="card-h h-turq"><h2>Añadir tarea</h2><span class="subtitle">Fecha → Descripción</span></div>
         <div class="card-b">
           <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
-            <div><label for="t-date">Fecha</label><input id="t-date" type="date" required></div>
-            <div><label for="t-text">Descripción</label><input id="t-text" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+            <div><label for="t-date">Fecha</label><input id="t-date" class="input-prem" type="date" required></div>
+            <div><label for="t-text">Descripción</label><input id="t-text" class="input-prem" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
             <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
           </div>
         </div>
@@ -375,7 +400,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
         <div class="card-b">
           <div class="dir-search">
-            <div class="dir-search-input"><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
+            <div class="dir-search-input"><label for="d-q">Búsqueda inteligente</label><input id="d-q" class="input-prem" type="search" placeholder="Sección, nombre o extensión…"></div>
             <div class="dir-actions">
               <button id="d-add" class="btn primary">Añadir</button>
               <button id="d-import" class="btn">Importar JSON</button>
@@ -493,15 +518,14 @@ const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const toast=(m)=>{const t=$('#toast');t.textContent=m;t.hidden=false;setTimeout(()=>t.hidden=true,2200)};
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const setVH=()=>document.documentElement.style.setProperty('--vh',(innerHeight*0.01)+'px');
-setVH(); addEventListener('resize', setVH, {passive:true});
-addEventListener('orientationchange', setVH, {passive:true});
+setVH(); addEventListener('resize', setVH, {passive:true}); addEventListener('orientationchange', setVH, {passive:true});
 
 const setOnline=(on)=>{const b=$('#badge-online');b.textContent=on?'Online':'Offline';b.className='chip '+(on?'ok':'bad')};
 setOnline(navigator.onLine); addEventListener('online',()=>setOnline(true),{passive:true}); addEventListener('offline',()=>setOnline(false),{passive:true});
 
 const esc=(s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
-/* ===== Firebase (sin cambios de integración) ===== */
+/* ===== Firebase ===== */
 const appMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
 const authMod= await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js');
 const fsMod  = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js');
@@ -604,7 +628,7 @@ function setupPlanta(uid){
   unsubs.push(u1,u2);
 }
 
-/* ===== Tareas (eliminados SVG grandes; botones compactos) ===== */
+/* ===== Tareas ===== */
 const tareaDoc=(d)=>({date:d.date||todayISO(),text:(d.text||'').trim(),status:d.status||'active',createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 const daysFromToday=(iso)=>{try{const d=new Date(iso+'T00:00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((d - t)/(1000*60*60*24));}catch{return 0}}
 const fmtDate=(iso)=>{try{const d=new Date(iso+'T00:00:00'); return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'}).format(d).toUpperCase().replace(/\./g,'');}catch{return iso}};
@@ -649,7 +673,7 @@ function setupTareas(uid){
 }
 const setNotif=(n)=>{$('#notifBadge').textContent=String(n); $('#notifBadge').title=n?`${n} tareas activas`:'Sin avisos'};
 
-/* ===== Directorio ===== */
+/* ===== Directorio (UNA LÍNEA) ===== */
 let dirCache=[];
 const telHref=(raw)=>{const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
 const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'');
@@ -677,11 +701,12 @@ function renderDir(){
     const ul=document.createElement('ul'); ul.className='list';
     list.forEach(x=>{
       const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<div class="text dir">
-          <div class="name"><strong>${esc(x.nombre||'')}</strong> <span class="sec">— ${esc(x.seccion||'')}</span></div>
-          <div class="phones">${phonesToChips(x.telefono)}</div>
-          ${x.notas?`<div class="muted">${esc(x.notas)}</div>`:''}
+      li.style.gridTemplateColumns='minmax(0,1.2fr) minmax(0,.8fr) auto'; // asegurar una línea
+      li.innerHTML=`<div class="who">
+          <span class="name">${esc(x.nombre||'')}</span>
+          <span class="sec">— ${esc(x.seccion||'')}</span>
         </div>
+        <div class="phones">${phonesToChips(x.telefono)}</div>
         <div class="toolbar actions"></div>`;
       const edit=btn('',()=>editDir(x),'btn icon'); edit.title='Editar'; edit.innerHTML=`<svg class="ico"><use href="#i-edit"/></svg>`;
       const delBtn=btn('✖',()=>del('directorio',x.__id),'btn icon');
@@ -708,7 +733,7 @@ function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.qu
 const normTel=(s)=>String(s||'').replace(/[^\d+]/g,''); const keyDir=(o)=>(String(o.nombre||'').trim().toLowerCase().replace(/\s+/g,' '))+'|'+normTel(o.telefono);
 async function dedupeDir(uid){const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const seen=new Set(); const rm=[]; for(const d of snap.docs){const k=keyDir(d.data()); if(seen.has(k)) rm.push(d.ref); else seen.add(k)} if(!rm.length){toast('Sin duplicados');return} await Promise.all(rm.map(r=>fsMod.deleteDoc(r))); toast(`Eliminados ${rm.length} duplicados`)}
 
-/* ===== Biblioteca / pickers / PWA / FAB (como antes) ===== */
+/* ===== Biblioteca / pickers / PWA / FAB (sin cambios) ===== */
 let bCache=[]; let localObjectURL=null;
 const bDoc=(d)=>({title:String(d.title||'').trim()||'Sin título',url:String(d.url||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 function setViewer(src){const iframe=$('#b-viewer'); if(!src){iframe.removeAttribute('src');return} iframe.src=src}
@@ -762,7 +787,7 @@ if('serviceWorker' in navigator){
   reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate()})});
 }
 
-/* FAB (sin cambios funcionales) */
+/* FAB (sin cambios) */
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
