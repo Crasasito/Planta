@@ -11,332 +11,308 @@
 
 <style>
 /* ===== AJUSTES SOLICITADOS (sin tocar nada más) ==========================
-   - Iconos (toggle/editar/completar): centrados y proporcionales al botón
-   - Barra inferior: siempre visible con margen inferior suficiente
-   - Listas comprimidas sin saltos excesivos y texto nítido
-   - Evitar solapamientos de headers sticky
-   ======================================================================= */
+   - Visibilidad premium: sin recortes en descripciones (Planta/Tareas/Directorio)
+   - Directorio: A–Z lateral + encabezados con glow y degradado por letra; 2 filas (nombre+sección / teléfonos en chips)
+   - Sin solapamientos (A, etc.), scroll-margin top ajustada
+   - Barra inferior fija que no tapa el final del contenido
+   - “Emergencias” -> “SOS”
+   - Añadido símbolo SVG #i-stetho
+========================================================================= */
 
+/* ---------- TOKENS & BASE ---------- */
 :root{
-  --bg:#ffffff; --ink:#0b1220; --muted:#77809b; --muted-2:#8a94b0; --border:#e7ecf3;
-  --indigo-500:#6366F1; --indigo-600:#4F46E5; --coral-500:#fb7185; --teal-500:#14b8a6; --gold-500:#f59e0b;
-  --appbar:64px; --pad:16px; --radius:16px; --shadow-1:0 6px 24px rgba(12,18,28,.08);
-  --bottom-h:72px; --glass-bg:linear-gradient(180deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.96) 100%);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Inter,Arial}
+  --ink:#0b1220; --muted:#5a667a;
+  --surface:#ffffff; --surface-2:#f7f9fc; --border:#e8eef5;
 
-.container{width:min(1100px,100%);margin-inline:auto;padding-inline:var(--pad)}
-.flow > *+*{margin-top:8px}
-.grid{display:grid;gap:12px}
-.flex{display:flex;gap:12px}
-.center{display:grid;place-items:center}
+  --lav:#EAE2FF; --lav-700:#8B5CF6;
+  --ora:#FFE5D1; --ora-700:#FB923C;
+  --coral-700:#F43F5E; --green-700:#10B981;
+  --indigo-600:#6366F1; --gold-500:#FACC15;
+  --mint-600:#06D6A0; --teal-600:#1B9AAA;
+
+  --gx-planta: linear-gradient(135deg,#F5F0FF 0%, #EAE2FF 55%, #C7B8FF 100%);
+  --gx-inter:  linear-gradient(135deg,#FFF3E4 0%, #FFE5D1 55%, #FFD0A3 100%);
+  --gx-tareas: linear-gradient(135deg,#FFE4E9 0%, #FFC9D4 55%, #FFA9B9 100%);
+  --gx-green:  linear-gradient(135deg,#E9FFF1 0%, #CFFAE2 55%, #B2F5D4 100%);
+  --gx-dir:    linear-gradient(135deg,#FFFBE5 0%, #FFF1B5 55%, #FFE783 100%);
+  --gx-bib:    linear-gradient(135deg,#EDF2FF 0%, #DDE4FF 55%, #C7D3FF 100%);
+  --gx-extra:  linear-gradient(135deg,#FDE7FA 0%, #F9CEF5 55%, #F3B1EF 100%);
+
+  --gx-celeste: linear-gradient(135deg,#E9F4FF 0%, #D6ECFF 55%, #BCE2FF 100%);
+  --gx-turq:    linear-gradient(135deg,#E8FFFB 0%, #CFFAF2 55%, #B3F4E9 100%);
+  --gx-coral:   linear-gradient(135deg,#FFE8EC 0%, #FFC9D3 55%, #FFA9B9 100%);
+
+  --glass-bg: linear-gradient(180deg,rgba(255,255,255,.92) 0%, rgba(247,249,252,.82) 100%);
+  --rim-ambient: radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.38), rgba(255,255,255,0));
+  --shadow-1: 0 1px 2px rgba(7,16,31,.05), 0 8px 24px rgba(7,16,31,.06);
+  --shadow-2: 0 2px 10px rgba(7,16,31,.10), 0 20px 40px rgba(7,16,31,.14);
+
+  --radius:14px; --radius-xl:22px; --appbar:64px; --touch:44px;
+  --fs: clamp(15px, 0.85vw + 0.35vh, 18px);
+  --h2: clamp(20px, 2.6vw, 26px);
+  --vh: 1vh;
+
+  --bottom-h: 68px; --nav-btn: 56px; --ico-bottom: 28px;
+}
+@media (max-width:480px){ :root{ --bottom-h:64px; --nav-btn:52px; --ico-bottom:26px } }
+@media (min-width:1025px){ :root{ --bottom-h:72px; --nav-btn:60px; --ico-bottom:28px } }
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink); background:var(--surface);
+  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  font-size:var(--fs); line-height:1.65; min-height:calc(var(--vh)*100);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  -webkit-tap-highlight-color:transparent; overflow-x:hidden;
+  text-rendering:optimizeLegibility; overscroll-behavior-y:none;
+}
+:focus-visible{outline:3px solid color-mix(in oklab,var(--lav-700),white 70%); outline-offset:2px; border-radius:12px}
+.container{max-width:min(1180px,98vw); margin:0 auto; padding:8px clamp(12px,4vw,20px); container-type:inline-size}
 .grow{flex:1;min-width:0}
 .hide{display:none !important}
 .muted{color:var(--muted)}
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 svg.ico{display:block}
 
-/* ---------- APPBAR y HEADERS (sin cambios de fondo; z-index asegurado) ---------- */
-header.appbar{position:sticky; top:0; z-index:50; min-height:var(--appbar); display:flex; align-items:center;
-  background: var(--glass-bg); border-bottom:1px solid var(--border)}
+/* ---------- APPBAR y HEADERS ---------- */
+header.appbar{position:sticky; top:0; z-index:50; min-height:var(--appbar); backdrop-filter: blur(8px) saturate(1.06); background: var(--glass-bg); border-bottom:1px solid var(--border)}
 .appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.2px}
+.brand{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);box-shadow:inset 0 1px 0 #fff, var(--shadow-1);display:inline-flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:.2px}
 .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold-500)}
 h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spacing:.2px;color:#0e1624;filter:drop-shadow(0 1px 0 rgba(0,0,0,.05))}
 
-.card{background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.98) 100%);
-  border:1px solid var(--border); border-radius:18px; box-shadow:0 12px 32px rgba(10,20,40,.08);
-  overflow:hidden; contain:content}
-.card-h{position:relative; padding:16px 18px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px;
-  border-bottom:1px solid var(--border); background:linear-gradient(180deg, color-mix(in oklab,#fff,#000,transparent 90%), #fff)
-  ; isolation:isolate; }
-.card-h h2{margin:0;font-size:clamp(16px,1.9vw,20px);letter-spacing:.2px}
-.card-b{padding:12px 16px 16px 16px}
+.card{background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.82) 100%);backdrop-filter: blur(8px) saturate(1.06);border: 1px solid var(--border);border-radius: var(--radius-xl);box-shadow: 0 18px 36px rgba(60,100,180,.12);overflow:hidden; contain:content}
+.card-h{position:relative; padding:16px 18px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid color-mix(in oklab,#000,transparent 90%); background:#fff; isolation:isolate; overflow:hidden; box-shadow: inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%), inset 0 0 0 8px rgba(255,255,255,.65); outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px}
+.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%))}
+.card-h::after{content:""; position:absolute; inset:-20% -10% auto -10%; height:160%; background: var(--rim-ambient); mix-blend-mode:screen; opacity:.6; z-index:0}
+.card-h > *{position:relative; z-index:2}
+.card-h h2{margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;line-height:1.15;transform:translateY(-1px)}
+.card-h h2::after{content:""; position:absolute; left:-2px; right:-2px; bottom:-8px; height:6px; border-radius:999px; background: color-mix(in oklab, var(--accent, #6b7280), white 45%); box-shadow: 0 0 14px color-mix(in oklab, var(--accent, #6b7280), white 10%); z-index:-1; pointer-events:none}
+.card-b{position:relative;z-index:1;padding:12px}
 
-/* ---------- LISTAS / INPUTS (estructura estable) ---------- */
-ul.list{list-style:none;padding:0;margin:0}
-li.item{display:flex;align-items:flex-start;gap:12px;padding:10px 8px;border-bottom:1px solid var(--border)}
-li.item:last-child{border-bottom:none}
-.item .left{width:28px;min-width:28px;display:grid;place-items:center}
-.item .text{min-width:0}
-.item .actions{margin-left:auto;display:flex;gap:6px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:800}
-.btn.primary{background:linear-gradient(180deg,#ffffff,#f4f7ff);border-color:#dfe6f4}
-.pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+.h-planta{ --gx-neutral: var(--gx-planta); --accent: var(--lav-700) }
+.h-inter { --gx-neutral: var(--gx-inter);  --accent: var(--ora-700) }
+.h-tareas{ --gx-neutral: var(--gx-tareas); --accent: var(--coral-700) }
+.h-green { --gx-neutral: var(--gx-green);  --accent: var(--green-700) }
+.h-dir   { --gx-neutral: var(--gx-dir);    --accent: var(--gold-500) }
+.h-bib   { --gx-neutral: var(--gx-bib);    --accent: var(--indigo-600) }
+.h-celeste{ --gx-neutral: var(--gx-celeste); --accent:#3B82F6 }
+.h-turq   { --gx-neutral: var(--gx-turq);    --accent: var(--mint-600) }
+.h-coral  { --gx-neutral: var(--gx-coral);   --accent: var(--coral-700) }
+
+/* ---------- CONTENIDO Y BOTONES ---------- */
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
+.chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
+.chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
+.btn{appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow-1);min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:800}
+.btn.primary{background:linear-gradient(180deg,#fffdf3 0%, #fff7d1 100%); border-color:color-mix(in oklab,var(--gold-500),transparent 65%); box-shadow:var(--shadow-2)}
+.btn.icon{min-width:36px;height:36px;padding:0;display:grid;place-items:center}
+.btn.icon .ico{width:20px;height:20px}
+.btn.icon.swap .ico{width:23px;height:23px}
+
+/* ---------- LISTAS / INPUTS ---------- */
+ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+li.item{
+  display:grid;
+  grid-template-columns:auto 1fr auto; /* habitación | texto (flex) | acciones */
+  gap:12px; align-items:center; border:1px solid var(--border); border-radius:16px; padding:12px; background:#fff
+}
+/* Habitación en una sola línea */
+.pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
+.pill.room{
+  font-family: ui-monospace,Consolas,Menlo,monospace; font-size:clamp(22px,3.2vw,26px);
+  padding:12px 16px; letter-spacing:.3px; color:#07101f; background:#fff; white-space:nowrap;
+  border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);
+  box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08);
+}
+.pill.room[data-group="planta"]{background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%); border-color: color-mix(in oklab,var(--lav-700),transparent 65%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--lav),transparent 60%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
+.pill.room[data-group="interconsulta"]{background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%); border-color: color-mix(in oklab,var(--ora-700),transparent 60%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--ora),transparent 58%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
+
 .pill.date{font-weight:1000}
 .pill.tel{font-weight:800}
 
-/* Visibilidad premium: multi-línea sin recortes (Planta/Tareas/Directorio) */
-.item .text{
-  display:grid;
-  grid-auto-rows:auto;
-  gap:4px;
-  align-items:start;
-  min-width:0;
+/* Texto (desc + pendientes) — por defecto recortaba; ahora lo abrimos por panel */
+.item .text{display:flex; align-items:flex-start; gap:10px; min-width:0}
+.item .text > *{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.item .actions{display:flex; align-items:center; justify-content:flex-end; gap:6px; min-width:114px}
+
+/* Inputs */
+label{font-size:12px;color:color-mix(in oklab,var(--ink),transparent 42%)}
+input,textarea,select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;color:var(--ink);font:inherit;min-height:var(--touch);box-shadow:inset 0 1px 0 #fff}
+textarea{min-height:90px;resize:vertical}
+
+/* ---------- VISIBILIDAD PREMIUM (sin recortes) ---------- */
+#panel-planta .item .text > *,
+#panel-tareas .item .text > *,
+#panel-directorio .item .text > *{
+  white-space:normal; overflow:visible; text-overflow:clip;
 }
-.item .text > *{
-  white-space:normal;
-  overflow:visible;
-  text-overflow:clip;
-  max-width:100%;
-  word-break:break-word;
+
+/* ---------- VISOR ---------- */
+.viewer{width:100%; block-size: min(72vh, calc(100dvh - var(--appbar) - var(--bottom-h) - env(safe-area-inset-bottom) - 48px)); border:1px solid var(--border); border-radius:16px; background:#fff; box-shadow:var(--shadow-1)}
+
+/* ---------- DIRECTORIO (premium, sin solapes) ---------- */
+.dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
+.dir-wrap > div:first-child{min-width:0}
+
+.az{
+  position:sticky; top:calc(var(--appbar) + 10px);
+  display:grid; gap:6px; align-content:start; z-index:0;
+  padding:4px; border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(245,248,253,.85));
+  border:1px solid var(--border); backdrop-filter: blur(6px);
+}
+.az a{
+  display:grid;place-items:center; width:100%; aspect-ratio:1/1;
+  border:1px solid var(--border); border-radius:10px; text-decoration:none;
+  color:#1d2838; font-weight:1000; font-size:11px; background:#fff; box-shadow:inset 0 1px 0 #fff
 }
 
-/* Directorio: nombre en bloque, teléfonos con wrap en varias líneas */
-#panel-directorio .item .text strong{display:block; font-weight:1000}
-#panel-directorio .pill.tel{display:inline-flex; margin:2px 6px 2px 0; white-space:nowrap}
-#panel-directorio .text{gap:6px}
-
-/* ---------- BOTTOM BAR fija (íconos a la izda + etiqueta a la dcha) ---------- */
-nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--glass-bg);border-top:1px solid var(--border);height:var(--bottom-h)}
-.bottom .container{display:flex;align-items:center;justify-content:space-between;height:100%;gap:12px}
-.bottom .icons{display:flex;gap:12px}
-.bottom .chip{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;border:1px solid var(--border);background:#fff;font-weight:1000}
-
-/* Más resguardo para que la bottom bar jamás tape el último ítem */
-main.container{ padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 72px) }
-
-/* ---------- DIRECTORIO (A–Z lateral + encabezados sticky) ---------- */
-.az{position:fixed;right:6px;top:calc(var(--appbar) + 6px);bottom:calc(var(--bottom-h) + 6px);display:flex;flex-direction:column;gap:6px}
-.az a{display:grid;place-items:center;width:28px;min-height:28px;border-radius:8px;border:1px solid var(--border);background:#fff;font-weight:1000}
-
+/* Encabezado alfabético con glow y degradado por letra */
 .section-tag{
   position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
-  margin:-12px; margin-bottom:8px; padding:10px 12px;
+  margin:8px 0 8px; padding:8px 10px;
   display:flex; align-items:center; justify-content:space-between; gap:12px;
-  border-radius:14px; border:1px solid var(--border);
-  background:linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
-  box-shadow:0 10px 24px rgba(7,16,31,.06), inset 0 1px 0 #fff;
-  backdrop-filter: blur(6px);
+  font-weight:1000; letter-spacing:.6px; border-radius:14px;
+  color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
+  border:1px solid var(--border); box-shadow:var(--shadow-1); backdrop-filter: blur(6px)
 }
 .section-tag .lbl{
-  display:inline-grid; place-items:center;
-  width:46px; height:46px; border-radius:12px;
-  font-size:24px; font-weight:1000; letter-spacing:.2px; color:#0b1220;
-  background: var(--alpha-grad, linear-gradient(135deg,#F3F6FB,#E8EEF9));
-  border:1px solid color-mix(in oklab, var(--alpha-color, #9fb4e0), transparent 40%);
-  box-shadow:
-    0 6px 16px rgba(7,16,31,.08),
-    inset 0 1px 0 #fff,
-    0 0 0 6px color-mix(in oklab, var(--alpha-color, #9fb4e0), transparent 82%);
+  display:grid;place-items:center; width:48px;height:48px;border-radius:14px;
+  font-size:24px; line-height:1; letter-spacing:.4px;
+  background: var(--sec-grad, linear-gradient(135deg,#F3F6FB, #E7ECF7));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink), transparent 85%),
+              0 10px 24px rgba(7,16,31,.12),
+              0 0 18px color-mix(in oklab, var(--accent, #9CA3AF), transparent 60%);
 }
 .section-tag .count{font-weight:900; opacity:.75}
-section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 64px) }
 
-/* A–Z lateral: eleva capa para evitar solapes fortuitos */
-.az{ z-index:3 }
-.az a{ min-height:28px }
-@media (max-width:480px){ .az a{ min-height:32px } }
+section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
 
-/* ---------- FORM / INPUTS ---------- */
-.input{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff}
-.input input{border:0;outline:0;background:transparent;font:inherit;width:100%}
-.input .ico{width:18px;height:18px}
+/* Listado responsive premium: 1 col en móvil, 2 cols en ancho */
+#panel-directorio .list{grid-template-columns:1fr}
+@media (min-width:900px){
+  #panel-directorio .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #panel-directorio .list > li.item{grid-template-columns:auto 1fr auto}
+}
+/* Nombre/sección y teléfonos en dos filas y con buen wrapping */
+#panel-directorio .line{display:flex; flex-wrap:wrap; gap:6px; min-width:0}
+#panel-directorio .pill.tel{margin:2px 4px 0 0}
 
+/* ---------- BOTTOM NAV ---------- */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--border);backdrop-filter: blur(6px) saturate(1.02)}
+.bottom-inner{display:flex;align-items:center;gap:12px;height:calc(var(--bottom-h) + env(safe-area-inset-bottom));padding:10px clamp(10px,5vw,18px);padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.icons-left{display:flex;align-items:center;gap:12px;}
+.nav-btn{appearance:none;border:1px solid var(--border);background:var(--surface-2);border-radius:999px;box-shadow:var(--shadow-1);width:var(--nav-btn);height:var(--nav-btn);display:grid;place-items:center;cursor:pointer}
+.nav-btn[aria-current="page"]{background:#fff;border-color:color-mix(in oklab,var(--gold-500),transparent 58%);box-shadow:0 8px 22px rgba(0,0,0,.08), inset 0 1px 0 #fff}
+.nav-btn .ico{width:var(--ico-bottom);height:var(--ico-bottom)}
+.divider{flex:1;height:1px;background:linear-gradient(90deg,transparent, var(--border), transparent)}
+.active-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2);font-weight:900}
+
+/* Aumentamos el espacio final para no tapar nada con la barra fija */
+main.container{ padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 64px) }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important}
+  header.appbar, .card{backdrop-filter:none}
+}
 </style>
 </head>
+
 <body>
-  <header class="appbar">
-    <div class="container">
-      <div class="brand"><span class="brand-dot"></span> Aurora UI</div>
-      <h1 id="title" class="grow">Infecciosas 2.0 · v3.3</h1>
-      <div class="toolbar">
-        <button class="btn" id="btn-login">Entrar</button>
-        <button class="btn" id="btn-logout">Salir</button>
-      </div>
+<!-- ===== SVGs (añadidos: edit/check/stetho) ===== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
+  <defs>
+    <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+    <linearGradient id="gOra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd7b0"/><stop offset="1" stop-color="#FB923C"/></linearGradient>
+    <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
+
+    <!-- Stethoscope premium -->
+    <symbol id="i-stetho" viewBox="0 0 24 24">
+      <!-- earpieces -->
+      <circle cx="6" cy="4.5" r="1.6" fill="url(#gLav)"/>
+      <circle cx="18" cy="4.5" r="1.6" fill="url(#gLav)"/>
+      <!-- tube -->
+      <path d="M6 6v4a6 6 0 0 0 12 0V6" fill="none" stroke="url(#gInd)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 16c0 2 2 3 3.5 3" fill="none" stroke="url(#gLav)" stroke-width="2" stroke-linecap="round"/>
+      <!-- chestpiece -->
+      <circle cx="18" cy="18" r="2.6" fill="url(#gGold)"/>
+      <circle cx="18" cy="18" r="1.2" fill="#fff" opacity=".55"/>
+    </symbol>
+
+    <!-- swap -->
+    <symbol id="i-swap" viewBox="0 0 24 24">
+      <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
+      <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
+    </symbol>
+    <!-- edit -->
+    <symbol id="i-edit" viewBox="0 0 24 24">
+      <path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+    </symbol>
+    <!-- check -->
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
+    </symbol>
+    <!-- tools -->
+    <symbol id="i-tools" viewBox="0 0 24 24">
+      <path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/>
+      <path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/>
+      <path fill="#fff" opacity=".35" d="M9 3.6c1-.6 2.4-.8 3.6-.4l-1.6 1.6 1.1 1.1 1.6-1.6c.3.9.2 2-.2 2.8-1.2-1.2-3.1-2.9-4.5-3.5z"/>
+      <path fill="#000" opacity=".10" d="M6 13.8l4.2 4.2.8-.8-4.2-4.2-0.8.8z"/>
+    </symbol>
+    <!-- handset -->
+    <symbol id="i-handset" viewBox="0 0 24 24">
+      <path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/>
+    </symbol>
+    <!-- books -->
+    <symbol id="i-books" viewBox="0 0 24 24">
+      <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/>
+      <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/>
+      <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#gLav)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="appbar" role="banner">
+  <div class="container">
+    <span class="brand"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
+    <h1 id="title">Planta</h1>
+    <div class="grow"></div>
+    <div class="statusRow" aria-live="polite" style="margin-left:12px">
+      <span id="badge-online" class="chip bad">Offline</span>
+      <span id="badge-auth" class="chip bad">Google: desconectado</span>
     </div>
-  </header>
-
-  <main class="container">
-    <!-- Panel Planta -->
-    <section id="panel-planta" class="card" aria-label="Planta">
-      <div class="card-h"><h2>Planta</h2></div>
-      <div class="card-b">
-        <ul id="pl-list" class="list"></ul>
+    <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+      <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
+        <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
+        <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+        <span id="notifBadge" class="chip" title="Tareas activas">0</span>
       </div>
-    </section>
-
-    <!-- Panel Tareas -->
-    <section id="panel-tareas" class="card" aria-label="Tareas">
-      <div class="card-h"><h2>Tareas</h2></div>
-      <div class="card-b">
-        <ul id="t-list" class="list"></ul>
-      </div>
-    </section>
-
-    <!-- Panel Directorio -->
-    <section id="panel-directorio" class="card" aria-label="Directorio">
-      <div class="card-h h-inter">
-        <h2>Directorio telefónico</h2>
-        <div class="input" style="min-width:260px"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#888" fill="none" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="#888" stroke-width="2"/></svg><input id="d-q" autocomplete="off" placeholder="Buscar"/></div>
-      </div>
-      <div class="card-b">
-        <div class="grid" style="grid-template-columns:1fr;position:relative">
-          <div id="d-list-wrap"></div>
-          <nav class="az" aria-label="Índice A–Z" id="az"></nav>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <nav class="bottom" aria-label="Secciones">
-    <div class="container">
-      <div class="icons">
-        <button class="btn" id="nav-planta" aria-label="Planta"><svg class="ico" width="22" height="22"><use href="#i-stetho"/></svg></button>
-        <button class="btn" id="nav-tareas" aria-label="Tareas"><svg class="ico" width="22" height="22"><use href="#i-tools"/></svg></button>
-        <button class="btn" id="nav-directorio" aria-label="Directorio"><svg class="ico" width="22" height="22"><use href="#i-handset"/></svg></button>
-        <button class="btn" id="nav-biblioteca" aria-label="Biblioteca"><svg class="ico" width="22" height="22"><use href="#i-books"/></svg></button>
-      </div>
-      <div class="chip" id="chip-section" aria-live="polite">Planta</div>
-    </div>
-  </nav>
-
-  <!-- Defs SVG (gradientes + símbolos) -->
-  <svg width="0" height="0" style="position:absolute">
-    <defs>
-      <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
-      <linearGradient id="gOra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fe9cbf"/><stop offset="1" stop-color="#FB923C"/></linearGradient>
-      <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
-      <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
-
-      <!-- swap -->
-      <symbol id="i-swap" viewBox="0 0 24 24">
-        <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5a1 1 0 0 1 1.4 1.4L19 6.2A6 6 0 0 1 12 12h-1v2a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1h2a4 4 0 1 0-3.1-6.3l-2 2A1 1 0 1 1 4.5 4.5l2-2A6 6 0 0 1 7.1 7.5z"/>
-        <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5a1 1 0 0 1-1.4-1.4L5 17.8A6 6 0 0 1 12 12h1v-2a1 1 0 1 1 2 0v3a1 1 0 0 1-1 1h-2a4 4 0 1 0 3.1 6.3l2-2a1 1 0 1 1 1.4 1.4l-2 2a6 6 0 0 1 2.4-3.2z"/>
-      </symbol>
-
-      <!-- herramientas -->
-      <symbol id="i-tools" viewBox="0 0 24 24">
-        <path fill="url(#gLav)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.4 2.4a2 2 0 1 0 2.8 2.8l2.4-2.4A4 4 0 0 1 17 10l-6.3 6.3A6 6 0 0 1 7 7z"/>
-      </symbol>
-
-      <!-- teléfono -->
-      <symbol id="i-handset" viewBox="0 0 24 24">
-        <path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.5-1.5a1.8 1.8 0 0 0-.2-2.7l-2-1.2a1.8 1.8 0 0 0-1.9.1l-.9.6a12.5 12.5 0 0 1-3.9-3.9l.6-.9a1.8 1.8 0 0 0 .1-1.9l-1.2-2a1.8 1.8 0 0 0-2.7-.2L6.8 4.1c-.7.6-.8 1.6-.2 2.3z"/>
-      </symbol>
-
-      <!-- libros -->
-      <symbol id="i-books" viewBox="0 0 24 24">
-        <rect x="2" y="5" width="5.5" height="14" rx="1" fill="url(#gLav)"/>
-        <rect x="8.5" y="5" width="5.5" height="14" rx="1" fill="url(#gOra)"/>
-        <rect x="15" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/>
-      </symbol>
-
-      <!-- fonendoscopio premium -->
-      <symbol id="i-stetho" viewBox="0 0 24 24">
-        <path fill="url(#gLav)" d="M6 3a1 1 0 0 1 1 1v3.2c0 2.4 1.8 4.4 4 4.6 2.2-.2 4-2.2 4-4.6V4a1 1 0 1 1 2 0v3.2c0 3.4-2.5 6.3-5.8 6.6V17a3.8 3.8 0 1 1-2 0v-3.2C7.5 13.5 5 10.6 5 7.2V4a1 1 0 0 1 1-1z"/>
-        <circle cx="18" cy="16" r="3" fill="url(#gInd)"/>
-        <circle cx="18" cy="16" r="1.2" fill="#fff" opacity=".9"/>
-      </symbol>
-    </defs>
-  </svg>
-
-  <!-- ===== FAB SOS ===== -->
-  <button id="fab" class="btn primary" style="position:fixed;left:auto;right:16px;bottom:calc(var(--bottom-h) + 16px);z-index:45;gap:10px;touch-action:none" aria-haspopup="dialog" aria-controls="fabPanel" aria-expanded="false">
-    SOS
-  </button>
-  <div id="fabPanel" class="card" role="dialog" aria-modal="false" aria-label="SOS" style="position:fixed;display:none;z-index:69; width:min(460px,96vw)">
-    <div class="card-h h-inter" style="border-bottom:none"><h2>SOS</h2><button class="btn" aria-label="Configurar SOS">⚙ Configurar SOS</button></div>
-    <div class="card-b">
-      <div id="fabList"></div>
-      <div id="fabPager" class="toolbar" style="justify-content:space-between;margin-top:12px"></div>
+      <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
+      <button id="signin"  class="btn primary">Acceder</button>
+      <button id="signout" class="btn hide">Salir</button>
     </div>
   </div>
+</header>
 
-  <script>
-  // ===== Helpers =====
-  const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
-  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
-  const norm=s=>String(s||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim();
+<main class="container">
+  <div id="updateBanner" class="chip" style="display:none">Nueva versión disponible. <button id="reloadNow" class="btn primary">Actualizar</button></div>
+  <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
 
-  // Ajuste viewport para Android (rotación)
-  const setVH=()=>{const h=window.innerHeight; document.documentElement.style.setProperty('--vh', h+'px')};
-  setVH(); addEventListener('resize', setVH); addEventListener('orientationchange', setVH);
+  <!-- Gate -->
+  <section id="gate" class="card" role="region" aria-live="polite">
+    <div class="card-h h-bib"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
+    <div class="card-b">
+      <p class="muted">La app funciona offline tras la primera carga. Accede para sincronizar entre Android y PC.</p>
+      <div class="toolbar"><button id="signin2" class="btn primary">Acceder con Google</button></div>
+      <div id="authErr" class="muted" style="margin-top:8px; min-height:1.2em"></div>
+    </div>
+  </section>
 
-  // ===== Datos (simulados / placeholders) =====
-  let dirCache=[];
-
-  function telHref(p){
-    const digits=String(p||'').replace(/[^+\d]/g,'');
-    return digits?`tel:${digits}`:'';
-  }
-  function telPills(raw){
-    const parts=String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
-    return parts.map(p=>{const href=telHref(p); return href?`<a class="pill tel" href="${href}" dir="ltr">${esc(p)}</a>`:`<span class="pill tel" dir="ltr">${esc(p)}</span>`}).join(' ');
-  }
-
-  function alphaGrad(ch){
-    const palette = [
-      {gx:'linear-gradient(135deg,#EAF2FF,#CFE2FF)', c:'#3B82F6'}, // A
-      {gx:'linear-gradient(135deg,#FDE7FA,#F3B1EF)', c:'#DB2777'}, // B
-      {gx:'linear-gradient(135deg,#E8FFFB,#B3F4E9)', c:'#06B6D4'}, // C
-      {gx:'linear-gradient(135deg,#FFF3E4,#FFD0A3)', c:'#FB923C'}, // D
-      {gx:'linear-gradient(135deg,#E9FFF1,#B2F5D4)', c:'#10B981'}, // E
-      {gx:'linear-gradient(135deg,#EDF2FF,#C7D3FF)', c:'#6366F1'}, // F
-      {gx:'linear-gradient(135deg,#FFE8EC,#FFA9B9)', c:'#F43F5E'}, // G
-      {gx:'linear-gradient(135deg,#F5F0FF,#C7B8FF)', c:'#8B5CF6'}, // H
-      {gx:'linear-gradient(135deg,#FFFBE5,#FFE783)', c:'#FACC15'}, // I
-      {gx:'linear-gradient(135deg,#E8ECFF,#C9D0FF)', c:'#7C3AED'}, // J
-      {gx:'linear-gradient(135deg,#E8FFF6,#C6F7E2)', c:'#059669'}, // K
-      {gx:'linear-gradient(135deg,#FFEDEA,#FFC7BD)', c:'#EF4444'}, // L
-    ];
-    const idx = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.indexOf(ch);
-    return palette[(idx>=0?idx:0) % palette.length];
-  }
-
-  function renderDir(){
-    const v=norm($('#d-q')?.value||''); const wrap=$('#d-list-wrap'); if(!wrap) return; wrap.innerHTML='';
-    let arr=[...dirCache];
-    arr.sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')||(a.seccion||'').localeCompare(b.seccion||''));
-    const filtered=v?arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v))):arr;
-    const groups=new Map();
-    for(const x of filtered){const k=/^[A-Za-zÁÉÍÓÚÜÑ]/.test(x.nombre||'')? (x.nombre[0].toUpperCase()): '#'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x);}    
-    const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split(''); const az=$('#az'); if(az){ az.innerHTML = letters.map(ch=>`<a href="#sec-${'${'}ch}" aria-label="Ir a ${'${'}ch}">${'${'}ch}</a>`).join(''); }
-    let total=0;
-    for(const ch of letters){
-      const list=groups.get(ch)||[]; if(!list.length) continue; total+=list.length;
-      const sec=document.createElement('section'); sec.id=`sec-${'${'}ch}`; sec.setAttribute('aria-labelledby',`lbl-${'${'}ch}`);
-      const header=document.createElement('div'); header.className='section-tag'; header.id=`lbl-${'${'}ch}`;
-      const g = alphaGrad(ch);
-      header.style.setProperty('--alpha-grad', g.gx);
-      header.style.setProperty('--alpha-color', g.c);
-      header.innerHTML = `<span class="lbl" aria-hidden="true">${'${'}ch}</span><span class="count">${'${'}list.length}</span>`;
-      sec.appendChild(header);
-      const ul=document.createElement('ul'); ul.className='list';
-      list.forEach(x=>{
-        const li=document.createElement('li'); li.className='item';
-        li.innerHTML=`<div class="text"><div class="line"><strong>${'${'}esc(x.nombre||'')}</strong> — ${'${'}esc(x.seccion||'')}</div><div class="line">${'${'}telPills(x.telefono||'')}</div>${'${'}x.notas?`<div class="muted">${'${'}esc(x.notas)}</div>`:''}</div>`;
-        ul.appendChild(li);
-      });
-      sec.appendChild(ul);
-      wrap.appendChild(sec);
-    }
-  }
-
-  // ===== SOS (FAB) =====
-  let emergency=[]; let page=0; const PAGE_SIZE=10;
-  function renderEmergency(){
-    const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
-    box.innerHTML = slice.length? slice.map((e,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:8px 0"><div class="text"><strong>${'${'}esc(e.nombre)}</strong><div class="muted">${'${'}esc(e.telefono||'')}</div></div><button class="btn" aria-label="Llamar">📞</button><button class="btn" aria-label="Eliminar" data-del="${'${'}start+i}">✖</button></div>`).join('') : `<p class="muted">Añade accesos rápidos de SOS desde ⚙ Configurar.</p>`;
-    const pager=$('#fabPager'); const pages=Math.ceil(emergency.length/PAGE_SIZE)||1; pager.innerHTML = `<div class="toolbar"><button class="btn" id="fabPrev">◀</button><span>Página ${'${'}page+1}/${'${'}pages}</span><button class="btn" id="fabNext">▶</button></div><div class="toolbar"><button class="btn" id="fabDelSel">Eliminar seleccionados</button></div>`;
-    $('#fabPrev')?.addEventListener('click',()=>{if(page>0){page--;renderEmergency()}});
-    $('#fabNext')?.addEventListener('click',()=>{const pages=Math.ceil(emergency.length/PAGE_SIZE)||1; if(page<pages-1){page++;renderEmergency()}});
-  }
-
-  // ===== INIT =====
-  addEventListener('DOMContentLoaded',()=>{
-    // Directorio demo
-    dirCache=[
-      {seccion:'Admisión', nombre:'Ana Álvarez', telefono:'+34 968 123 456', notas:'Centralita'},
-      {seccion:'Admisión', nombre:'Andrés Buendía', telefono:'+34 968 123 789; +34 600 123 456', notas:''},
-      {seccion:'Farmacia', nombre:'Beatriz Cano', telefono:'+34 968 456 123', notas:'Guardia'},
-      {seccion:'Planta 3', nombre:'Carlos Díaz', telefono:'+34 968 456 789', notas:''},
-    ];
-    renderDir();
-    renderEmergency();
-  });
-  </script>
-</body>
-</html>
+  <!-- App -->
+  <section id="app" class="hide">
+    <!-- ===== PLANTA ===== -->
+    <div id="panel-planta" role="region" aria-label="Pl
