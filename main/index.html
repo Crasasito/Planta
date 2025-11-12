@@ -635,7 +635,7 @@ function tareaItem(x){
   li.style.borderLeft=`6px solid hsl(${h} 72% 46%)`;
   li.innerHTML=`<span class="pill date">${fmtDate(x.date)}</span><div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
   const act=$('.actions',li);
-  const bDone=btn('✓',()=>upd('tareas',x.__id},{status:'done'}),'btn icon'); bDone.setAttribute('aria-label','Completar');
+  const bDone=btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'); bDone.setAttribute('aria-label','Completar');
   const bEdit=btn('✎',()=>editTarea(x),'btn icon'); bEdit.setAttribute('aria-label','Editar');
   const bTrash=btn('✖',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'); bTrash.setAttribute('aria-label','Enviar a papelera');
   act.append(bDone,bEdit,bTrash);
@@ -799,7 +799,8 @@ function clearLocalURL(){if(localObjectURL){URL.revokeObjectURL(localObjectURL);
 function renderBiblioSelect(){const sel=$('#b-select'); sel.innerHTML=''; bCache.sort((a,b)=>(a.title||'').localeCompare(b.title||'')); bCache.forEach(x=>{const o=document.createElement('option'); o.value=x.__id; o.textContent=x.title; sel.appendChild(o)})}
 function setupBiblio(uid){
   fsMod.getDoc(col.notes(uid)).then(s=>{$('#b-notes').value=s.exists()?String(s.data().text||''):''});
-  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$('#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Docagen dice: notas guardadas')};
+  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$(
+'#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Docagen dice: notas guardadas')};
   $('#b-add-link').onclick=async()=>{const url=$('#b-url').value.trim(); const title=$('#b-title').value.trim(); if(!url) return; await fsMod.addDoc(col.biblio(uid),bDoc({url,title})); $('#b-url').value=''; $('#b-title').value=''; toast('Docagen dice: enlace añadido')};
   $('#b-open').onclick=async()=>{const id=$('#b-select').value; const item=bCache.find(x=>x.__id===id); if(!item) return; clearLocalURL(); setViewer(item.url)};
   $('#b-remove').onclick=async()=>{const id=$('#b-select').value; if(!id) return; await fsMod.deleteDoc(fsMod.doc(db,'users',uid,'biblioteca',id)); toast('Docagen dice: enlace eliminado')};
@@ -849,7 +850,7 @@ if('serviceWorker' in navigator){
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
-  box.innerHTML = slice.length? slice.map((e,i)=>`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><input type="checkbox" data-i="${start+i}" style="margin-right:6px"><strong>${esc(e.name||'')}</strong><a class="pill tel" href="tel:${String(e.tel||'').replace(/[^\\d+]/g,'')}" dir="ltr">${esc(e.tel||'')}</a><button class="btn icon" aria-label="Eliminar" data-del="${start+i}">✖</button></div>`).join('') : '<p class="muted">Añade accesos rápidos desde ⚙ Configurar.</p>';
+  box.innerHTML = slice.length? slice.map((e,i)=>`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><input type="checkbox" data-i="${start+i}" style="margin-right:6px"><strong>${esc(e.name||'')}</strong><a class="pill tel" href="tel:${String(e.tel||'').replace(/[^\d+]/g,'')}" dir="ltr">${esc(e.tel||'')}</a><button class="btn icon" aria-label="Eliminar" data-del="${start+i}">✖</button></div>`).join('') : '<p class="muted">Añade accesos rápidos desde ⚙ Configurar.</p>';
   const pager=$('#fabPager'); const pages=Math.ceil(emergency.length/PAGE_SIZE)||1; pager.innerHTML=`<div><button class="btn" id="fabPrev" ${page<=0?'disabled':''}>◀</button> <span class="chip">${page+1}/${pages}</span> <button class="btn" id="fabNext" ${page>=pages-1?'disabled':''}>▶</button></div><div><button class="btn" id="fabDelSel">Eliminar seleccionados</button></div>`;
   $('#fabPrev')?.addEventListener('click',()=>{if(page>0){page--;renderEmergency()}});
   $('#fabNext')?.addEventListener('click',()=>{const pages=Math.ceil(emergency.length/PAGE_SIZE)||1; if(page<pages-1){page++;renderEmergency()}});
