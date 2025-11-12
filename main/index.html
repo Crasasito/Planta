@@ -134,17 +134,20 @@ li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:ce
 .dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
 .dir-wrap > div:first-child{min-width:0}
 
-/* Cabecera letra */
+/* Cabecera letra — rim light hiper discreto y sin solapar */
 .section-tag{
   position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
-  margin:4px 0 10px 0; padding:6px 10px;
+  margin:6px 0 12px 0; padding:8px 12px;
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   font-weight:1000; letter-spacing:.6px; border-radius:12px;
-  color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
-  border:1px solid var(--border); box-shadow:0 4px 14px rgba(12,23,40,.06), inset 0 1px 0 #fff
+  color:#0b1220; background:
+    radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.45), rgba(255,255,255,0)) ,
+    linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
+  border:1px solid var(--border);
+  box-shadow:0 6px 16px rgba(12,23,40,.06), inset 0 1px 0 #fff;
 }
 .section-tag .count{font-weight:900; opacity:.75}
-section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 56px)}
+section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 72px)} /* +alto para que A no tape el primer contacto */
 
 /* Índice A–Z */
 .az{
@@ -160,12 +163,12 @@ section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 56px)}
   color:#1d2838;font-weight:1000;font-size:11px;background:#fff;box-shadow:inset 0 1px 0 #fff
 }
 
-/* UNA LÍNEA por contacto */
+/* UNA LÍNEA por contacto — nombre completo y teléfonos sin recortes en Android */
 #panel-directorio .list{grid-template-columns:1fr}
-#panel-directorio .item{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) auto; align-items:center}
-#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0}
-#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-#panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap}
+#panel-directorio .item{grid-template-columns:minmax(0,1.5fr) minmax(0,.7fr) auto; align-items:center}
+#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0; overflow:auto; -webkit-overflow-scrolling:touch}
+#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; /* sin elipsis para permitir scroll y ver completo */}
+#panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap; flex:0 0 auto}
 #panel-directorio .item .phones{display:flex; gap:6px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch}
 #panel-directorio .pill.tel{background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);border-color:color-mix(in oklab,var(--indigo-600),transparent 70%); padding:6px 10px; font-weight:900}
 
@@ -207,25 +210,31 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
     <linearGradient id="gTurq" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7fff0"/><stop offset="1" stop-color="#06d6a0"/></linearGradient>
 
-    <!-- Fonendo premium (duotono, rim-light, strokes + fill) -->
+    <!-- Fonendo premium (mejorado) -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
-      <!-- aro auriculares -->
-      <path d="M6 4c.6-1 2-1 2.6 0l.4.8c.3.6.5 1.2.5 1.9v2.3a4.5 4.5 0 1 0 9 0V6.7" fill="none" stroke="url(#gInd)" stroke-width="1.6" stroke-linecap="round"/>
-      <!-- copa -->
-      <circle cx="18.5" cy="6.7" r="2.2" fill="url(#gLav)"/>
-      <circle cx="18.5" cy="6.7" r="2.2" fill="url(#gInd)" opacity=".10"/>
-      <!-- tubo y asa -->
-      <path d="M13.2 14.2a3.8 3.8 0 0 0 3.8 3.8h.8a2 2 0 0 1 2 2v.6a2 2 0 0 1-2 2h-3.7" fill="none" stroke="url(#gTurq)" stroke-width="1.8" stroke-linecap="round"/>
-      <!-- campana -->
-      <g transform="translate(6.2 16.5)">
-        <circle cx="4.2" cy="3.5" r="3.5" fill="url(#gTurq)" />
-        <circle cx="4.2" cy="3.5" r="3.5" fill="#fff" opacity=".22"/>
-        <circle cx="4.2" cy="3.5" r="1.6" fill="url(#gGold)"/>
-        <path d="M0.9 1.6c.7-.9 1.9-1.6 3.3-1.6" fill="none" stroke="#fff" stroke-opacity=".6" stroke-linecap="round"/>
+      <!-- arco auriculares -->
+      <path d="M6.2 4.2c.5-1 1.9-1 2.5 0l.5.9c.3.6.5 1.3.5 2v1.9a4.2 4.2 0 0 0 8.4 0V7.1"
+            fill="none" stroke="url(#gInd)" stroke-width="1.7" stroke-linecap="round"/>
+      <!-- almohadillas -->
+      <circle cx="6.3" cy="5.2" r="1.4" fill="url(#gLav)"/>
+      <circle cx="8.2" cy="5.2" r="1.4" fill="url(#gLav)"/>
+      <!-- copa superior -->
+      <g transform="translate(16.7 5.2)">
+        <circle r="2.4" fill="url(#gLav)"/>
+        <circle r="2.4" fill="#fff" opacity=".18"/>
+        <circle r="1.2" fill="url(#gInd)"/>
       </g>
-      <!-- ear tips -->
-      <circle cx="6.1" cy="5.1" r="1.5" fill="url(#gLav)"/>
-      <circle cx="8.2" cy="5.1" r="1.5" fill="url(#gLav)"/>
+      <!-- tubo flexible + rim -->
+      <path d="M12.6 14.4a4 4 0 0 0 4 4h.7a2 2 0 0 1 2 2v.5a2 2 0 0 1-2 2h-4"
+            fill="none" stroke="url(#gTurq)" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M13 14.4c.2 2.4 2.2 4 4.2 4" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".9" stroke-linecap="round"/>
+      <!-- campana -->
+      <g transform="translate(6.4 16.6)">
+        <circle cx="4" cy="3.4" r="3.6" fill="url(#gTurq)"/>
+        <circle cx="4" cy="3.4" r="3.6" fill="#fff" opacity=".22"/>
+        <circle cx="4" cy="3.4" r="1.6" fill="url(#gGold)"/>
+        <path d="M1.1 1.6c.75-.9 1.95-1.6 3.3-1.6" fill="none" stroke="#fff" stroke-opacity=".7" stroke-linecap="round"/>
+      </g>
     </symbol>
 
     <!-- Swap -->
@@ -485,10 +494,10 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
 
 <!-- FAB -->
 <button id="fab" class="btn primary" style="position:fixed;left:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + var(--bottom-h));z-index:70;border-radius:999px;padding:14px 16px;display:flex;align-items:center;gap:10px;touch-action:none" aria-haspopup="dialog" aria-controls="fabPanel" aria-expanded="false">
-  Emergencias
+  SOS
 </button>
-<div id="fabPanel" class="card" role="dialog" aria-modal="false" aria-label="Emergencias" style="position:fixed;display:none;z-index:69; width:min(460px,96vw)">
-  <div class="card-h h-inter" style="border-bottom:none"><h2>Emergencias</h2><button id="fabCfg" class="btn" aria-label="Configurar">⚙ Configurar</button></div>
+<div id="fabPanel" class="card" role="dialog" aria-modal="false" aria-label="SOS" style="position:fixed;display:none;z-index:69; width:min(460px,96vw)">
+  <div class="card-h h-inter" style="border-bottom:none"><h2>SOS</h2><button id="fabCfg" class="btn" aria-label="Configurar">⚙ Configurar</button></div>
   <div class="card-b">
     <div id="fabList"></div>
     <div id="fabPager" class="toolbar" style="margin-top:8px;gap:6px;display:flex;justify-content:space-between"></div>
@@ -496,7 +505,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
 </div>
 
 <dialog id="fabConfigDlg" style="padding:16px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-2)">
-  <h3 style="margin:0 0 8px 0">Configurar emergencias</h3>
+  <h3 style="margin:0 0 8px 0">Configurar SOS</h3>
   <div style="display:grid;gap:8px">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div><label for="e-name" style="display:block;font-size:12px;color:#777">Nombre</label><input id="e-name"></div>
@@ -506,6 +515,16 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <div style="margin-top:6px"><small class="muted">No se permitirán duplicados (Nombre+Teléfono).</small></div>
   </div>
   <div class="toolbar" style="margin-top:12px;gap:8px;justify-content:flex-end"><button id="e-close" class="btn">Cerrar</button></div>
+</dialog>
+
+<!-- Diálogo simple para “Docagen dice:” -->
+<dialog id="docagenDlg" style="padding:16px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-2);max-width:min(420px,92vw)">
+  <h3 style="margin:0 0 8px 0">Docagen dice:</h3>
+  <div id="docagenDlgMsg" class="muted" style="margin-bottom:12px"></div>
+  <div class="toolbar" style="justify-content:flex-end;gap:8px">
+    <button id="docagenDlgCancel" class="btn">Cancelar</button>
+    <button id="docagenDlgOk" class="btn primary">Aceptar</button>
+  </div>
 </dialog>
 
 <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
@@ -524,6 +543,24 @@ const setOnline=(on)=>{const b=$('#badge-online');b.textContent=on?'Online':'Off
 setOnline(navigator.onLine); addEventListener('online',()=>setOnline(true),{passive:true}); addEventListener('offline',()=>setOnline(false),{passive:true});
 
 const esc=(s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+/* Diálogo “Docagen dice:” para reemplazar prompts/alerts nativas */
+async function docagenAlert(msg){const dlg=$('#docagenDlg'); $('#docagenDlgMsg').textContent=String(msg||''); $('#docagenDlgCancel').style.display='none'; return new Promise(res=>{ $('#docagenDlgOk').onclick=()=>{dlg.close();res(true)}; dlg.addEventListener('close',()=>{ $('#docagenDlgCancel').style.display=''; },{once:true}); dlg.showModal();});}
+async function docagenPrompt(fields){ // fields: [{l,id,type?,v?}]
+  return new Promise(resolve=>{
+    const dlg=document.createElement('dialog');
+    dlg.style.padding='16px'; dlg.style.border='1px solid var(--border)'; dlg.style.borderRadius='14px'; dlg.style.boxShadow='var(--shadow-2)'; dlg.style.maxWidth='min(460px,95vw)';
+    dlg.innerHTML=`<h3 style="margin:0 0 8px 0">Docagen dice:</h3>`;
+    const body=document.createElement('div'); body.style.display='grid'; body.style.gap='8px';
+    fields.forEach(f=>{const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}" style="display:block;font-size:12px;color:#777">${f.l}</label><input id="${f.id}" ${f.type?'type="'+f.type+'"':''} value="${esc(f.v||'')}">`; body.appendChild(w);});
+    dlg.appendChild(body);
+    const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='flex-end'; row.style.gap='8px'; row.style.marginTop='12px';
+    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='Cancelar'; b1.onclick=()=>{dlg.close(); resolve(null);};
+    const b2=document.createElement('button'); b2.className='btn primary'; b2.textContent='Aceptar'; b2.onclick=()=>{ const out={}; fields.forEach(f=>out[f.id]=$('#'+f.id,dlg).value); dlg.close(); resolve(out); };
+    row.append(b1,b2); dlg.appendChild(row);
+    document.body.appendChild(dlg); dlg.showModal(); dlg.addEventListener('close',()=>dlg.remove(),{once:true});
+  });
+}
 
 /* ===== Firebase ===== */
 const appMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
@@ -614,7 +651,7 @@ const val=(id)=>document.getElementById(id)?.value||'';
 const editPlanta=(x)=>openEdit([{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}], async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}));
 
 function setupPlanta(uid){
-  $('#p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(i=>$('#'+i).value=''); };
+  $('#p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) { await docagenAlert('Añade al menos habitación o descripción.'); return;} await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(i=>$('#'+i).value=''); };
   const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
   const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
   const u1=fsMod.onSnapshot(qA,(s)=>{ const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x)});
@@ -659,7 +696,11 @@ const editTarea=(x)=>openEdit([{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'
 
 function setupTareas(uid){
   $('#t-date').value=todayISO();
-  $('#t-add').onclick=async()=>{const date=$('#t-date').value, text=$('#t-text').value.trim(); if(!text) return; await fsMod.addDoc(col.tareas(uid),tareaDoc({date,text})); $('#t-text').value='';};
+  $('#t-add').onclick=async()=>{
+    const date=$('#t-date').value, text=$('#t-text').value.trim();
+    if(!text) { await docagenAlert('Escribe la descripción de la tarea.'); return; }
+    await fsMod.addDoc(col.tareas(uid),tareaDoc({date,text})); $('#t-text').value='';
+  };
   const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
   const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
   const qT=fsMod.query(col.tareas(uid),fsMod.where('status','==','trash'));
@@ -676,7 +717,7 @@ const setNotif=(n)=>{$('#notifBadge').textContent=String(n); $('#notifBadge').ti
 /* ===== Directorio (UNA LÍNEA) ===== */
 let dirCache=[];
 const telHref=(raw)=>{const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
-const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'');
+const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'').replace(/\s+/g,' ').trim();
 const dirDoc=(d)=>({seccion:String(d.seccion||'').trim()||'Sin sección',nombre:String(d.nombre||'').trim()||'Sin nombre',telefono:String(d.telefono||'').trim(),notas:String(d.notas||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 
 function phonesToChips(raw){
@@ -701,7 +742,7 @@ function renderDir(){
     const ul=document.createElement('ul'); ul.className='list';
     list.forEach(x=>{
       const li=document.createElement('li'); li.className='item';
-      li.style.gridTemplateColumns='minmax(0,1.2fr) minmax(0,.8fr) auto'; // asegurar una línea
+      li.style.gridTemplateColumns='minmax(0,1.5fr) minmax(0,.7fr) auto'; // asegurar una línea y dar aire al nombre
       li.innerHTML=`<div class="who">
           <span class="name">${esc(x.nombre||'')}</span>
           <span class="sec">— ${esc(x.seccion||'')}</span>
@@ -719,21 +760,49 @@ function renderDir(){
 }
 const editDir=(x)=>openEdit([{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}], async()=>upd('directorio',x.__id,{seccion:$('#d_sec').value,nombre:$('#d_nom').value,telefono:$('#d_tel').value,notas:$('#d_not').value}));
 function setupDir(uid){
-  $('#d-add').onclick=async()=>{const d=dirDoc({seccion:prompt('Sección')||'',nombre:prompt('Nombre')||'',telefono:prompt('Teléfonos')||''}); await fsMod.addDoc(col.dir(uid),d)};
+  // Añadir sin prompts del navegador (evita “<dominio> dice”), usando Docagen
+  $('#d-add').onclick=async()=>{
+    const r=await docagenPrompt([
+      {l:'Sección',id:'sec',v:''},
+      {l:'Nombre', id:'nom',v:''},
+      {l:'Teléfonos (separados por coma, ; o salto de línea)', id:'tel',v:''},
+      {l:'Notas', id:'not',v:''}
+    ]);
+    if(!r) return;
+    await fsMod.addDoc(col.dir(uid),dirDoc({seccion:r.sec,nombre:r.nom,telefono:r.tel,notas:r.not}));
+  };
   $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
   $('#d-dedupe').onclick=()=>dedupeDir(uid);
   const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x)}); renderDir()});
   $('#d-q').addEventListener('input',renderDir,{passive:true}); unsubs.push(u);
 }
 function importDir(uid){return async()=>{try{const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
-  const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase(); const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[];
-  for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))) } await Promise.all(ops); toast('Importado ('+ops.length+')');
+  const snap=await fsMod.getDocs(col.dir(uid));
+  const canonicalTel=(s)=>Array.from(new Set(String(s||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/[^\d+]/g,'')))).sort().join(',');
+  const key=o=>(norm(o.nombre||'')+'|'+canonicalTel(o.telefono));
+  const set=new Set(snap.docs.map(d=>key(d.data())));
+  const ops=[];
+  for(const o of arr){ const k=key(o); if(!set.has(k)) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))) }
+  await Promise.all(ops); toast('Importado ('+ops.length+')');
 }catch(e){toast(e.message||String(e))}}}
 function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado')}}
-const normTel=(s)=>String(s||'').replace(/[^\d+]/g,''); const keyDir=(o)=>(String(o.nombre||'').trim().toLowerCase().replace(/\s+/g,' '))+'|'+normTel(o.telefono);
-async function dedupeDir(uid){const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const seen=new Set(); const rm=[]; for(const d of snap.docs){const k=keyDir(d.data()); if(seen.has(k)) rm.push(d.ref); else seen.add(k)} if(!rm.length){toast('Sin duplicados');return} await Promise.all(rm.map(r=>fsMod.deleteDoc(r))); toast(`Eliminados ${rm.length} duplicados`)}
+const canonicalTel=(s)=>Array.from(new Set(String(s||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/[^\d+]/g,'')))).sort().join(',');
+const keyDir=(o)=> norm(o.nombre||'') +'|'+ canonicalTel(o.telefono);
+/* Eliminar duplicados mejorado: nombre normalizado + conjunto de teléfonos normalizados (ordenados) */
+async function dedupeDir(uid){
+  const snap=await fsMod.getDocs(fsMod.query(col.dir(uid)));
+  const seen=new Map(); const rm=[];
+  for(const d of snap.docs){
+    const data=d.data(); const k=keyDir(data);
+    if(seen.has(k)) rm.push(d.ref);
+    else seen.set(k,d.ref);
+  }
+  if(!rm.length){toast('Sin duplicados');return}
+  await Promise.all(rm.map(r=>fsMod.deleteDoc(r)));
+  toast(`Eliminados ${rm.length} duplicados`);
+}
 
-/* ===== Biblioteca / pickers / PWA / FAB (sin cambios) ===== */
+/* ===== Biblioteca / pickers / PWA / FAB (sin cambios funcionales) ===== */
 let bCache=[]; let localObjectURL=null;
 const bDoc=(d)=>({title:String(d.title||'').trim()||'Sin título',url:String(d.url||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 function setViewer(src){const iframe=$('#b-viewer'); if(!src){iframe.removeAttribute('src');return} iframe.src=src}
@@ -787,7 +856,7 @@ if('serviceWorker' in navigator){
   reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate()})});
 }
 
-/* FAB (sin cambios) */
+/* FAB (sin cambios de lógica) */
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
