@@ -15,11 +15,11 @@
   --ink:#0b1220; --muted:#5a667a;
   --surface:#ffffff; --surface-2:#f7f9fc; --border:#e8eef5;
 
-  --lav:#EAE2FF; --lav-700:#8B5CF6;
+  --lav:#EAE2FF; --lav-700:#7C3AED;
   --ora:#FFE5D1; --ora-700:#FB923C;
   --coral-700:#F43F5E; --green-700:#10B981;
-  --indigo-600:#6366F1; --gold-500:#FACC15;
-  --turq-700:#0FB; --turq-600:#06D6A0;
+  --indigo-600:#6366F1; --gold-500:#FACC15; --gold-700:#CA9800;
+  --turq-600:#06D6A0; --turq-700:#02C39A;
 
   --gx-planta: linear-gradient(135deg,#F5F0FF 0%, #EAE2FF 55%, #C7B8FF 100%);
   --gx-inter:  linear-gradient(135deg,#FFF3E4 0%, #FFE5D1 55%, #FFD0A3 100%);
@@ -42,9 +42,10 @@
 
   --bottom-h: 68px; --nav-btn: 56px; --ico-bottom: 28px;
   --dir-header-h: 42px; /* alto efectivo de las cabeceras A–Z */
+  --az-h: 46px; /* altura barra A–Z inferior */
 }
-@media (max-width:480px){ :root{ --bottom-h:64px; --nav-btn:52px; --ico-bottom:26px } }
-@media (min-width:1025px){ :root{ --bottom-h:72px; --nav-btn:60px; --ico-bottom:28px } }
+@media (max-width:480px){ :root{ --bottom-h:64px; --nav-btn:52px; --ico-bottom:26px; --az-h:44px } }
+@media (min-width:1025px){ :root{ --bottom-h:72px; --nav-btn:60px; --ico-bottom:28px; --az-h:48px } }
 
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
@@ -73,24 +74,14 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
 
 /* Cards */
 .card{background: linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(255,255,255,.82) 100%);backdrop-filter: blur(8px) saturate(1.06);border: 1px solid var(--border);border-radius: var(--radius-xl);box-shadow: 0 18px 36px rgba(60,100,180,.12);overflow:hidden; contain:content}
-.card-h{position:relative; padding:16px 18px 18px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid color-mix(in oklab,#000,transparent 90%); background:#fff; isolation:isolate; overflow:hidden; box-shadow: inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%), inset 0 0 0 8px rgba(255,255,255,.65); outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px}
-.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:46px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%))}
+.card-h{position:relative; padding:14px 16px 16px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid color-mix(in oklab,#000,transparent 90%); background:#fff; isolation:isolate; overflow:hidden; box-shadow: inset 0 0 0 1px color-mix(in oklab,var(--ink),transparent 92%), inset 0 0 0 8px rgba(255,255,255,.65); outline: 1px solid rgba(140,160,220,.18); outline-offset: -6px}
+.card-h::before{content:""; position:absolute; inset:0 0 auto 0; height:44px; z-index:0; opacity:.95; background: var(--gx-neutral, linear-gradient(135deg,#F3F6FB 0%, #EDF2F9 100%))}
 .card-h::after{content:""; position:absolute; inset:-20% -10% auto -10%; height:160%; background: var(--rim-ambient); mix-blend-mode:screen; opacity:.6; z-index:0}
 .card-h > *{position:relative; z-index:2}
-.card-h h2{margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;line-height:1.15;transform:translateY(-1px)}
-.card-h h2::after{content:""; position:absolute; left:-2px; right:-2px; bottom:-8px; height:6px; border-radius:999px; background: color-mix(in oklab, var(--accent, #6b7280), white 45%); box-shadow: 0 0 14px color-mix(in oklab, var(--accent, #6b7280), white 10%); z-index:-1}
-.card-b{position:relative;z-index:1;padding:12px}
+.card-h h2{margin:0;font-size:var(--h2);font-weight:1000;letter-spacing:.2px;color:#0b1220;line-height:1.15}
+.card-b{position:relative;z-index:1;padding:10px 12px}
 
-.h-planta{ --gx-neutral: var(--gx-planta); --accent: var(--lav-700) }
-.h-inter { --gx-neutral: var(--gx-inter);  --accent: var(--ora-700) }
-.h-tareas{ --gx-neutral: var(--gx-tareas); --accent: var(--coral-700) }
-.h-green { --gx-neutral: var(--gx-green);  --accent: var(--green-700) }
-.h-dir   { --gx-neutral: var(--gx-dir);    --accent: var(--gold-500) }
-.h-bib   { --gx-neutral: var(--gx-bib);    --accent: var(--indigo-600) }
-.h-coral { --gx-neutral: var(--gx-coral);  --accent: var(--coral-700) }
-.h-turq  { --gx-neutral: var(--gx-turq);   --accent: var(--turq-600) }
-
-/* Botones / chips */
+/* Chips / btns */
 .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:.84rem;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
 .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
 .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
@@ -100,7 +91,7 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
 .btn.icon .ico{width:20px;height:20px}
 .btn.icon.swap .ico{width:23px;height:23px}
 
-/* Inputs premium SOLO para +Número, Añadir tarea y Búsqueda contacto */
+/* Inputs premium */
 .input-prem{
   width:100%; padding:12px 14px; border-radius:14px;
   border:1px solid color-mix(in oklab,#6b7280,white 82%);
@@ -110,35 +101,45 @@ h1#title{margin:0;font-size:clamp(18px,2.2vw,22px);font-weight:1000;letter-spaci
 }
 .input-prem:focus{outline:0; border-color:color-mix(in oklab,var(--indigo-600),white 55%); box-shadow:0 0 0 4px color-mix(in oklab,var(--indigo-600),white 80%), inset 0 1px 0 #fff}
 
-/* Listas / ítems */
-ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:16px;padding:12px;background:#fff}
+/* Listas / ítems base */
+ul.list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+li.item{display:grid;gap:10px;align-items:center;border:1px solid var(--border);border-radius:16px;padding:10px;background:#fff}
 
-/* Habitación una línea */
+/* Habitación (una línea compacta) */
 .pill{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;padding:7px 12px;border-radius:14px;line-height:1;border:1px solid transparent;color:#0d1726;background:var(--surface-2);box-shadow:inset 0 1px 0 #fff}
-.pill.room{font-family:ui-monospace,Consolas,Menlo,monospace;font-size:clamp(22px,3.2vw,26px);padding:12px 16px;letter-spacing:.3px;color:#07101f;background:#fff;white-space:nowrap;border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
-.pill.room[data-group="planta"]{background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%); border-color: color-mix(in oklab,var(--lav-700),transparent 65%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--lav),transparent 60%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
-.pill.room[data-group="interconsulta"]{background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%); border-color: color-mix(in oklab,var(--ora-700),transparent 60%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--ora),transparent 58%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
-
+.pill.room{font-family:ui-monospace,Consolas,Menlo,monospace;font-size:clamp(20px,3vw,24px);padding:10px 14px;letter-spacing:.3px;color:#07101f;background:#fff;white-space:nowrap;border:1px solid color-mix(in oklab,var(--lav-700),transparent 78%);box-shadow:0 0 0 1px color-mix(in oklab,#000,transparent 90%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
+.pill.room[data-group="planta"]{background: linear-gradient(180deg,#ffffff 0%, #faf7ff 100%); border-color: color-mix(in oklab,var(--lav-700),transparent 65%)}
+.pill.room[data-group="interconsulta"]{background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%); border-color: color-mix(in oklab,var(--ora-700),transparent 60%)}
 .pill.date{font-weight:1000}
 .pill.tel{font-weight:900; white-space:nowrap;}
 
-/* Ítems texto */
-.item .text{display:flex;align-items:center;gap:10px;min-width:0}
-.item .text > *{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.item .actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:114px}
+/* ===== TAREAS: garantizar ~20+ caracteres visibles (2 líneas) ===== */
+#panel-tareas .item{grid-template-columns:auto 1fr auto}
+#panel-tareas .item .text{min-width:0}
+#panel-tareas .item .text .line{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  white-space:normal; overflow:hidden; word-break:break-word; min-inline-size:20ch;
+}
 
-/* Visor */
-.viewer{width:100%;block-size:min(72vh, calc(100dvh - var(--appbar) - var(--bottom-h) - env(safe-area-inset-bottom) - 48px));border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow-1)}
+/* ===== PLANTA: descripción (2 líneas) + pendientes (≥15ch, 1 línea) ===== */
+#panel-planta .item{grid-template-columns:auto 1fr auto}
+#panel-planta .item .text{display:grid;gap:2px;min-width:0}
+#panel-planta .item .text .desc{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  white-space:normal; overflow:hidden; word-break:break-word; min-inline-size:20ch;
+}
+#panel-planta .item .text .pend{
+  color:var(--muted); font-weight:650; opacity:.92;
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1;
+  white-space:normal; overflow:hidden; text-overflow:ellipsis; min-inline-size:15ch;
+}
+.item .actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:110px}
 
-/* ===== Directorio — UNA LÍNEA por contacto, máxima visibilidad ===== */
-.dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
-.dir-wrap > div:first-child{min-width:0}
-
-/* Cabecera letra */
+/* ===== DIRECTORIO ===== */
+/* Cabecera letra (sticky sin solape) */
 .section-tag{
-  position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
-  margin:4px 0 10px 0; padding:8px 12px;
+  position:sticky; top:calc(var(--appbar) + 6px); z-index:2;
+  margin:4px 0 8px 0; padding:8px 12px;
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   font-weight:1000; letter-spacing:.6px; border-radius:12px;
   color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
@@ -152,37 +153,28 @@ li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:ce
 }
 .section-tag .count{font-weight:900; opacity:.75}
 
-/* Ajuste de anclaje: evita solape con la primera fila (A) */
-section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) + 26px)}
-/* Separación bajo cabecera cuando está pegada */
-.section-tag + ul{ margin-top: 6px }
+/* Ajuste de anclaje: evita solape con la fila A */
+section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) + 20px)}
+.section-tag + ul{ margin-top: 4px }
 
-/* Índice A–Z */
-.az{
-  position:sticky; top:calc(var(--appbar) + 10px);
-  display:grid; gap:6px; align-content:start; z-index:1;
-  padding:4px; border-radius:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(245,248,253,.88));
-  border:1px solid var(--border); backdrop-filter: blur(6px)
-}
-.az a{
-  display:grid;place-items:center;width:100%;aspect-ratio:1/1;
-  border:1px solid var(--border);border-radius:10px;text-decoration:none;
-  color:#1d2838;font-weight:1000;font-size:11px;background:#fff;box-shadow:inset 0 1px 0 #fff
-}
-
-/* UNA LÍNEA por contacto: más espacio a nombre y teléfonos sin recortes (scroll horizontal en móviles) */
-#panel-directorio .list{grid-template-columns:1fr}
+/* UNA LÍNEA por contacto → 2 FILAS elegantes (Nombre+sección / Teléfonos) */
+#panel-directorio .list{grid-template-columns:1fr; padding-bottom: calc(var(--az-h) + 14px)} /* reserva para A–Z inferior */
 #panel-directorio .item{
-  grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto; 
+  grid-template-areas:
+    "who actions"
+    "phones actions";
+  grid-template-columns: 1fr auto;
+  row-gap:6px;
   align-items:center;
 }
-#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0}
-#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0}
+#panel-directorio .item .who{grid-area:who;display:flex;gap:8px;min-width:0;align-items:center}
+#panel-directorio .item .who .name{
+  font-weight:900; white-space:normal; overflow:hidden; word-break:break-word;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+}
 #panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap}
 #panel-directorio .item .phones{
-  display:flex; gap:6px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
+  grid-area:phones; display:flex; gap:6px; flex-wrap:wrap; overflow:visible;
 }
 #panel-directorio .pill.tel{
   background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);
@@ -190,14 +182,24 @@ section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) 
   padding:6px 10px;
 }
 
-/* Búsqueda (input premium arriba; acciones debajo en móvil) */
-.dir-search{display:grid;gap:8px;grid-template-columns:1fr}
-.dir-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start}
-#d-q{width:100%;min-inline-size:15ch}
-@media (min-width:900px){
-  .dir-search{grid-template-columns:1fr auto;align-items:end}
-  .dir-actions{justify-content:flex-end}
+/* Barra A–Z inferior pegajosa y móvil */
+.az-bottom{
+  position:sticky;
+  bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 8px);
+  z-index:5;
+  display:flex; gap:6px; align-items:center;
+  padding:6px; margin-top:6px;
+  border:1px solid var(--border); border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(245,248,253,.94));
+  box-shadow:0 10px 24px rgba(7,16,31,.08), inset 0 1px 0 #fff;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
 }
+.az-bottom a{
+  display:grid;place-items:center; min-width:32px; height:34px; padding:0 6px;
+  border:1px solid var(--border); border-radius:10px; text-decoration:none;
+  color:#1d2838; font-weight:1000; font-size:12px; background:#fff; box-shadow:inset 0 1px 0 #fff
+}
+.az-bottom.at-end{ transform: translateY(calc(100% + 10px)); } /* baja para no tapar el final */
 
 /* ===== Bottom nav ===== */
 nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--border);backdrop-filter: blur(6px) saturate(1.02)}
@@ -215,84 +217,50 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
   *{animation:none !important; transition:none !important}
   header.appbar, .card{backdrop-filter:none}
 }
+textarea, input[type="text"], input[type="search"], input[type="url"], input[type="date"]{font:inherit}
 </style>
 </head>
 
 <body>
-<!-- ===== SVGs (stetho premium mejorado + resto) ===== -->
+<!-- ===== SVGs (fonendo más reconocible y premium) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
-    <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+    <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#7C3AED"/></linearGradient>
     <linearGradient id="gOra" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd7b0"/><stop offset="1" stop-color="#FB923C"/></linearGradient>
-    <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6dbff"/><stop offset="1" stop-color="#6F7BF7"/></linearGradient>
-    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
+    <linearGradient id="gInd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ced3ff"/><stop offset="1" stop-color="#6366F1"/></linearGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#CA9800"/></linearGradient>
     <linearGradient id="gTurq" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7fff0"/><stop offset="1" stop-color="#06d6a0"/></linearGradient>
 
-    <!-- Fonendoscopio PREMIUM: trazos limpios, luz de borde, volumen sutil -->
+    <!-- Fonendoscopio: silueta clara tipo Y, copa dorada y tubo turquesa -->
     <symbol id="i-stetho" viewBox="0 0 24 24" aria-hidden="true">
-      <!-- halo suave -->
-      <ellipse cx="12" cy="12" rx="11" ry="10" fill="url(#gInd)" opacity=".04"/>
-      <!-- arco auriculares -->
-      <path d="M6.2 4.2c.55-1 1.9-1 2.45 0l.42.82c.28.58.43 1.22.43 1.86v2.1a4.7 4.7 0 1 0 9.4 0V7.1" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
-      <path d="M6.2 4.2c.55-1 1.9-1 2.45 0l.42.82c.28.58.43 1.22.43 1.86v2.1a4.7 4.7 0 1 0 9.4 0V7.1" fill="none" stroke="url(#gInd)" stroke-width="1.7" stroke-linecap="round"/>
-      <!-- oliva izq/der -->
-      <circle cx="6.05" cy="5.1" r="1.35" fill="url(#gLav)"/><circle cx="8.15" cy="5.1" r="1.35" fill="url(#gLav)"/>
+      <!-- auriculares -->
+      <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+      <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="url(#gInd)" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="5.8" cy="5.2" r="1.3" fill="url(#gLav)"/><circle cx="8.1" cy="5.2" r="1.3" fill="url(#gLav)"/>
+      <!-- tubo en Y -->
+      <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+      <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="url(#gTurq)" stroke-width="2" stroke-linecap="round"/>
       <!-- copa -->
-      <circle cx="18.6" cy="6.9" r="2.15" fill="url(#gLav)"/>
-      <circle cx="18.6" cy="6.9" r="2.15" fill="#fff" opacity=".18"/>
-      <!-- tubo flexible -->
-      <path d="M13.1 14.4a4 4 0 0 0 4 4h.6a2.2 2.2 0 0 1 2.2 2.2v.4a2.2 2.2 0 0 1-2.2 2.2h-3.9" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
-      <path d="M13.1 14.4a4 4 0 0 0 4 4h.6a2.2 2.2 0 0 1 2.2 2.2v.4a2.2 2.2 0 0 1-2.2 2.2h-3.9" fill="none" stroke="url(#gTurq)" stroke-width="1.9" stroke-linecap="round"/>
-      <!-- campana -->
-      <g transform="translate(6.3 16.4)">
-        <circle cx="4.1" cy="3.6" r="3.55" fill="url(#gTurq)"/>
-        <circle cx="4.1" cy="3.6" r="3.55" fill="#fff" opacity=".20"/>
-        <circle cx="4.1" cy="3.6" r="1.6" fill="url(#gGold)"/>
-        <path d="M1.0 1.7c.75-.9 1.95-1.6 3.25-1.6" fill="none" stroke="#fff" stroke-opacity=".65" stroke-linecap="round"/>
+      <g transform="translate(6.2 16.2)">
+        <circle cx="4.2" cy="3.8" r="3.6" fill="url(#gTurq)"/>
+        <circle cx="4.2" cy="3.8" r="1.7" fill="url(#gGold)"/>
+        <path d="M1.2 2.2c.8-.9 2.1-1.6 3.4-1.6" fill="none" stroke="#fff" stroke-opacity=".65" stroke-linecap="round"/>
       </g>
-      <!-- rim light superior -->
-      <path d="M4 3.2c2-1.5 6.5-1.7 8.2 1.1" fill="none" stroke="#fff" stroke-opacity=".45" stroke-linecap="round"/>
+      <!-- brillo superior -->
+      <path d="M4 3.2c2-1.5 6.6-1.7 8.3 1.1" fill="none" stroke="#fff" stroke-opacity=".45" stroke-linecap="round"/>
     </symbol>
 
-    <!-- Swap -->
+    <!-- Otros iconos -->
     <symbol id="i-swap" viewBox="0 0 24 24">
       <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
       <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
     </symbol>
-
-    <!-- Edit -->
-    <symbol id="i-edit" viewBox="0 0 24 24">
-      <path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-    </symbol>
-
-    <!-- Check -->
-    <symbol id="i-check" viewBox="0 0 24 24">
-      <path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
-    </symbol>
-
-    <!-- Herramientas -->
-    <symbol id="i-tools" viewBox="0 0 24 24">
-      <path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/>
-      <path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/>
-    </symbol>
-
-    <!-- Teléfono -->
-    <symbol id="i-handset" viewBox="0 0 24 24">
-      <path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/>
-    </symbol>
-
-    <!-- Libros -->
-    <symbol id="i-books" viewBox="0 0 24 24">
-      <rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/>
-      <rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/>
-      <rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#gLav)"/>
-    </symbol>
-
-    <!-- Reloj de arena (Tareas) -->
-    <symbol id="i-hourglass" viewBox="0 0 24 24">
-      <path fill="url(#gGold)" d="M7 2h10a1 1 0 0 1 1 1v3a5 5 0 0 1-2.1 4.1L13.5 12l2.4 1.9A5 5 0 0 1 18 18v3a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a5 5 0 0 1 2.1-4.1L10.5 12 8.1 10.1A5 5 0 0 1 6 6V3a1 1 0 0 1 1-1z"/>
-      <path fill="url(#gInd)" d="M9 5h6v1a3 3 0 0 1-1.2 2.4L12 10 10.2 8.4A3 3 0 0 1 9 6V5zM9 19v-1a3 3 0 0 1 1.2-2.4L12 14l1.8 1.6A3 3 0 0 1 15 18v1H9z"/>
-    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/></symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24"><path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/><path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/></symbol>
+    <symbol id="i-handset" viewBox="0 0 24 24"><path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/></symbol>
+    <symbol id="i-books" viewBox="0 0 24 24"><rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/><rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/><rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#gLav)"/></symbol>
+    <symbol id="i-hourglass" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M7 2h10a1 1 0 0 1 1 1v3a5 5 0 0 1-2.1 4.1L13.5 12l2.4 1.9A5 5 0 0 1 18 18v3a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a5 5 0 0 1 2.1-4.1L10.5 12 8.1 10.1A5 5 0 0 1 6 6V3a1 1 0 0 1 1-1z"/><path fill="url(#gInd)" d="M9 5h6v1a3 3 0 0 1-1.2 2.4L12 10 10.2 8.4A3 3 0 0 1 9 6V5zM9 19v-1a3 3 0 0 1 1.2-2.4L12 14l1.8 1.6A3 3 0 0 1 15 18v1H9z"/></symbol>
   </defs>
 </svg>
 
@@ -338,11 +306,11 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <div id="panel-planta" role="region" aria-label="Planta" tabindex="-1">
       <div class="card">
         <div class="card-h h-turq"><h2>+Número</h2><span class="subtitle">Planta e Interconsulta</span></div>
-        <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+        <div class="card-b" style="display:grid;gap:10px;grid-template-columns:1fr 2fr auto">
           <div><label for="p-room">Habitación</label><input id="p-room" class="input-prem" placeholder="Ej. 421-2" autocomplete="off"></div>
           <div><label for="p-desc">Descripción</label><input id="p-desc" class="input-prem" placeholder="Resumen clínico, motivo…"></div>
           <div style="align-self:end"><button id="p-add" class="btn primary">Añadir</button></div>
-          <div class="g2" style="grid-column:1/-1;display:grid;gap:12px;grid-template-columns:1fr 1fr">
+          <div class="g2" style="grid-column:1/-1;display:grid;gap:10px;grid-template-columns:1fr 1fr">
             <div><label for="p-pend">Cosas pendientes</label><input id="p-pend" class="input-prem" placeholder="Rx, analítica… (opcional)"></div>
             <div>
               <label>Grupo</label>
@@ -356,7 +324,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
         <div class="card-b">
           <ul id="p-list-planta" class="list"></ul>
@@ -364,7 +332,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
         <div class="card-b">
           <ul id="p-list-inter" class="list"></ul>
@@ -372,7 +340,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
         <div class="card-b">
           <ul id="p-done" class="list"></ul>
@@ -386,7 +354,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
       <div class="card">
         <div class="card-h h-turq"><h2>Añadir tarea</h2><span class="subtitle">Fecha → Descripción</span></div>
         <div class="card-b">
-          <div class="grid" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
+          <div class="grid" style="display:grid;gap:10px;grid-template-columns:1fr 2fr auto">
             <div><label for="t-date">Fecha</label><input id="t-date" class="input-prem" type="date" required></div>
             <div><label for="t-text">Descripción</label><input id="t-text" class="input-prem" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
             <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
@@ -394,7 +362,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
         <div class="card-b">
           <ul id="t-list" class="list"></ul>
@@ -402,7 +370,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
         <div class="card-b">
           <ul id="t-done" class="list"></ul>
@@ -410,7 +378,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
         <div class="card-b">
           <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
@@ -425,7 +393,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
       <div class="card">
         <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
         <div class="card-b">
-          <div class="dir-search">
+          <div class="dir-search" style="display:grid;gap:8px;grid-template-columns:1fr">
             <div class="dir-search-input"><label for="d-q">Búsqueda inteligente</label><input id="d-q" class="input-prem" type="search" placeholder="Sección, nombre o extensión…"></div>
             <div class="dir-actions">
               <button id="d-add" class="btn primary">Añadir</button>
@@ -437,13 +405,13 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
-        <div class="card-b dir-wrap">
-          <div>
-            <div id="d-list-wrap"></div>
-            <p id="d-empty" class="muted">Sin registros.</p>
-          </div>
-          <nav class="az" aria-label="Índice alfabético" id="d-az"></nav>
+      <div class="card" style="margin-top:10px">
+        <div class="card-b">
+          <div id="d-list-wrap"></div>
+          <div id="d-sentinel" style="height:10px"></div>
+          <!-- Barra A–Z inferior móvil -->
+          <nav class="az-bottom" aria-label="Índice alfabético" id="d-az-bottom"></nav>
+          <p id="d-empty" class="muted">Sin registros.</p>
         </div>
       </div>
     </div>
@@ -452,7 +420,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <div id="panel-biblioteca" class="hide" role="region" aria-label="Biblioteca" tabindex="-1">
       <div class="card">
         <div class="card-h h-bib"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
-        <div class="card-b" style="display:grid;gap:12px;grid-template-columns:2fr 1fr">
+        <div class="card-b" style="display:grid;gap:10px;grid-template-columns:2fr 1fr">
           <div>
             <label for="b-notes">Notas rápidas</label>
             <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
@@ -484,7 +452,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
         </div>
       </div>
 
-      <div class="card" style="margin-top:12px">
+      <div class="card" style="margin-top:10px">
         <div class="card-h h-bib"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
         <div class="card-b">
           <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
@@ -509,7 +477,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
   </section>
 </main>
 
-<!-- FAB -->
+<!-- FAB SOS -->
 <button id="fab" class="btn primary" style="position:fixed;left:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + var(--bottom-h));z-index:70;border-radius:999px;padding:14px 16px;display:flex;align-items:center;gap:10px;touch-action:none" aria-haspopup="dialog" aria-controls="fabPanel" aria-expanded="false">
   SOS
 </button>
@@ -617,8 +585,10 @@ const roomSortKey=(s)=>{ if(!s) return 1e9; const m=String(s).match(/\d+/g); if(
 function plantaItem(x,done=false){
   const li=document.createElement('li'); li.className='item';
   li.innerHTML=`<span class="pill room" data-group="${x.grupo||'planta'}">${esc(x.room||'—')}</span>
-  <div class="text">${done?`<div class="line" style="text-decoration:line-through">${esc(x.desc||'')}</div>`:`<div class="line">${esc(x.desc||'')}</div>`}
-  ${x.pendiente?`<div class="muted">${esc(x.pendiente)}</div>`:''}</div>
+  <div class="text">
+    <div class="desc">${esc(x.desc||'')}</div>
+    ${x.pendiente?`<div class="pend">${esc(x.pendiente)}</div>`:''}
+  </div>
   <div class="toolbar actions"></div>`;
   const a=li.querySelector('.actions');
 
@@ -665,7 +635,7 @@ function tareaItem(x){
   li.style.borderLeft=`6px solid hsl(${h} 72% 46%)`;
   li.innerHTML=`<span class="pill date">${fmtDate(x.date)}</span><div class="text"><div class="line">${esc(x.text||'')}</div></div><div class="toolbar actions"></div>`;
   const act=$('.actions',li);
-  const bDone=btn('✓',()=>upd('tareas',x.__id,{status:'done'}),'btn icon'); bDone.setAttribute('aria-label','Completar');
+  const bDone=btn('✓',()=>upd('tareas',x.__id},{status:'done'}),'btn icon'); bDone.setAttribute('aria-label','Completar');
   const bEdit=btn('✎',()=>editTarea(x),'btn icon'); bEdit.setAttribute('aria-label','Editar');
   const bTrash=btn('✖',()=>upd('tareas',x.__id,{status:'trash'}),'btn icon'); bTrash.setAttribute('aria-label','Enviar a papelera');
   act.append(bDone,bEdit,bTrash);
@@ -704,7 +674,7 @@ function setupTareas(uid){
 }
 const setNotif=(n)=>{$('#notifBadge').textContent=String(n); $('#notifBadge').title=n?`${n} tareas activas`:'Sin avisos'};
 
-/* ===== Directorio (UNA LÍNEA) ===== */
+/* ===== Directorio (2 filas elegantes + A–Z inferior móvil) ===== */
 let dirCache=[];
 const telHref=(raw)=>{const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
 const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'');
@@ -714,6 +684,10 @@ function phonesToChips(raw){
   const parts=String(raw||'').split(/[,;\n]| {2,}/).map(s=>s.trim()).filter(Boolean);
   return parts.map(p=>{const href=telHref(p); return href?`<a class="pill tel" href="${href}" dir="ltr">${esc(p)}</a>`:`<span class="pill tel" dir="ltr">${esc(p)}</span>`}).join(' ');
 }
+function renderAZBottom(letters){
+  const az=$('#d-az-bottom');
+  az.innerHTML=letters.map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`).join('');
+}
 function renderDir(){
   const v=norm($('#d-q')?.value||''); const wrap=$('#d-list-wrap'); if(!wrap) return; wrap.innerHTML='';
   let arr=[...dirCache];
@@ -721,7 +695,7 @@ function renderDir(){
   const filtered=v?arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v))):arr;
   const groups=new Map();
   for(const x of filtered){const ch = (x.nombre||'').trim().charAt(0).toUpperCase(); const k=/^[A-ZÁÉÍÓÚÜÑ]$/.test(ch)?ch.normalize('NFD').replace(/\p{Diacritic}/gu,''): '#'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x);}
-  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split(''); const az=$('#d-az'); az.innerHTML=letters.map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`).join('');
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split(''); renderAZBottom(letters);
   let total=0;
   for(const ch of letters){
     const list=groups.get(ch)||[]; if(!list.length) continue; total+=list.length;
@@ -732,7 +706,6 @@ function renderDir(){
     const ul=document.createElement('ul'); ul.className='list';
     list.forEach(x=>{
       const li=document.createElement('li'); li.className='item';
-      li.style.gridTemplateColumns='minmax(0,1.6fr) minmax(0,1fr) auto';
       li.innerHTML=`<div class="who">
           <span class="name">${esc(x.nombre||'')}</span>
           <span class="sec">— ${esc(x.seccion||'')}</span>
@@ -747,11 +720,11 @@ function renderDir(){
     sec.appendChild(ul); wrap.appendChild(sec);
   }
   $('#d-count').textContent=total+" registros"; $('#d-empty').style.display=total?'none':'block';
+  updateAZAtEnd(); // ajustar barra inferior tras render
 }
 const editDir=(x)=>openEdit([{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}], async()=>upd('directorio',x.__id,{seccion:$('#d_sec').value,nombre:$('#d_nom').value,telefono:$('#d_tel').value,notas:$('#d_not').value}));
 
 function setupDir(uid){
-  // Reemplazo de prompts nativos por modal ligero (mejor UX, sin "sitio dice")
   $('#d-add').onclick=()=>openEdit(
     [{l:'Sección',id:'add_sec',v:''},{l:'Nombre',id:'add_nom',v:''},{l:'Teléfonos (coma/; separa)',id:'add_tel',v:''},{l:'Notas',id:'add_not',v:''}],
     async()=>{
@@ -763,21 +736,33 @@ function setupDir(uid){
   $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
   $('#d-dedupe').onclick=()=>dedupeDir(uid);
   const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x)}); renderDir()});
-  $('#d-q').addEventListener('input',renderDir,{passive:true}); unsubs.push(u);
+  $('#d-q').addEventListener('input',renderDir,{passive:true});
+  unsubs.push(u);
+
+  // mover/ocultar la barra A–Z al final para no tapar el último contenido
+  addEventListener('scroll',updateAZAtEnd,{passive:true});
+  addEventListener('resize',updateAZAtEnd,{passive:true});
+}
+function updateAZAtEnd(){
+  const az=$('#d-az-bottom'); const sent=$('#d-sentinel'); if(!az||!sent) return;
+  const r=sent.getBoundingClientRect();
+  const threshold = 12 + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-h'))||68);
+  const nearEnd = r.top < innerHeight - threshold;
+  az.classList.toggle('at-end', nearEnd);
 }
 function importDir(uid){return async()=>{try{const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
   const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase(); const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[];
   for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))) } await Promise.all(ops); toast('Importado ('+ops.length+')');
 }catch(e){toast(e.message||String(e))}}}
 function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado')}}
-/* Dedupe mejorado: fusiona por NOMBRE, unifica teléfonos únicos (normalizados), elimina duplicados */
+/* Dedupe mejorado: fusiona por NOMBRE, unifica teléfonos únicos (normalizados) */
 const normName=(s)=>String(s||'').trim().toLowerCase().replace(/\s+/g,' ');
 const splitPhones=(s)=>String(s||'').split(/[,;\n]| {2,}/).map(t=>t.trim()).filter(Boolean);
 const normTel=(s)=>String(s||'').replace(/[^\d+]/g,'');
 async function dedupeDir(uid){
   const snap=await fsMod.getDocs(fsMod.query(col.dir(uid)));
   if(!snap.size){toast('Sin registros');return}
-  const groups=new Map(); // nameKey -> {keepRef, keepData, displayByNorm(Map), allRefs[]}
+  const groups=new Map();
   for(const d of snap.docs){
     const data=d.data(); const nameK=normName(data.nombre);
     const dispMap=new Map();
@@ -786,7 +771,6 @@ async function dedupeDir(uid){
       groups.set(nameK,{keepRef:d.ref, keepData:data, displayByNorm:dispMap, refs:[d.ref]});
     }else{
       const g=groups.get(nameK);
-      // fusiona displays
       for(const [n,disp] of dispMap.entries()) if(!g.displayByNorm.has(n)) g.displayByNorm.set(n,disp);
       g.refs.push(d.ref);
     }
@@ -794,15 +778,12 @@ async function dedupeDir(uid){
   let removed=0, updated=0;
   for(const g of groups.values()){
     if(g.refs.length<=1) continue;
-    // construir teléfono fusionado
     const phones=[...g.displayByNorm.values()];
     const mergedPhone=phones.join(', ');
-    // actualizar doc principal si cambia
     if(String(g.keepData.telefono||'')!==mergedPhone){
       await fsMod.updateDoc(g.keepRef,{telefono:mergedPhone,updatedAt:serverTS()});
       updated++;
     }
-    // eliminar el resto
     const delRefs=g.refs.filter(r=>r.path!==g.keepRef.path);
     await Promise.all(delRefs.map(r=>fsMod.deleteDoc(r)));
     removed+=delRefs.length;
@@ -810,7 +791,7 @@ async function dedupeDir(uid){
   toast(removed?`Eliminados ${removed} duplicados; fusionados ${updated} contactos`:'Sin duplicados');
 }
 
-/* ===== Biblioteca / pickers / PWA / FAB (sin cambios salvo toasts de marca) ===== */
+/* ===== Biblioteca / pickers / PWA / FAB ===== */
 let bCache=[]; let localObjectURL=null;
 const bDoc=(d)=>({title:String(d.title||'').trim()||'Sin título',url:String(d.url||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 function setViewer(src){const iframe=$('#b-viewer'); if(!src){iframe.removeAttribute('src');return} iframe.src=src}
@@ -864,7 +845,7 @@ if('serviceWorker' in navigator){
   reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate()})});
 }
 
-/* FAB (igual salvo textos) */
+/* FAB (igual) */
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
