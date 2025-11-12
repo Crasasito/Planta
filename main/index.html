@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#ffffff"/>
-<title>Aurora UI — Infecciosas 2.0 (v3.3)</title>
+<title>Docagen — Infecciosas 2.0 (v3.3)</title>
 <link rel="manifest" href="manifest.webmanifest"/>
 <link rel="icon" href="icons/icon-192.png" sizes="192x192"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
@@ -41,6 +41,7 @@
   --vh: 1vh;
 
   --bottom-h: 68px; --nav-btn: 56px; --ico-bottom: 28px;
+  --dir-header-h: 42px; /* alto efectivo de las cabeceras A–Z */
 }
 @media (max-width:480px){ :root{ --bottom-h:64px; --nav-btn:52px; --ico-bottom:26px } }
 @media (min-width:1025px){ :root{ --bottom-h:72px; --nav-btn:60px; --ico-bottom:28px } }
@@ -120,7 +121,7 @@ li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:ce
 .pill.room[data-group="interconsulta"]{background: linear-gradient(180deg,#ffffff 0%, #fff7f0 100%); border-color: color-mix(in oklab,var(--ora-700),transparent 60%); box-shadow: 0 0 0 6px color-mix(in oklab,var(--ora),transparent 58%), inset 0 1px 0 #fff, 0 14px 30px rgba(7,16,31,.08)}
 
 .pill.date{font-weight:1000}
-.pill.tel{font-weight:800}
+.pill.tel{font-weight:900; white-space:nowrap;}
 
 /* Ítems texto */
 .item .text{display:flex;align-items:center;gap:10px;min-width:0}
@@ -134,20 +135,27 @@ li.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:ce
 .dir-wrap{display:grid;grid-template-columns:1fr min(30px,6.5vw);gap:12px;align-items:start}
 .dir-wrap > div:first-child{min-width:0}
 
-/* Cabecera letra — rim light hiper discreto y sin solapar */
+/* Cabecera letra */
 .section-tag{
   position:sticky; top:calc(var(--appbar) + 8px); z-index:2;
-  margin:6px 0 12px 0; padding:8px 12px;
+  margin:4px 0 10px 0; padding:8px 12px;
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   font-weight:1000; letter-spacing:.6px; border-radius:12px;
-  color:#0b1220; background:
-    radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.45), rgba(255,255,255,0)) ,
-    linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
-  border:1px solid var(--border);
-  box-shadow:0 6px 16px rgba(12,23,40,.06), inset 0 1px 0 #fff;
+  color:#0b1220; background:linear-gradient(180deg,#fff 0%, #f7f9fc 100%);
+  border:1px solid var(--border); box-shadow:0 4px 14px rgba(12,23,40,.06), inset 0 1px 0 #fff;
+}
+.section-tag .lbl{
+  font-size:1rem; font-weight:1000;
+  background: linear-gradient(180deg,#6F7BF7 0%, #FACC15 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0.5px 0 rgba(255,255,255,.7), 0 6px 10px rgba(111,123,247,.08);
 }
 .section-tag .count{font-weight:900; opacity:.75}
-section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 72px)} /* +alto para que A no tape el primer contacto */
+
+/* Ajuste de anclaje: evita solape con la primera fila (A) */
+section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) + 26px)}
+/* Separación bajo cabecera cuando está pegada */
+.section-tag + ul{ margin-top: 6px }
 
 /* Índice A–Z */
 .az{
@@ -163,14 +171,24 @@ section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + 72px)} /* +alto para
   color:#1d2838;font-weight:1000;font-size:11px;background:#fff;box-shadow:inset 0 1px 0 #fff
 }
 
-/* UNA LÍNEA por contacto — nombre completo y teléfonos sin recortes en Android */
+/* UNA LÍNEA por contacto: más espacio a nombre y teléfonos sin recortes (scroll horizontal en móviles) */
 #panel-directorio .list{grid-template-columns:1fr}
-#panel-directorio .item{grid-template-columns:minmax(0,1.5fr) minmax(0,.7fr) auto; align-items:center}
-#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0; overflow:auto; -webkit-overflow-scrolling:touch}
-#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; /* sin elipsis para permitir scroll y ver completo */}
-#panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap; flex:0 0 auto}
-#panel-directorio .item .phones{display:flex; gap:6px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch}
-#panel-directorio .pill.tel{background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);border-color:color-mix(in oklab,var(--indigo-600),transparent 70%); padding:6px 10px; font-weight:900}
+#panel-directorio .item{
+  grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto; 
+  align-items:center;
+}
+#panel-directorio .item .who{display:flex;align-items:center;gap:8px;min-width:0}
+#panel-directorio .item .who .name{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0}
+#panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap}
+#panel-directorio .item .phones{
+  display:flex; gap:6px; flex-wrap:nowrap; overflow:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+#panel-directorio .pill.tel{
+  background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);
+  border-color:color-mix(in oklab,var(--indigo-600),transparent 70%);
+  padding:6px 10px;
+}
 
 /* Búsqueda (input premium arriba; acciones debajo en móvil) */
 .dir-search{display:grid;gap:8px;grid-template-columns:1fr}
@@ -194,14 +212,14 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
 
 /* A11y / orientación */
 @media (prefers-reduced-motion: reduce){
-  *{animation:none !important; transition:none !重要}
+  *{animation:none !important; transition:none !important}
   header.appbar, .card{backdrop-filter:none}
 }
 </style>
 </head>
 
 <body>
-<!-- ===== SVGs (stetho mejorado + resto) ===== -->
+<!-- ===== SVGs (stetho premium mejorado + resto) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
@@ -210,31 +228,30 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
     <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/></linearGradient>
     <linearGradient id="gTurq" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7fff0"/><stop offset="1" stop-color="#06d6a0"/></linearGradient>
 
-    <!-- Fonendo premium (mejorado) -->
-    <symbol id="i-stetho" viewBox="0 0 24 24">
+    <!-- Fonendoscopio PREMIUM: trazos limpios, luz de borde, volumen sutil -->
+    <symbol id="i-stetho" viewBox="0 0 24 24" aria-hidden="true">
+      <!-- halo suave -->
+      <ellipse cx="12" cy="12" rx="11" ry="10" fill="url(#gInd)" opacity=".04"/>
       <!-- arco auriculares -->
-      <path d="M6.2 4.2c.5-1 1.9-1 2.5 0l.5.9c.3.6.5 1.3.5 2v1.9a4.2 4.2 0 0 0 8.4 0V7.1"
-            fill="none" stroke="url(#gInd)" stroke-width="1.7" stroke-linecap="round"/>
-      <!-- almohadillas -->
-      <circle cx="6.3" cy="5.2" r="1.4" fill="url(#gLav)"/>
-      <circle cx="8.2" cy="5.2" r="1.4" fill="url(#gLav)"/>
-      <!-- copa superior -->
-      <g transform="translate(16.7 5.2)">
-        <circle r="2.4" fill="url(#gLav)"/>
-        <circle r="2.4" fill="#fff" opacity=".18"/>
-        <circle r="1.2" fill="url(#gInd)"/>
-      </g>
-      <!-- tubo flexible + rim -->
-      <path d="M12.6 14.4a4 4 0 0 0 4 4h.7a2 2 0 0 1 2 2v.5a2 2 0 0 1-2 2h-4"
-            fill="none" stroke="url(#gTurq)" stroke-width="1.9" stroke-linecap="round"/>
-      <path d="M13 14.4c.2 2.4 2.2 4 4.2 4" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".9" stroke-linecap="round"/>
+      <path d="M6.2 4.2c.55-1 1.9-1 2.45 0l.42.82c.28.58.43 1.22.43 1.86v2.1a4.7 4.7 0 1 0 9.4 0V7.1" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+      <path d="M6.2 4.2c.55-1 1.9-1 2.45 0l.42.82c.28.58.43 1.22.43 1.86v2.1a4.7 4.7 0 1 0 9.4 0V7.1" fill="none" stroke="url(#gInd)" stroke-width="1.7" stroke-linecap="round"/>
+      <!-- oliva izq/der -->
+      <circle cx="6.05" cy="5.1" r="1.35" fill="url(#gLav)"/><circle cx="8.15" cy="5.1" r="1.35" fill="url(#gLav)"/>
+      <!-- copa -->
+      <circle cx="18.6" cy="6.9" r="2.15" fill="url(#gLav)"/>
+      <circle cx="18.6" cy="6.9" r="2.15" fill="#fff" opacity=".18"/>
+      <!-- tubo flexible -->
+      <path d="M13.1 14.4a4 4 0 0 0 4 4h.6a2.2 2.2 0 0 1 2.2 2.2v.4a2.2 2.2 0 0 1-2.2 2.2h-3.9" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+      <path d="M13.1 14.4a4 4 0 0 0 4 4h.6a2.2 2.2 0 0 1 2.2 2.2v.4a2.2 2.2 0 0 1-2.2 2.2h-3.9" fill="none" stroke="url(#gTurq)" stroke-width="1.9" stroke-linecap="round"/>
       <!-- campana -->
-      <g transform="translate(6.4 16.6)">
-        <circle cx="4" cy="3.4" r="3.6" fill="url(#gTurq)"/>
-        <circle cx="4" cy="3.4" r="3.6" fill="#fff" opacity=".22"/>
-        <circle cx="4" cy="3.4" r="1.6" fill="url(#gGold)"/>
-        <path d="M1.1 1.6c.75-.9 1.95-1.6 3.3-1.6" fill="none" stroke="#fff" stroke-opacity=".7" stroke-linecap="round"/>
+      <g transform="translate(6.3 16.4)">
+        <circle cx="4.1" cy="3.6" r="3.55" fill="url(#gTurq)"/>
+        <circle cx="4.1" cy="3.6" r="3.55" fill="#fff" opacity=".20"/>
+        <circle cx="4.1" cy="3.6" r="1.6" fill="url(#gGold)"/>
+        <path d="M1.0 1.7c.75-.9 1.95-1.6 3.25-1.6" fill="none" stroke="#fff" stroke-opacity=".65" stroke-linecap="round"/>
       </g>
+      <!-- rim light superior -->
+      <path d="M4 3.2c2-1.5 6.5-1.7 8.2 1.1" fill="none" stroke="#fff" stroke-opacity=".45" stroke-linecap="round"/>
     </symbol>
 
     <!-- Swap -->
@@ -517,16 +534,6 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
   <div class="toolbar" style="margin-top:12px;gap:8px;justify-content:flex-end"><button id="e-close" class="btn">Cerrar</button></div>
 </dialog>
 
-<!-- Diálogo simple para “Docagen dice:” -->
-<dialog id="docagenDlg" style="padding:16px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-2);max-width:min(420px,92vw)">
-  <h3 style="margin:0 0 8px 0">Docagen dice:</h3>
-  <div id="docagenDlgMsg" class="muted" style="margin-bottom:12px"></div>
-  <div class="toolbar" style="justify-content:flex-end;gap:8px">
-    <button id="docagenDlgCancel" class="btn">Cancelar</button>
-    <button id="docagenDlgOk" class="btn primary">Aceptar</button>
-  </div>
-</dialog>
-
 <div id="toast" hidden role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script type="module">
@@ -543,24 +550,6 @@ const setOnline=(on)=>{const b=$('#badge-online');b.textContent=on?'Online':'Off
 setOnline(navigator.onLine); addEventListener('online',()=>setOnline(true),{passive:true}); addEventListener('offline',()=>setOnline(false),{passive:true});
 
 const esc=(s)=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-
-/* Diálogo “Docagen dice:” para reemplazar prompts/alerts nativas */
-async function docagenAlert(msg){const dlg=$('#docagenDlg'); $('#docagenDlgMsg').textContent=String(msg||''); $('#docagenDlgCancel').style.display='none'; return new Promise(res=>{ $('#docagenDlgOk').onclick=()=>{dlg.close();res(true)}; dlg.addEventListener('close',()=>{ $('#docagenDlgCancel').style.display=''; },{once:true}); dlg.showModal();});}
-async function docagenPrompt(fields){ // fields: [{l,id,type?,v?}]
-  return new Promise(resolve=>{
-    const dlg=document.createElement('dialog');
-    dlg.style.padding='16px'; dlg.style.border='1px solid var(--border)'; dlg.style.borderRadius='14px'; dlg.style.boxShadow='var(--shadow-2)'; dlg.style.maxWidth='min(460px,95vw)';
-    dlg.innerHTML=`<h3 style="margin:0 0 8px 0">Docagen dice:</h3>`;
-    const body=document.createElement('div'); body.style.display='grid'; body.style.gap='8px';
-    fields.forEach(f=>{const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}" style="display:block;font-size:12px;color:#777">${f.l}</label><input id="${f.id}" ${f.type?'type="'+f.type+'"':''} value="${esc(f.v||'')}">`; body.appendChild(w);});
-    dlg.appendChild(body);
-    const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='flex-end'; row.style.gap='8px'; row.style.marginTop='12px';
-    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='Cancelar'; b1.onclick=()=>{dlg.close(); resolve(null);};
-    const b2=document.createElement('button'); b2.className='btn primary'; b2.textContent='Aceptar'; b2.onclick=()=>{ const out={}; fields.forEach(f=>out[f.id]=$('#'+f.id,dlg).value); dlg.close(); resolve(out); };
-    row.append(b1,b2); dlg.appendChild(row);
-    document.body.appendChild(dlg); dlg.showModal(); dlg.addEventListener('close',()=>dlg.remove(),{once:true});
-  });
-}
 
 /* ===== Firebase ===== */
 const appMod = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js');
@@ -651,7 +640,7 @@ const val=(id)=>document.getElementById(id)?.value||'';
 const editPlanta=(x)=>openEdit([{l:'Habitación',id:'p_room',v:x.room||''},{l:'Descripción',id:'p_desc',v:x.desc||''},{l:'Cosas pendientes',id:'p_pend',v:x.pendiente||''}], async()=>upd('planta',x.__id,{room:val('p_room'),desc:val('p_desc'),pendiente:val('p_pend')}));
 
 function setupPlanta(uid){
-  $('#p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) { await docagenAlert('Añade al menos habitación o descripción.'); return;} await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(i=>$('#'+i).value=''); };
+  $('#p-add').onclick=async()=>{ const d=plantaDoc({room:val('p-room'),desc:val('p-desc'),pendiente:val('p-pend'),grupo:currentGroup}); if(!d.room && !d.desc) return; await fsMod.addDoc(col.planta(uid),d); ['p-room','p-desc','p-pend'].forEach(i=>$('#'+i).value=''); };
   const qA=fsMod.query(col.planta(uid),fsMod.where('status','==','active'));
   const qD=fsMod.query(col.planta(uid),fsMod.where('status','==','done'));
   const u1=fsMod.onSnapshot(qA,(s)=>{ const all=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; all.push(x)});
@@ -697,9 +686,10 @@ const editTarea=(x)=>openEdit([{l:'Fecha',id:'t_date',v:x.date||todayISO()},{l:'
 function setupTareas(uid){
   $('#t-date').value=todayISO();
   $('#t-add').onclick=async()=>{
-    const date=$('#t-date').value, text=$('#t-text').value.trim();
-    if(!text) { await docagenAlert('Escribe la descripción de la tarea.'); return; }
-    await fsMod.addDoc(col.tareas(uid),tareaDoc({date,text})); $('#t-text').value='';
+    const date=$('#t-date').value, text=$('#t-text').value.trim(); if(!text) return;
+    await fsMod.addDoc(col.tareas(uid),tareaDoc({date,text}));
+    $('#t-text').value='';
+    toast('Docagen dice: tarea añadida');
   };
   const qA=fsMod.query(col.tareas(uid),fsMod.where('status','==','active'));
   const qD=fsMod.query(col.tareas(uid),fsMod.where('status','==','done'));
@@ -717,7 +707,7 @@ const setNotif=(n)=>{$('#notifBadge').textContent=String(n); $('#notifBadge').ti
 /* ===== Directorio (UNA LÍNEA) ===== */
 let dirCache=[];
 const telHref=(raw)=>{const s=String(raw||'').replace(/[^\d+]/g,''); return s?`tel:${s}`:null; }
-const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'').replace(/\s+/g,' ').trim();
+const norm=(s)=>String(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}+/gu,'');
 const dirDoc=(d)=>({seccion:String(d.seccion||'').trim()||'Sin sección',nombre:String(d.nombre||'').trim()||'Sin nombre',telefono:String(d.telefono||'').trim(),notas:String(d.notas||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 
 function phonesToChips(raw){
@@ -730,7 +720,7 @@ function renderDir(){
   arr.sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')||(a.seccion||'').localeCompare(b.seccion||''));
   const filtered=v?arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v))):arr;
   const groups=new Map();
-  for(const x of filtered){const k=/^[A-Za-zÁÉÍÓÚÜÑ]/.test(x.nombre||'')?norm(x.nombre)[0].toUpperCase():'#'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x);}
+  for(const x of filtered){const ch = (x.nombre||'').trim().charAt(0).toUpperCase(); const k=/^[A-ZÁÉÍÓÚÜÑ]$/.test(ch)?ch.normalize('NFD').replace(/\p{Diacritic}/gu,''): '#'; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(x);}
   const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split(''); const az=$('#d-az'); az.innerHTML=letters.map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`).join('');
   let total=0;
   for(const ch of letters){
@@ -742,7 +732,7 @@ function renderDir(){
     const ul=document.createElement('ul'); ul.className='list';
     list.forEach(x=>{
       const li=document.createElement('li'); li.className='item';
-      li.style.gridTemplateColumns='minmax(0,1.5fr) minmax(0,.7fr) auto'; // asegurar una línea y dar aire al nombre
+      li.style.gridTemplateColumns='minmax(0,1.6fr) minmax(0,1fr) auto';
       li.innerHTML=`<div class="who">
           <span class="name">${esc(x.nombre||'')}</span>
           <span class="sec">— ${esc(x.seccion||'')}</span>
@@ -759,50 +749,68 @@ function renderDir(){
   $('#d-count').textContent=total+" registros"; $('#d-empty').style.display=total?'none':'block';
 }
 const editDir=(x)=>openEdit([{l:'Sección',id:'d_sec',v:x.seccion||''},{l:'Nombre',id:'d_nom',v:x.nombre||''},{l:'Teléfonos',id:'d_tel',v:x.telefono||''},{l:'Notas',id:'d_not',v:x.notas||''}], async()=>upd('directorio',x.__id,{seccion:$('#d_sec').value,nombre:$('#d_nom').value,telefono:$('#d_tel').value,notas:$('#d_not').value}));
+
 function setupDir(uid){
-  // Añadir sin prompts del navegador (evita “<dominio> dice”), usando Docagen
-  $('#d-add').onclick=async()=>{
-    const r=await docagenPrompt([
-      {l:'Sección',id:'sec',v:''},
-      {l:'Nombre', id:'nom',v:''},
-      {l:'Teléfonos (separados por coma, ; o salto de línea)', id:'tel',v:''},
-      {l:'Notas', id:'not',v:''}
-    ]);
-    if(!r) return;
-    await fsMod.addDoc(col.dir(uid),dirDoc({seccion:r.sec,nombre:r.nom,telefono:r.tel,notas:r.not}));
-  };
+  // Reemplazo de prompts nativos por modal ligero (mejor UX, sin "sitio dice")
+  $('#d-add').onclick=()=>openEdit(
+    [{l:'Sección',id:'add_sec',v:''},{l:'Nombre',id:'add_nom',v:''},{l:'Teléfonos (coma/; separa)',id:'add_tel',v:''},{l:'Notas',id:'add_not',v:''}],
+    async()=>{
+      const d=dirDoc({seccion:$('#add_sec').value,nombre:$('#add_nom').value,telefono:$('#add_tel').value,notas:$('#add_not').value});
+      await fsMod.addDoc(col.dir(uid),d);
+      toast('Docagen dice: contacto añadido');
+    }
+  );
   $('#d-import').onclick=importDir(uid); $('#d-export').onclick=exportDir(uid);
   $('#d-dedupe').onclick=()=>dedupeDir(uid);
   const u=fsMod.onSnapshot(fsMod.query(col.dir(uid)),(s)=>{dirCache=[]; s.forEach(d=>{const x=d.data(); x.__id=d.id; dirCache.push(x)}); renderDir()});
   $('#d-q').addEventListener('input',renderDir,{passive:true}); unsubs.push(u);
 }
 function importDir(uid){return async()=>{try{const txt=await pickReadText(); const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('JSON inválido');
-  const snap=await fsMod.getDocs(col.dir(uid));
-  const canonicalTel=(s)=>Array.from(new Set(String(s||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/[^\d+]/g,'')))).sort().join(',');
-  const key=o=>(norm(o.nombre||'')+'|'+canonicalTel(o.telefono));
-  const set=new Set(snap.docs.map(d=>key(d.data())));
-  const ops=[];
-  for(const o of arr){ const k=key(o); if(!set.has(k)) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))) }
-  await Promise.all(ops); toast('Importado ('+ops.length+')');
+  const snap=await fsMod.getDocs(col.dir(uid)); const key=o=>(String(o.nombre||'').trim()+'|'+String(o.telefono||'').trim()).toLowerCase(); const set=new Set(snap.docs.map(d=>key(d.data()))); const ops=[];
+  for(const o of arr){ if(!set.has(key(o))) ops.push(fsMod.addDoc(col.dir(uid),dirDoc(o))) } await Promise.all(ops); toast('Importado ('+ops.length+')');
 }catch(e){toast(e.message||String(e))}}}
 function exportDir(uid){return async()=>{const snap=await fsMod.getDocs(fsMod.query(col.dir(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'directorio-'+todayISO()+'.json'); toast('Exportado')}}
-const canonicalTel=(s)=>Array.from(new Set(String(s||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/[^\d+]/g,'')))).sort().join(',');
-const keyDir=(o)=> norm(o.nombre||'') +'|'+ canonicalTel(o.telefono);
-/* Eliminar duplicados mejorado: nombre normalizado + conjunto de teléfonos normalizados (ordenados) */
+/* Dedupe mejorado: fusiona por NOMBRE, unifica teléfonos únicos (normalizados), elimina duplicados */
+const normName=(s)=>String(s||'').trim().toLowerCase().replace(/\s+/g,' ');
+const splitPhones=(s)=>String(s||'').split(/[,;\n]| {2,}/).map(t=>t.trim()).filter(Boolean);
+const normTel=(s)=>String(s||'').replace(/[^\d+]/g,'');
 async function dedupeDir(uid){
   const snap=await fsMod.getDocs(fsMod.query(col.dir(uid)));
-  const seen=new Map(); const rm=[];
+  if(!snap.size){toast('Sin registros');return}
+  const groups=new Map(); // nameKey -> {keepRef, keepData, displayByNorm(Map), allRefs[]}
   for(const d of snap.docs){
-    const data=d.data(); const k=keyDir(data);
-    if(seen.has(k)) rm.push(d.ref);
-    else seen.set(k,d.ref);
+    const data=d.data(); const nameK=normName(data.nombre);
+    const dispMap=new Map();
+    splitPhones(data.telefono).forEach(p=>{const n=normTel(p); if(!n) return; if(!dispMap.has(n)) dispMap.set(n,p)});
+    if(!groups.has(nameK)){
+      groups.set(nameK,{keepRef:d.ref, keepData:data, displayByNorm:dispMap, refs:[d.ref]});
+    }else{
+      const g=groups.get(nameK);
+      // fusiona displays
+      for(const [n,disp] of dispMap.entries()) if(!g.displayByNorm.has(n)) g.displayByNorm.set(n,disp);
+      g.refs.push(d.ref);
+    }
   }
-  if(!rm.length){toast('Sin duplicados');return}
-  await Promise.all(rm.map(r=>fsMod.deleteDoc(r)));
-  toast(`Eliminados ${rm.length} duplicados`);
+  let removed=0, updated=0;
+  for(const g of groups.values()){
+    if(g.refs.length<=1) continue;
+    // construir teléfono fusionado
+    const phones=[...g.displayByNorm.values()];
+    const mergedPhone=phones.join(', ');
+    // actualizar doc principal si cambia
+    if(String(g.keepData.telefono||'')!==mergedPhone){
+      await fsMod.updateDoc(g.keepRef,{telefono:mergedPhone,updatedAt:serverTS()});
+      updated++;
+    }
+    // eliminar el resto
+    const delRefs=g.refs.filter(r=>r.path!==g.keepRef.path);
+    await Promise.all(delRefs.map(r=>fsMod.deleteDoc(r)));
+    removed+=delRefs.length;
+  }
+  toast(removed?`Eliminados ${removed} duplicados; fusionados ${updated} contactos`:'Sin duplicados');
 }
 
-/* ===== Biblioteca / pickers / PWA / FAB (sin cambios funcionales) ===== */
+/* ===== Biblioteca / pickers / PWA / FAB (sin cambios salvo toasts de marca) ===== */
 let bCache=[]; let localObjectURL=null;
 const bDoc=(d)=>({title:String(d.title||'').trim()||'Sin título',url:String(d.url||'').trim(),createdAt:d.createdAt||serverTS(),updatedAt:serverTS()});
 function setViewer(src){const iframe=$('#b-viewer'); if(!src){iframe.removeAttribute('src');return} iframe.src=src}
@@ -810,10 +818,10 @@ function clearLocalURL(){if(localObjectURL){URL.revokeObjectURL(localObjectURL);
 function renderBiblioSelect(){const sel=$('#b-select'); sel.innerHTML=''; bCache.sort((a,b)=>(a.title||'').localeCompare(b.title||'')); bCache.forEach(x=>{const o=document.createElement('option'); o.value=x.__id; o.textContent=x.title; sel.appendChild(o)})}
 function setupBiblio(uid){
   fsMod.getDoc(col.notes(uid)).then(s=>{$('#b-notes').value=s.exists()?String(s.data().text||''):''});
-  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$('#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Notas guardadas')};
-  $('#b-add-link').onclick=async()=>{const url=$('#b-url').value.trim(); const title=$('#b-title').value.trim(); if(!url) return; await fsMod.addDoc(col.biblio(uid),bDoc({url,title})); $('#b-url').value=''; $('#b-title').value=''};
+  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$('#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Docagen dice: notas guardadas')};
+  $('#b-add-link').onclick=async()=>{const url=$('#b-url').value.trim(); const title=$('#b-title').value.trim(); if(!url) return; await fsMod.addDoc(col.biblio(uid),bDoc({url,title})); $('#b-url').value=''; $('#b-title').value=''; toast('Docagen dice: enlace añadido')};
   $('#b-open').onclick=async()=>{const id=$('#b-select').value; const item=bCache.find(x=>x.__id===id); if(!item) return; clearLocalURL(); setViewer(item.url)};
-  $('#b-remove').onclick=async()=>{const id=$('#b-select').value; if(!id) return; await fsMod.deleteDoc(fsMod.doc(db,'users',uid,'biblioteca',id))};
+  $('#b-remove').onclick=async()=>{const id=$('#b-select').value; if(!id) return; await fsMod.deleteDoc(fsMod.doc(db,'users',uid,'biblioteca',id)); toast('Docagen dice: enlace eliminado')};
   $('#b-open-file').onclick=async()=>{try{const [h]=await showOpenFilePicker({types:[{description:'PDF',accept:{'application/pdf':['.pdf']}}]}); const f=await h.getFile(); clearLocalURL(); localObjectURL=URL.createObjectURL(f); setViewer(localObjectURL)}catch{}};
   $('#b-clear-view').onclick=()=>{clearLocalURL(); setViewer(null)} ;
   $('#b-export-links').onclick=async()=>{const snap=await fsMod.getDocs(fsMod.query(col.biblio(uid))); const out=snap.docs.map(d=>({id:d.id,...d.data()})); const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}); await pickWriteBlob(blob,'biblioteca-links-'+todayISO()+'.json'); toast('Exportado')};
@@ -831,7 +839,7 @@ function setupBiblio(uid){
 /* Modal simple / Pickers */
 function openEdit(fields,onOk){
   const dlg=document.createElement('dialog'); dlg.style.padding='16px'; dlg.style.border='1px solid var(--border)'; dlg.style.borderRadius='14px'; dlg.style.boxShadow='var(--shadow-2)';
-  const h=document.createElement('h3'); h.textContent='Editar'; h.style.margin='0 0 8px 0'; dlg.appendChild(h);
+  const h=document.createElement('h3'); h.textContent='Docagen dice'; h.style.margin='0 0 8px 0'; dlg.appendChild(h);
   const body=document.createElement('div'); body.style.display='grid'; body.style.gap='8px';
   fields.forEach(f=>{ const w=document.createElement('div'); w.innerHTML=`<label for="${f.id}" style="display:block;font-size:12px;color:#777">${f.l}</label><input id="${f.id}" value="${esc(f.v||'')}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:12px">`; body.append(w) });
   dlg.appendChild(body);
@@ -856,7 +864,7 @@ if('serviceWorker' in navigator){
   reg.addEventListener('updatefound',()=>{const sw=reg.installing; sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdate()})});
 }
 
-/* FAB (sin cambios de lógica) */
+/* FAB (igual salvo textos) */
 let emergency=[]; let page=0; const PAGE_SIZE=10;
 function renderEmergency(){
   const box=$('#fabList'); const start=page*PAGE_SIZE; const slice=emergency.slice(start,start+PAGE_SIZE);
