@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
@@ -41,7 +42,7 @@
   --vh: 1vh;
 
   --bottom-h: 68px; --nav-btn: 56px; --ico-bottom: 28px;
-  --dir-header-h: 42px; /* alto efectivo de las cabeceras A–Z */
+  --dir-header-h: 44px; /* alto efectivo de las cabeceras A–Z */
   --az-h: 46px; /* altura barra A–Z inferior */
 }
 @media (max-width:480px){ :root{ --bottom-h:64px; --nav-btn:52px; --ico-bottom:26px; --az-h:44px } }
@@ -149,16 +150,20 @@ li.item{display:grid;gap:10px;align-items:center;border:1px solid var(--border);
   font-size:1rem; font-weight:1000;
   background: linear-gradient(180deg,#6F7BF7 0%, #FACC15 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 0.5px 0 rgba(255,255,255,.7), 0 6px 10px rgba(111,123,247,.08);
+  /* rim light hiper discreto + legibilidad */
+  text-shadow:0 0.5px 0 rgba(255,255,255,.85), 0 6px 12px rgba(111,123,247,.10);
+  filter: drop-shadow(0 0 0.5px rgba(255,255,255,.6));
 }
 .section-tag .count{font-weight:900; opacity:.75}
 
-/* Ajuste de anclaje: evita solape con la fila A */
+/* Ajuste de anclaje: evita solape con la fila A y mejora scroll a cabeceras */
 section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) + 20px)}
-.section-tag + ul{ margin-top: 4px }
+.section-tag + ul{ margin-top: 8px }
+/* FIX específico: en A no se tapan los primeros contactos bajo la cabecera */
+#sec-A .section-tag + ul{ padding-top: calc(var(--dir-header-h) + 2px) }
 
-/* UNA LÍNEA por contacto → 2 FILAS elegantes (Nombre+sección / Teléfonos) */
-#panel-directorio .list{grid-template-columns:1fr; padding-bottom: calc(var(--az-h) + 14px)} /* reserva para A–Z inferior */
+/* Dos filas elegantes (Nombre+sección / Teléfonos) con visibilidad completa */
+#panel-directorio .list{grid-template-columns:1fr; padding-bottom: calc(var(--az-h) + 14px)}
 #panel-directorio .item{
   grid-template-areas:
     "who actions"
@@ -167,19 +172,21 @@ section[id^="sec-"]{scroll-margin-top: calc(var(--appbar) + var(--dir-header-h) 
   row-gap:6px;
   align-items:center;
 }
-#panel-directorio .item .who{grid-area:who;display:flex;gap:8px;min-width:0;align-items:center}
+#panel-directorio .item .who{grid-area:who;display:flex;gap:8px;min-width:0;align-items:flex-start}
 #panel-directorio .item .who .name{
-  font-weight:900; white-space:normal; overflow:hidden; word-break:break-word;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  font-weight:900;
+  white-space:normal; overflow:visible; word-break:break-word;
+  display:block; /* sin clamp → nombre completo visible en Android */
+  -webkit-line-clamp:unset; line-clamp:unset; -webkit-box-orient:unset;
 }
 #panel-directorio .item .who .sec{font-weight:700; opacity:.7; white-space:nowrap}
 #panel-directorio .item .phones{
-  grid-area:phones; display:flex; gap:6px; flex-wrap:wrap; overflow:visible;
+  grid-area:phones; display:flex; gap:6px; flex-wrap:wrap; overflow:visible; align-items:flex-start;
 }
 #panel-directorio .pill.tel{
   background:linear-gradient(180deg,#fff 0%, #f7fbff 100%);
   border-color:color-mix(in oklab,var(--indigo-600),transparent 70%);
-  padding:6px 10px;
+  padding:6px 10px; max-width:100%;
 }
 
 /* Barra A–Z inferior pegajosa y móvil */
@@ -219,6 +226,7 @@ main.container{padding-bottom:calc(var(--bottom-h) + env(safe-area-inset-bottom)
 }
 textarea, input[type="text"], input[type="search"], input[type="url"], input[type="date"]{font:inherit}
 </style>
+
 </head>
 
 <body>
@@ -231,36 +239,39 @@ textarea, input[type="text"], input[type="search"], input[type="url"], input[typ
     <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#CA9800"/></linearGradient>
     <linearGradient id="gTurq" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7fff0"/><stop offset="1" stop-color="#06d6a0"/></linearGradient>
 
-    <!-- Fonendoscopio: silueta clara tipo Y, copa dorada y tubo turquesa -->
-    <symbol id="i-stetho" viewBox="0 0 24 24" aria-hidden="true">
-      <!-- auriculares -->
-      <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
-      <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="url(#gInd)" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="5.8" cy="5.2" r="1.3" fill="url(#gLav)"/><circle cx="8.1" cy="5.2" r="1.3" fill="url(#gLav)"/>
-      <!-- tubo en Y -->
-      <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
-      <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="url(#gTurq)" stroke-width="2" stroke-linecap="round"/>
-      <!-- copa -->
-      <g transform="translate(6.2 16.2)">
-        <circle cx="4.2" cy="3.8" r="3.6" fill="url(#gTurq)"/>
-        <circle cx="4.2" cy="3.8" r="1.7" fill="url(#gGold)"/>
-        <path d="M1.2 2.2c.8-.9 2.1-1.6 3.4-1.6" fill="none" stroke="#fff" stroke-opacity=".65" stroke-linecap="round"/>
-      </g>
-      <!-- brillo superior -->
-      <path d="M4 3.2c2-1.5 6.6-1.7 8.3 1.1" fill="none" stroke="#fff" stroke-opacity=".45" stroke-linecap="round"/>
-    </symbol>
+```
+<!-- Fonendoscopio: silueta clara tipo Y, copa dorada y tubo turquesa -->
+<symbol id="i-stetho" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- auriculares -->
+  <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+  <path d="M6 4c.6-1 2-1 2.6 0l.6 1c.3.6.5 1.3.5 2v2.2a4.8 4.8 0 1 0 9.6 0V7" fill="none" stroke="url(#gInd)" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="5.8" cy="5.2" r="1.3" fill="url(#gLav)"/><circle cx="8.1" cy="5.2" r="1.3" fill="url(#gLav)"/>
+  <!-- tubo en Y -->
+  <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="#0b1530" stroke-opacity=".10" stroke-width="3" stroke-linecap="round"/>
+  <path d="M12 13.5c0 2.5 2 4.5 4.5 4.5h.4A2.1 2.1 0 0 1 19 20v.2A2.8 2.8 0 0 1 16.2 23h-4.7" fill="none" stroke="url(#gTurq)" stroke-width="2" stroke-linecap="round"/>
+  <!-- copa -->
+  <g transform="translate(6.2 16.2)">
+    <circle cx="4.2" cy="3.8" r="3.6" fill="url(#gTurq)"/>
+    <circle cx="4.2" cy="3.8" r="1.7" fill="url(#gGold)"/>
+    <path d="M1.2 2.2c.8-.9 2.1-1.6 3.4-1.6" fill="none" stroke="#fff" stroke-opacity=".65" stroke-linecap="round"/>
+  </g>
+  <!-- brillo superior -->
+  <path d="M4 3.2c2-1.5 6.6-1.7 8.3 1.1" fill="none" stroke="#fff" stroke-opacity=".45" stroke-linecap="round"/>
+</symbol>
 
-    <!-- Otros iconos -->
-    <symbol id="i-swap" viewBox="0 0 24 24">
-      <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
-      <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
-    </symbol>
-    <symbol id="i-edit" viewBox="0 0 24 24"><path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/></symbol>
-    <symbol id="i-tools" viewBox="0 0 24 24"><path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/><path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/></symbol>
-    <symbol id="i-handset" viewBox="0 0 24 24"><path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/></symbol>
-    <symbol id="i-books" viewBox="0 0 24 24"><rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/><rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/><rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#gLav)"/></symbol>
-    <symbol id="i-hourglass" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M7 2h10a1 1 0 0 1 1 1v3a5 5 0 0 1-2.1 4.1L13.5 12l2.4 1.9A5 5 0 0 1 18 18v3a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a5 5 0 0 1 2.1-4.1L10.5 12 8.1 10.1A5 5 0 0 1 6 6V3a1 1 0 0 1 1-1z"/><path fill="url(#gInd)" d="M9 5h6v1a3 3 0 0 1-1.2 2.4L12 10 10.2 8.4A3 3 0 0 1 9 6V5zM9 19v-1a3 3 0 0 1 1.2-2.4L12 14l1.8 1.6A3 3 0 0 1 15 18v1H9z"/></symbol>
+<!-- Otros iconos -->
+<symbol id="i-swap" viewBox="0 0 24 24">
+  <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
+  <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
+</symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/></symbol>
+<symbol id="i-tools" viewBox="0 0 24 24"><path fill="url(#gOra)" d="M4 14l6 6 2-2-6-6-2 2zm3-7a4 4 0 0 1 5.7-3.6l-2.5 2.5 2.2 2.2 2.5-2.5A4 4 0 0 1 10 10L8 8l-1 1-2-2 2-2 1 1z"/><path fill="url(#gGold)" d="M13.5 11.5l1-1 6 6-1 1-2 2-6-6 2-2z"/></symbol>
+<symbol id="i-handset" viewBox="0 0 24 24"><path fill="url(#gInd)" d="M6.6 10.8c1.8 3 4.5 5.5 7.5 7.5.7.5 1.7.4 2.3-.2l1.7-1.7a1.6 1.6 0 0 0 0-2.2l-2-2a1.6 1.6 0 0 0-2.3 0l-.8.8a17.7 17.7 0 0 1-3.8-3.8l.8-.8a1.6 1.6 0 0 0 0-2.3l-2-2a1.6 1.6 0 0 0-2.2 0L4.5 4.6c-.6.6-.7 1.6-.2 2.3z"/></symbol>
+<symbol id="i-books" viewBox="0 0 24 24"><rect x="2.5" y="5" width="5.5" height="14" rx="1" fill="url(#gInd)"/><rect x="9.5" y="4" width="5.5" height="15" rx="1" fill="url(#gGold)"/><rect x="16.5" y="6" width="5" height="13" rx="1" fill="url(#gLav)"/></symbol>
+<symbol id="i-hourglass" viewBox="0 0 24 24"><path fill="url(#gGold)" d="M7 2h10a1 1 0 0 1 1 1v3a5 5 0 0 1-2.1 4.1L13.5 12l2.4 1.9A5 5 0 0 1 18 18v3a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a5 5 0 0 1 2.1-4.1L10.5 12 8.1 10.1A5 5 0 0 1 6 6V3a1 1 0 0 1 1-1z"/><path fill="url(#gInd)" d="M9 5h6v1a3 3 0 0 1-1.2 2.4L12 10 10.2 8.4A3 3 0 0 1 9 6V5zM9 19v-1a3 3 0 0 1 1.2-2.4L12 14l1.8 1.6A3 3 0 0 1 15 18v1H9z"/></symbol>
+```
+
   </defs>
 </svg>
 
@@ -291,6 +302,7 @@ textarea, input[type="text"], input[type="search"], input[type="url"], input[typ
   <div id="installBanner" class="chip" style="display:none">Instala la app para acceso más rápido. <button id="installAction" class="btn primary">Instalar</button></div>
 
   <!-- Gate -->
+
   <section id="gate" class="card" role="region" aria-live="polite">
     <div class="card-h h-bib"><h2>Bienvenido</h2><span class="subtitle">Sincroniza con Google</span></div>
     <div class="card-b">
@@ -301,6 +313,7 @@ textarea, input[type="text"], input[type="search"], input[type="url"], input[typ
   </section>
 
   <!-- App -->
+
   <section id="app" class="hide">
     <!-- ===== PLANTA ===== -->
     <div id="panel-planta" role="region" aria-label="Planta" tabindex="-1">
@@ -324,160 +337,164 @@ textarea, input[type="text"], input[type="search"], input[type="url"], input[typ
         </div>
       </div>
 
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
-        <div class="card-b">
-          <ul id="p-list-planta" class="list"></ul>
-          <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
-        </div>
-      </div>
+```
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
+    <div class="card-b">
+      <ul id="p-list-planta" class="list"></ul>
+      <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
+    </div>
+  </div>
 
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
-        <div class="card-b">
-          <ul id="p-list-inter" class="list"></ul>
-          <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
-        </div>
-      </div>
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
+    <div class="card-b">
+      <ul id="p-list-inter" class="list"></ul>
+      <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
+    </div>
+  </div>
 
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
-        <div class="card-b">
-          <ul id="p-done" class="list"></ul>
-          <p id="p-done-empty" class="muted">Nada completado.</p>
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
+    <div class="card-b">
+      <ul id="p-done" class="list"></ul>
+      <p id="p-done-empty" class="muted">Nada completado.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAREAS ===== -->
+<div id="panel-tareas" class="hide" role="region" aria-label="Tareas" tabindex="-1">
+  <div class="card">
+    <div class="card-h h-turq"><h2>Añadir tarea</h2><span class="subtitle">Fecha → Descripción</span></div>
+    <div class="card-b">
+      <div class="grid" style="display:grid;gap:10px;grid-template-columns:1fr 2fr auto">
+        <div><label for="t-date">Fecha</label><input id="t-date" class="input-prem" type="date" required></div>
+        <div><label for="t-text">Descripción</label><input id="t-text" class="input-prem" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
+        <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
+    <div class="card-b">
+      <ul id="t-list" class="list"></ul>
+      <p id="t-empty" class="muted">No hay tareas activas.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
+    <div class="card-b">
+      <ul id="t-done" class="list"></ul>
+      <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
+    <div class="card-b">
+      <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
+      <ul id="t-trash" class="list"></ul>
+      <p id="t-trash-empty" class="muted">Papelera vacía.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DIRECTORIO ===== -->
+<div id="panel-directorio" class="hide" role="region" aria-label="Directorio" tabindex="-1">
+  <div class="card">
+    <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
+    <div class="card-b">
+      <div class="dir-search" style="display:grid;gap:8px;grid-template-columns:1fr">
+        <div class="dir-search-input"><label for="d-q">Búsqueda inteligente</label><input id="d-q" class="input-prem" type="search" placeholder="Sección, nombre o extensión…"></div>
+        <div class="dir-actions">
+          <button id="d-add" class="btn primary">Añadir</button>
+          <button id="d-import" class="btn">Importar JSON</button>
+          <button id="d-export" class="btn">Exportar JSON</button>
+          <button id="d-dedupe" class="btn">Eliminar duplicados</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- ===== TAREAS ===== -->
-    <div id="panel-tareas" class="hide" role="region" aria-label="Tareas" tabindex="-1">
-      <div class="card">
-        <div class="card-h h-turq"><h2>Añadir tarea</h2><span class="subtitle">Fecha → Descripción</span></div>
-        <div class="card-b">
-          <div class="grid" style="display:grid;gap:10px;grid-template-columns:1fr 2fr auto">
-            <div><label for="t-date">Fecha</label><input id="t-date" class="input-prem" type="date" required></div>
-            <div><label for="t-text">Descripción</label><input id="t-text" class="input-prem" type="text" placeholder="Describe la tarea…" maxlength="400"></div>
-            <div style="align-self:end"><button id="t-add" class="btn primary">Añadir</button></div>
+  <div class="card" style="margin-top:10px">
+    <div class="card-b">
+      <div id="d-list-wrap"></div>
+      <div id="d-sentinel" style="height:10px"></div>
+      <!-- Barra A–Z inferior móvil -->
+      <nav class="az-bottom" aria-label="Índice alfabético" id="d-az-bottom"></nav>
+      <p id="d-empty" class="muted">Sin registros.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BIBLIOTECA ===== -->
+<div id="panel-biblioteca" class="hide" role="region" aria-label="Biblioteca" tabindex="-1">
+  <div class="card">
+    <div class="card-h h-bib"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
+    <div class="card-b" style="display:grid;gap:10px;grid-template-columns:2fr 1fr">
+      <div>
+        <label for="b-notes">Notas rápidas</label>
+        <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
+        <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+          <button id="b-notes-save" class="btn primary">Guardar notas</button>
+          <button id="b-open-file" class="btn">Abrir PDF local…</button>
+          <button id="b-clear-view" class="btn">Vaciar visor</button>
+        </div>
+      </div>
+      <div>
+        <label for="b-url">Nuevo enlace (PDF o web)</label>
+        <input id="b-url" type="url" placeholder="https://… o *.pdf">
+        <label for="b-title">Título</label>
+        <input id="b-title" type="text" placeholder="Nombre del recurso">
+        <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+          <button id="b-add-link" class="btn primary">Añadir a lista</button>
+          <button id="b-export-links" class="btn">Exportar JSON</button>
+          <button id="b-import-links" class="btn">Importar JSON</button>
+        </div>
+        <div style="margin-top:10px">
+          <label for="b-select">Mis enlaces</label>
+          <select id="b-select"></select>
+          <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
+            <button id="b-open" class="btn">Abrir en visor</button>
+            <button id="b-remove" class="btn">Eliminar</button>
           </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
-        <div class="card-b">
-          <ul id="t-list" class="list"></ul>
-          <p id="t-empty" class="muted">No hay tareas activas.</p>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
-        <div class="card-b">
-          <ul id="t-done" class="list"></ul>
-          <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
-        <div class="card-b">
-          <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
-          <ul id="t-trash" class="list"></ul>
-          <p id="t-trash-empty" class="muted">Papelera vacía.</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- ===== DIRECTORIO ===== -->
-    <div id="panel-directorio" class="hide" role="region" aria-label="Directorio" tabindex="-1">
-      <div class="card">
-        <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
-        <div class="card-b">
-          <div class="dir-search" style="display:grid;gap:8px;grid-template-columns:1fr">
-            <div class="dir-search-input"><label for="d-q">Búsqueda inteligente</label><input id="d-q" class="input-prem" type="search" placeholder="Sección, nombre o extensión…"></div>
-            <div class="dir-actions">
-              <button id="d-add" class="btn primary">Añadir</button>
-              <button id="d-import" class="btn">Importar JSON</button>
-              <button id="d-export" class="btn">Exportar JSON</button>
-              <button id="d-dedupe" class="btn">Eliminar duplicados</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px">
-        <div class="card-b">
-          <div id="d-list-wrap"></div>
-          <div id="d-sentinel" style="height:10px"></div>
-          <!-- Barra A–Z inferior móvil -->
-          <nav class="az-bottom" aria-label="Índice alfabético" id="d-az-bottom"></nav>
-          <p id="d-empty" class="muted">Sin registros.</p>
-        </div>
-      </div>
+  <div class="card" style="margin-top:10px">
+    <div class="card-h h-bib"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
+    <div class="card-b">
+      <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
+      <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
     </div>
+  </div>
+</div>
 
-    <!-- ===== BIBLIOTECA ===== -->
-    <div id="panel-biblioteca" class="hide" role="region" aria-label="Biblioteca" tabindex="-1">
-      <div class="card">
-        <div class="card-h h-bib"><h2>Biblioteca</h2><span class="subtitle">Campo libre + enlaces + visor PDF</span></div>
-        <div class="card-b" style="display:grid;gap:10px;grid-template-columns:2fr 1fr">
-          <div>
-            <label for="b-notes">Notas rápidas</label>
-            <textarea id="b-notes" placeholder="Pega aquí fragmentos o URLs. Se guardan en tu usuario."></textarea>
-            <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-              <button id="b-notes-save" class="btn primary">Guardar notas</button>
-              <button id="b-open-file" class="btn">Abrir PDF local…</button>
-              <button id="b-clear-view" class="btn">Vaciar visor</button>
-            </div>
-          </div>
-          <div>
-            <label for="b-url">Nuevo enlace (PDF o web)</label>
-            <input id="b-url" type="url" placeholder="https://… o *.pdf">
-            <label for="b-title">Título</label>
-            <input id="b-title" type="text" placeholder="Nombre del recurso">
-            <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-              <button id="b-add-link" class="btn primary">Añadir a lista</button>
-              <button id="b-export-links" class="btn">Exportar JSON</button>
-              <button id="b-import-links" class="btn">Importar JSON</button>
-            </div>
-            <div style="margin-top:10px">
-              <label for="b-select">Mis enlaces</label>
-              <select id="b-select"></select>
-              <div class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:wrap">
-                <button id="b-open" class="btn">Abrir en visor</button>
-                <button id="b-remove" class="btn">Eliminar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px">
-        <div class="card-h h-bib"><h2>Visor</h2><span class="subtitle">Detecta PDF y lo muestra integrado</span></div>
-        <div class="card-b">
-          <iframe id="b-viewer" class="viewer" title="Visor de documentos" sandbox="allow-same-origin allow-downloads"></iframe>
-          <p class="muted" style="margin-top:8px">Consejo: para PDFs externos con restricciones CORS, usa “Abrir PDF local…”.</p>
-        </div>
-      </div>
+<!-- ===== Barra inferior única ===== -->
+<nav class="bottom" aria-label="Secciones">
+  <div class="bottom-inner" id="bottomNav">
+    <div class="icons-left" role="tablist" aria-label="Secciones">
+      <button class="nav-btn" id="b-planta" role="tab" aria-label="Planta" aria-current="page" tabindex="0"><svg class="ico" aria-hidden="true"><use href="#i-stetho"/></svg></button>
+      <button class="nav-btn" id="b-tareas" role="tab" aria-label="Tareas" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-hourglass"/></svg></button>
+      <button class="nav-btn" id="b-directorio" role="tab" aria-label="Directorio" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-handset"/></svg></button>
+      <button class="nav-btn" id="b-biblioteca" role="tab" aria-label="Biblioteca" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-books"/></svg></button>
     </div>
+    <span class="divider" aria-hidden="true"></span>
+    <span id="activeLabel" class="active-chip" aria-live="polite">Planta</span>
+  </div>
+</nav>
+```
 
-    <!-- ===== Barra inferior única ===== -->
-    <nav class="bottom" aria-label="Secciones">
-      <div class="bottom-inner" id="bottomNav">
-        <div class="icons-left" role="tablist" aria-label="Secciones">
-          <button class="nav-btn" id="b-planta" role="tab" aria-label="Planta" aria-current="page" tabindex="0"><svg class="ico" aria-hidden="true"><use href="#i-stetho"/></svg></button>
-          <button class="nav-btn" id="b-tareas" role="tab" aria-label="Tareas" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-hourglass"/></svg></button>
-          <button class="nav-btn" id="b-directorio" role="tab" aria-label="Directorio" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-handset"/></svg></button>
-          <button class="nav-btn" id="b-biblioteca" role="tab" aria-label="Biblioteca" aria-current="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-books"/></svg></button>
-        </div>
-        <span class="divider" aria-hidden="true"></span>
-        <span id="activeLabel" class="active-chip" aria-live="polite">Planta</span>
-      </div>
-    </nav>
   </section>
 </main>
 
 <!-- FAB SOS -->
+
 <button id="fab" class="btn primary" style="position:fixed;left:auto;right:16px;bottom:calc(16px + env(safe-area-inset-bottom) + var(--bottom-h));z-index:70;border-radius:999px;padding:14px 16px;display:flex;align-items:center;gap:10px;touch-action:none" aria-haspopup="dialog" aria-controls="fabPanel" aria-expanded="false">
   SOS
 </button>
@@ -799,8 +816,7 @@ function clearLocalURL(){if(localObjectURL){URL.revokeObjectURL(localObjectURL);
 function renderBiblioSelect(){const sel=$('#b-select'); sel.innerHTML=''; bCache.sort((a,b)=>(a.title||'').localeCompare(b.title||'')); bCache.forEach(x=>{const o=document.createElement('option'); o.value=x.__id; o.textContent=x.title; sel.appendChild(o)})}
 function setupBiblio(uid){
   fsMod.getDoc(col.notes(uid)).then(s=>{$('#b-notes').value=s.exists()?String(s.data().text||''):''});
-  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$(
-'#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Docagen dice: notas guardadas')};
+  $('#b-notes-save').onclick=async()=>{const ref=col.notes(uid); const data={text:$('#b-notes').value,updatedAt:serverTS()}; try{await fsMod.setDoc(ref,data,{merge:true})}catch{pushRetry({path:ref.path,data})} toast('Docagen dice: notas guardadas')};
   $('#b-add-link').onclick=async()=>{const url=$('#b-url').value.trim(); const title=$('#b-title').value.trim(); if(!url) return; await fsMod.addDoc(col.biblio(uid),bDoc({url,title})); $('#b-url').value=''; $('#b-title').value=''; toast('Docagen dice: enlace añadido')};
   $('#b-open').onclick=async()=>{const id=$('#b-select').value; const item=bCache.find(x=>x.__id===id); if(!item) return; clearLocalURL(); setViewer(item.url)};
   $('#b-remove').onclick=async()=>{const id=$('#b-select').value; if(!id) return; await fsMod.deleteDoc(fsMod.doc(db,'users',uid,'biblioteca',id)); toast('Docagen dice: enlace eliminado')};
@@ -833,7 +849,7 @@ function openEdit(fields,onOk){
 async function pickReadText(){ if('showOpenFilePicker' in window){ const [h]=await showOpenFilePicker({types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const f=await h.getFile(); return await f.text() } return await new Promise((res,rej)=>{ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json'; i.onchange=()=>{ const f=i.files?.[0]; if(!f) return rej(new Error('Cancelado')); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>rej(new Error('Error leyendo')); r.readAsText(f) }; i.click() }) }
 async function pickWriteBlob(blob,name){ if('showSaveFilePicker' in window){ const h=await showSaveFilePicker({suggestedName:name,types:[{description:'JSON',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(blob); await w.close(); return } const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href) }
 
-/* PWA + banners */
+/* ===== PWA + banners */
 let deferredPrompt=null;
 addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;$('#installBanner').style.display='inline-flex'});
 $('#installAction').onclick=async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('#installBanner').style.display='none' } };
@@ -871,5 +887,6 @@ function mount(uid){ loadEmergencies(); renderEmergency(); setupPlanta(uid); set
   const first=location.hash?.slice(1); if(mapTabs[first]) selectTab(first); else selectTab(localStorage.getItem('tab')||'planta');
 }
 </script>
+
 </body>
 </html>
