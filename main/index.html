@@ -603,6 +603,33 @@ main.container{
 }
 /* REGION: CSS-ITEMS-MOBILE-END */
 
+/* REGION: CSS-ACTIONS-ANDROID-OVERRIDE-START */
+@media (max-width: 720px){
+
+  /* Recuadros de los 3 iconos en todas las listas (Planta, Interconsultas, Completados, Tareas, etc.) */
+  .list .actions > button,
+  .list .actions > .btn{
+    width: 24px !important;       /* caja más pequeña */
+    height: 24px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
+    padding: 0 !important;
+    border-radius: 10px !important;  /* esquinas algo más cerradas */
+  }
+
+  /* Iconos dentro del botón: tamaño fijo, hueco alrededor más pequeño */
+  .list .actions > button svg,
+  .list .actions > .btn svg{
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Icono de las dos flechas aún un poco más pequeño visualmente */
+  .list .actions > button:first-child svg{
+    transform: scale(0.7);
+  }
+}
+/* REGION: CSS-ACTIONS-ANDROID-OVERRIDE-END */
 
 </style>
 </head>
