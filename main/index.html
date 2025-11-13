@@ -1322,12 +1322,28 @@ const daysFromToday=(iso)=>{
     return Math.round((d - t)/(1000*60*60*24));
   }catch{return 0}
 };
-const fmtDate=(iso)=>{
-  try{
-    const d=new Date(iso+'T00:00:00');
-    return new Intl.DateTimeFormat('es-ES',{weekday:'short',day:'2-digit',month:'short'})
-      .format(d).toUpperCase().replace(/\./g,'');
-  }catch{return iso}
+const fmtDate = (iso) => {
+  try {
+    const d = new Date(iso + 'T00:00:00');
+
+    // Letras para cada día (getDay(): 0=Dom,1=Lun,...6=Sáb)
+    const letrasDia = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+    const letra = letrasDia[d.getDay()];
+
+    // Día (2 dígitos)
+    const dia = String(d.getDate()).padStart(2, '0');
+
+    // Mes corto en español, en mayúsculas y sin punto
+    const mes = new Intl.DateTimeFormat('es-ES', { month: 'short' })
+      .format(d)
+      .toUpperCase()
+      .replace(/\./g, '');
+
+    // Formato final: L, 12 NOV
+    return `${letra}, ${dia} ${mes}`;
+  } catch {
+    return iso;
+  }
 };
 
 function tareaItem(x){
