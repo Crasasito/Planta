@@ -1575,7 +1575,6 @@ function renderDir(){
         `<div class="text">
            <div class="line">
              <strong>${esc(x.nombre||'')}</strong>
-             <span class="dir-sec-pill">${esc(x.seccion||'')}</span>
            </div>
            <div class="line dir-phones">${phonesToChips(x.telefono)}</div>
            ${x.notas ? `<div class="muted dir-notes">${esc(x.notas)}</div>` : ''}
