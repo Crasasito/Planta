@@ -1651,7 +1651,7 @@ if(dirAzNav){
   });
 }
 
-async function importDir(uid){
+function importDir(uid){
   return async()=>{
     try{
       const txt=await pickReadText();
@@ -1672,7 +1672,7 @@ async function importDir(uid){
   };
 }
 
-async function exportDir(uid){
+function exportDir(uid){
   return async()=>{
     const snap=await fsMod.getDocs(fsMod.query(col.dir(uid)));
     const out=snap.docs.map(d=>({id:d.id,...d.data()}));
