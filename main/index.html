@@ -556,7 +556,6 @@ main.container{
 /* REGION: CSS-ITEMS-MOBILE-START */
 @media (max-width: 720px){
 
-  /* Tarjetas de Planta, Interconsultas, Completados, Tareas y Directorio */
   .list > li.item{
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto; /* pill | texto | iconos */
@@ -564,50 +563,45 @@ main.container{
     align-items: center;
   }
 
-  /* Pastilla de habitación / fecha: un poco más pequeña */
   .list > li.item > span.pill{
     padding: 3px 9px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     white-space: nowrap;
   }
 
-  /* Descripción: ocupa el centro, puede seguir en la fila de abajo si es larga */
   .list > li.item > .text{
     width: 100%;
     font-size: 0.95rem;
     line-height: 1.25;
   }
 
-  /* Bloque de iconos a la derecha */
   .list > li.item > .actions{
     justify-self: flex-end;
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
   }
 
-  /* Botones: recuadro más ajustado, ~30% más pequeño que el tamaño “grande” típico */
+  /* ⬇️ Aquí hacemos la caja más pequeña y más pegada al icono */
   .list > li.item > .actions button,
   .list > li.item > .actions .btn{
-    width: 10px;
-    height: 10px;
+    width: 22px;      /* antes 28 */
+    height: 22px;     /* antes 28 */
     padding: 0;
-    border-radius: 2px;
+    border-radius: 10px;   /* caja más compacta */
   }
 
-  /* Iconos dentro del botón: también más pequeños */
   .list > li.item > .actions svg{
     width: 14px;
     height: 14px;
   }
 
-  /* PRIMER botón de la fila (el de las dos flechas) aún más pequeño (~40% menos) */
+  /* El icono de las dos flechas aún un poco más pequeño si quieres */
   .list > li.item > .actions button:first-child svg{
     transform: scale(0.7);
   }
 }
 /* REGION: CSS-ITEMS-MOBILE-END */
-
 
 
 </style>
