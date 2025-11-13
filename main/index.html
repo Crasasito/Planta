@@ -1034,6 +1034,8 @@ const setVH=()=>document.documentElement.style.setProperty('--vh',(innerHeight*0
 setVH(); addEventListener('resize', setVH, {passive:true});
 addEventListener('orientationchange', setVH, {passive:true});
 
+const isMobile = matchMedia('(max-width: 720px)').matches;
+   
 const setOnline=(on)=>{const b=$('#badge-online');b.textContent=on?'Online':'Offline';b.className='chip '+(on?'ok':'bad')};
 setOnline(navigator.onLine);
 addEventListener('online',()=>setOnline(true),{passive:true});
@@ -1323,6 +1325,36 @@ const daysFromToday=(iso)=>{
   }catch{return 0}
 };
 const fmtDate = (iso) => {
+  try {
+    const d = new Date(iso + 'T00:00:00');
+
+    if (isMobile) {
+      // 📱 ANDROID (pantallas pequeñas): L, 12 NOV
+      const letrasDia = ['D', 'L', 'M', 'X', 'J', 'V', 'S']; // 0=Dom,1=Lun...
+      const letra = letrasDia[d.getDay()];
+      const dia = String(d.getDate()).padStart(2, '0');
+      const mes = new Intl.DateTimeFormat('es-ES', { month: 'short' })
+        .format(d)
+        .toUpperCase()
+        .replace(/\./g, '');
+
+      return `${letra}, ${dia} ${mes}`;
+    } else {
+      // 🖥️ PC (como antes): MIÉ, 12 NOV
+      return new Intl.DateTimeFormat('es-ES', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short'
+      })
+        .format(d)
+        .toUpperCase()
+        .replace(/\./g, '');
+    }
+  } catch {
+    return iso;
+  }
+};
+
   try {
     const d = new Date(iso + 'T00:00:00');
 
