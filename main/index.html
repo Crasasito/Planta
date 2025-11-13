@@ -1513,7 +1513,10 @@ function renderDir(){
   const wrap=$('#d-list-wrap'); if(!wrap) return;
   wrap.innerHTML='';
   let arr=[...dirCache];
-  arr.sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')||(a.seccion||'').localeCompare(b.seccion||''));
+ arr.sort((a,b)=>
+  (a.seccion||'').localeCompare(b.seccion||'')
+  || (a.nombre||'').localeCompare(b.nombre||'')
+);
   const filtered=v
     ? arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v)))
     : arr;
