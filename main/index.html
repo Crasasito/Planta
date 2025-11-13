@@ -630,42 +630,52 @@ main.container{
   }
 }
 /* REGION: CSS-ACTIONS-ANDROID-OVERRIDE-END */
+
 /* REGION: CSS-TAREAS-ACTIVAS-MOBILE-START */
 @media (max-width: 720px){
 
-  /* Cada tarea activa: fila compacta fecha | texto | iconos */
+  /* Cada tarea activa: fecha | texto | iconos */
   #panel-tareas .list > li.item{
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto; /* pill fecha | descripción | iconos */
-    column-gap: 8px;
+    column-gap: 4px;           /* MENOS espacio entre texto e iconos */
     align-items: center;
-    padding: 8px 10px;
-    margin-bottom: 6px;
+    padding: 6px 10px;
+    width: 100%;
   }
 
-  /* Pastilla de fecha un poco más pequeña para dejar más sitio al texto */
+  /* Pastilla de fecha compacta */
   #panel-tareas .list > li.item > span.pill{
     padding: 3px 8px;
     font-size: 0.9rem;
     white-space: nowrap;
   }
 
-  /* Descripción: usa todo el centro y puede seguir en la línea de abajo */
+  /* Descripción:
+     - ocupa todo el centro
+     - NO corta palabras raras (no "Serol ogía")
+  */
   #panel-tareas .list > li.item > .text{
     width: 100%;
     font-size: 0.95rem;
     line-height: 1.25;
+    margin-right: 2px;
+
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
   }
 
-  /* Iconos a la derecha, pegados entre sí pero sin ocupar demasiado ancho */
+  /* Iconos: pegados a la derecha del todo, con poco hueco */
   #panel-tareas .list > li.item > .actions{
-    justify-self: flex-end;
+    grid-column: 3;
+    justify-self: flex-end;   /* lo más a la derecha posible en la tarjeta */
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;                 /* MUY poco espacio entre iconos */
   }
 
-  /* Reforzamos tamaño compacto de los botones (por si alguna regla anterior interfiere) */
+  /* Tamaño compacto de los botones (recuadro) */
   #panel-tareas .list > li.item > .actions > button,
   #panel-tareas .list > li.item > .actions > .btn{
     width: 24px !important;
