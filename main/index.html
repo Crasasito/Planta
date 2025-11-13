@@ -609,8 +609,8 @@ main.container{
   /* Recuadros de los 3 iconos en todas las listas (Planta, Interconsultas, Completados, Tareas, etc.) */
   .list .actions > button,
   .list .actions > .btn{
-    width: 36px !important;       /* caja más pequeña */
-    height: 30px !important;
+    width: 30px !important;       /* caja más pequeña */
+    height: 36px !important;
     min-width: 24px !important;
     min-height: 24px !important;
     padding: 0 !important;
@@ -630,6 +630,53 @@ main.container{
   }
 }
 /* REGION: CSS-ACTIONS-ANDROID-OVERRIDE-END */
+/* REGION: CSS-TAREAS-ACTIVAS-MOBILE-START */
+@media (max-width: 720px){
+
+  /* Cada tarea activa: fila compacta fecha | texto | iconos */
+  #panel-tareas .list > li.item{
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto; /* pill fecha | descripción | iconos */
+    column-gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+  }
+
+  /* Pastilla de fecha un poco más pequeña para dejar más sitio al texto */
+  #panel-tareas .list > li.item > span.pill{
+    padding: 3px 8px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  /* Descripción: usa todo el centro y puede seguir en la línea de abajo */
+  #panel-tareas .list > li.item > .text{
+    width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
+  /* Iconos a la derecha, pegados entre sí pero sin ocupar demasiado ancho */
+  #panel-tareas .list > li.item > .actions{
+    justify-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Reforzamos tamaño compacto de los botones (por si alguna regla anterior interfiere) */
+  #panel-tareas .list > li.item > .actions > button,
+  #panel-tareas .list > li.item > .actions > .btn{
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+  }
+}
+/* REGION: CSS-TAREAS-ACTIVAS-MOBILE-END */
 
 </style>
 </head>
