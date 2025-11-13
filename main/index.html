@@ -638,44 +638,57 @@ main.container{
   #panel-tareas .list > li.item{
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto; /* pill fecha | descripción | iconos */
-    column-gap: 1px;           /* MENOS espacio entre texto e iconos */
+    column-gap: 2px;              /* casi sin espacio entre texto e iconos */
     align-items: center;
-    padding: 6px 10px;
+    padding: 6px 8px;
     width: 100%;
   }
 
-  /* Pastilla de fecha compacta */
+  /* Pastilla de fecha compacta, para dejar más ancho al texto */
   #panel-tareas .list > li.item > span.pill{
     padding: 3px 8px;
     font-size: 0.9rem;
     white-space: nowrap;
   }
 
-  /* Descripción:
-     - ocupa todo el centro
-     - NO corta palabras raras (no "Serol ogía")
+  /* DESCRIPCIÓN:
+     - usa TODO el ancho central
+     - sin cortes raros tipo "serolo gía"
+     - el texto fluye de forma normal
   */
   #panel-tareas .list > li.item > .text{
+    display: block;               /* ya no es una columna flex, es un bloque normal */
+    min-width: 0;
+    margin-right: 0;
     width: 100%;
     font-size: 0.95rem;
     line-height: 1.25;
-    margin-right: 2px;
-
     word-break: normal !important;
     overflow-wrap: break-word !important;
     hyphens: none !important;
   }
 
-  /* Iconos: pegados a la derecha del todo, con poco hueco */
-  #panel-tareas .list > li.item > .actions{
-    grid-column: 3;
-    justify-self: flex-end;   /* lo más a la derecha posible en la tarjeta */
-    display: flex;
-    align-items: center;
-    gap: 3px;                 /* MUY poco espacio entre iconos */
+  /* Todo lo que esté dentro del .text se muestra en línea,
+     para que "Serología de Irwin" se comporte como una frase normal.
+  */
+  #panel-tareas .list > li.item > .text > *{
+    display: inline;
   }
 
-  /* Tamaño compacto de los botones (recuadro) */
+  /* ICONOS:
+     - pegados a la derecha del todo
+     - poco espacio entre ellos
+     - recuadro pequeño
+  */
+  #panel-tareas .list > li.item > .actions{
+    grid-column: 3;
+    justify-self: flex-end;       /* lo MÁS a la derecha posible */
+    display: flex;
+    align-items: center;
+    gap: 2px;                     /* casi sin hueco entre iconos */
+    margin-left: 0;
+  }
+
   #panel-tareas .list > li.item > .actions > button,
   #panel-tareas .list > li.item > .actions > .btn{
     width: 24px !important;
@@ -687,6 +700,7 @@ main.container{
   }
 }
 /* REGION: CSS-TAREAS-ACTIVAS-MOBILE-END */
+
 
 </style>
 </head>
