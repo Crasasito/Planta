@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#ffffff"/>
-<title>Aurora UI — Infecciosas 2.0 (v3.3)</title>
+<title>Infecciosas</title>
 <link rel="manifest" href="manifest.webmanifest"/>
 <link rel="icon" href="icons/icon-192.png" sizes="192x192"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
@@ -528,7 +528,7 @@ main.container{
 /* REGION: CSS-FORMS-MOBILE-START */
 @media (max-width: 720px){
 
-  /* PLANTA · tarjeta "Añadir habitación" */
+  /* PLANTA · tarjeta "Habitación" */
   #panel-planta .card:first-of-type .card-b{
     grid-template-columns: 1fr !important; /* una sola columna */
   }
@@ -701,6 +701,16 @@ main.container{
 }
 /* REGION: CSS-TAREAS-ACTIVAS-MOBILE-END */
 
+/* REGION: CSS-ACTIONS-MOBILE-GAP-START */
+@media (max-width: 720px){
+
+  /* En todas las listas (Planta, Tareas, Directorio, Completados…)
+     la zona de iconos ya NO obliga a 114px de ancho */
+  .list .actions{
+    min-width: 0 !important;   /* quitamos el ancho mínimo que generaba tanto hueco */
+  }
+}
+/* REGION: CSS-ACTIONS-MOBILE-GAP-END */
 
 </style>
 </head>
@@ -808,7 +818,7 @@ main.container{
     <!-- ===== PLANTA ===== -->
     <div id="panel-planta" role="region" aria-label="Planta" tabindex="-1">
       <div class="card">
-        <div class="card-h h-celeste"><h2>Añadir habitación</h2><span class="subtitle">Planta e Interconsulta</span></div>
+        <div class="card-h h-celeste"><h2>Habitación</h2><span class="subtitle">Añadir nueva</span></div>
         <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr 2fr auto">
           <div><label for="p-room">Habitación</label><input id="p-room" placeholder="Ej. 421-2" autocomplete="off"></div>
           <div><label for="p-desc">Descripción</label><input id="p-desc" placeholder="Resumen clínico, motivo…"></div>
