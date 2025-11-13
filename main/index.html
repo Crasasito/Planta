@@ -559,36 +559,48 @@ main.container{
   /* Tarjetas de Planta, Interconsultas, Completados, Tareas y Directorio */
   .list > li.item{
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-areas:
-      "pill text"
-      "actions actions";
-    column-gap: 12px;
-    row-gap: 6px;
+    grid-template-columns: auto minmax(0, 1fr) auto; /* pill | texto | iconos */
+    column-gap: 8px;
     align-items: center;
   }
 
-  /* Pastilla (habitación / fecha / teléfono) a la izquierda */
+  /* Pastilla de habitación / fecha: un poco más pequeña */
   .list > li.item > span.pill{
-    grid-area: pill;
-    justify-self: flex-start;
-    margin: 0;
+    padding: 4px 10px;          /* antes más grande */
+    font-size: 0.9rem;         /* reduce ~30% el tamaño aparente */
+    white-space: nowrap;
   }
 
-  /* Descripción a la derecha, usando TODO el ancho posible */
+  /* Descripción: ocupa todo el espacio central, puede seguir en la línea de abajo */
   .list > li.item > .text{
-    grid-area: text;
     width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.25;
   }
 
-  /* Botones abajo, ocupando todo el ancho */
+  /* Bloque de iconos a la derecha, algo más pequeños */
   .list > li.item > .actions{
-    grid-area: actions;
-    justify-content: flex-start;
-    margin-top: 4px;
+    justify-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .list > li.item > .actions button,
+  .list > li.item > .actions .btn{
+    width: 32px;
+    height: 32px;              /* ~30% más pequeños que los típicos 44 px */
+    padding: 0;
+    border-radius: 14px;
+  }
+
+  .list > li.item > .actions svg{
+    width: 16px;
+    height: 16px;              /* icono más pequeño dentro del botón */
   }
 }
 /* REGION: CSS-ITEMS-MOBILE-END */
+
 
 </style>
 </head>
