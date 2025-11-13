@@ -566,19 +566,19 @@ main.container{
 
   /* Pastilla de habitación / fecha: un poco más pequeña */
   .list > li.item > span.pill{
-    padding: 4px 10px;          /* antes más grande */
-    font-size: 0.9rem;         /* reduce ~30% el tamaño aparente */
+    padding: 3px 9px;
+    font-size: 0.9rem;
     white-space: nowrap;
   }
 
-  /* Descripción: ocupa todo el espacio central, puede seguir en la línea de abajo */
+  /* Descripción: ocupa el centro, puede seguir en la fila de abajo si es larga */
   .list > li.item > .text{
     width: 100%;
     font-size: 0.95rem;
     line-height: 1.25;
   }
 
-  /* Bloque de iconos a la derecha, algo más pequeños */
+  /* Bloque de iconos a la derecha */
   .list > li.item > .actions{
     justify-self: flex-end;
     display: flex;
@@ -586,20 +586,28 @@ main.container{
     gap: 4px;
   }
 
+  /* Botones: recuadro más ajustado, ~30% más pequeño que el tamaño “grande” típico */
   .list > li.item > .actions button,
   .list > li.item > .actions .btn{
-    width: 32px;
-    height: 32px;              /* ~30% más pequeños que los típicos 44 px */
+    width: 28px;
+    height: 28px;
     padding: 0;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
+  /* Iconos dentro del botón: también más pequeños */
   .list > li.item > .actions svg{
-    width: 16px;
-    height: 16px;              /* icono más pequeño dentro del botón */
+    width: 14px;
+    height: 14px;
+  }
+
+  /* PRIMER botón de la fila (el de las dos flechas) aún más pequeño (~40% menos) */
+  .list > li.item > .actions button:first-child svg{
+    transform: scale(0.7);
   }
 }
 /* REGION: CSS-ITEMS-MOBILE-END */
+
 
 
 </style>
