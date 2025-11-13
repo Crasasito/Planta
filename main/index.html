@@ -1329,7 +1329,7 @@ const fmtDate = (iso) => {
     const d = new Date(iso + 'T00:00:00');
 
     if (isMobile) {
-      // 📱 ANDROID (pantallas pequeñas): L, 12 NOV
+      // 📱 ANDROID / móviles: L, 12 NOV
       const letrasDia = ['D', 'L', 'M', 'X', 'J', 'V', 'S']; // 0=Dom,1=Lun...
       const letra = letrasDia[d.getDay()];
       const dia = String(d.getDate()).padStart(2, '0');
@@ -1340,7 +1340,7 @@ const fmtDate = (iso) => {
 
       return `${letra}, ${dia} ${mes}`;
     } else {
-      // 🖥️ PC (como antes): MIÉ, 12 NOV
+      // 🖥️ PC: formato "de antes": LUN, 12 NOV
       return new Intl.DateTimeFormat('es-ES', {
         weekday: 'short',
         day: '2-digit',
@@ -1350,29 +1350,6 @@ const fmtDate = (iso) => {
         .toUpperCase()
         .replace(/\./g, '');
     }
-  } catch {
-    return iso;
-  }
-};
-
-  try {
-    const d = new Date(iso + 'T00:00:00');
-
-    // Letras para cada día (getDay(): 0=Dom,1=Lun,...6=Sáb)
-    const letrasDia = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
-    const letra = letrasDia[d.getDay()];
-
-    // Día (2 dígitos)
-    const dia = String(d.getDate()).padStart(2, '0');
-
-    // Mes corto en español, en mayúsculas y sin punto
-    const mes = new Intl.DateTimeFormat('es-ES', { month: 'short' })
-      .format(d)
-      .toUpperCase()
-      .replace(/\./g, '');
-
-    // Formato final: L, 12 NOV
-    return `${letra}, ${dia} ${mes}`;
   } catch {
     return iso;
   }
