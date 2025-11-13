@@ -1513,7 +1513,7 @@ function renderDir(){
   const wrap=$('#d-list-wrap'); if(!wrap) return;
   wrap.innerHTML='';
   let arr=[...dirCache];
- arr.sort((a,b)=>
+arr.sort((a,b)=>
   (a.seccion||'').localeCompare(b.seccion||'')
   || (a.nombre||'').localeCompare(b.nombre||'')
 );
