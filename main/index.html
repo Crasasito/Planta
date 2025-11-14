@@ -1509,121 +1509,135 @@ function phonesToChips(raw){
 }
 
 function renderDir(){
-  const v=norm($('#d-q')?.value||'');
-  const wrap=$('#d-list-wrap'); if(!wrap) return;
-  wrap.innerHTML='';
-  let arr=[...dirCache];
+  const v = norm($('#d-q')?.value || '');
+  const wrap = $('#d-list-wrap'); 
+  if (!wrap) return;
+  wrap.innerHTML = '';
 
-  // Orden base: primero SECCIÓN, luego NOMBRE
-  arr.sort((a,b)=>
-    (a.seccion||'').localeCompare(b.seccion||'')
-    || (a.nombre||'').localeCompare(b.nombre||'')
-  );
+  // 1) Partimos del cache actual
+  const arr = [...dirCache];
 
-  const filtered=v
-    ? arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v)))
+  // 2) Filtro por búsqueda (sección, nombre, teléfono, notas)
+  const filtered = v
+    ? arr.filter(x =>
+        [x.seccion, x.nombre, String(x.telefono || ''), x.notas]
+          .some(y => norm(y).includes(v))
+      )
     : arr;
 
-  const groups = new Map();
+  // 3) Agrupar por SECCIÓN
+  const secMap = new Map();
   for (const x of filtered) {
-     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
-    const base = (x.seccion && String(x.seccion)) || String(x.nombre || '');
-    const k = /^[A-Za-zÁÉÍÓÚÜÑ]/.test(base)
-      ? norm(base)[0].toUpperCase()
-      : '#';
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(x);
+    const secName = (x.seccion && String(x.seccion).trim()) || 'Sin sección';
+    if (!secMap.has(secName)) secMap.set(secName, []);
+    secMap.get(secName).push(x);
   }
 
-  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
-  const az=$('#d-az');
-  if(az){
-    az.innerHTML=letters
-      .map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`)
+  // 4) Convertir a array de grupos { letter, seccion, items[] }
+  let groups = Array.from(secMap.entries()).map(([secName, list]) => {
+    // Dentro de cada sección, ordenar por NOMBRE
+    list.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es'));
+
+    const base = secName;
+    const ch = /^[A-Za-zÁÉÍÓÚÜÑ]/.test(base)
+      ? norm(base)[0].toUpperCase()
+      : '#';
+
+    return { letter: ch, seccion: secName, items: list };
+  });
+
+  // 5) Ordenar las SECCIONES alfabéticamente por su nombre
+  groups.sort((a, b) => a.seccion.localeCompare(b.seccion, 'es'));
+
+  // 6) Índice A-Z de la derecha (mantenemos tu comportamiento)
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
+  const az = $('#d-az');
+  if (az) {
+    az.innerHTML = letters
+      .map(ch => `<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`)
       .join('');
   }
 
-  // ... resto de renderDir igual
-}
+  // 7) Pintar secciones: por cada letra creamos un <section>,
+  //    y dentro, un bloque por cada SECCIÓN que empieza por esa letra
+  let total = 0;
+  let firstLetterWithData = null;
 
-  let total=0;
-  let firstLetterWithData=null;
+  for (const ch of letters) {
+    const groupsForLetter = groups.filter(g => g.letter === ch);
+    if (!groupsForLetter.length) continue;
+    if (!firstLetterWithData) firstLetterWithData = ch;
 
-  for(const ch of letters){
-    const list=groups.get(ch)||[];
-    if(!list.length) continue;
-    if(!firstLetterWithData) firstLetterWithData=ch;
-    total+=list.length;
+    const sec = document.createElement('section');
+    sec.id = `sec-${ch}`;
 
-    const sec=document.createElement('section');
-    sec.id=`sec-${ch}`;
-    sec.setAttribute('aria-labelledby',`lbl-${ch}`);
+    groupsForLetter.forEach((g, idx) => {
+      total += g.items.length;
 
-    const header=document.createElement('div');
-    header.className='section-tag';
-    header.id=`lbl-${ch}`;
-    const mainSec=list[0]?.seccion || 'Sin sección';
-    header.innerHTML=
-      `<div class="section-main">
-         <div class="section-letter-pill"><span>${ch}</span></div>
-         <div class="section-meta">
-           <span class="section-name">${esc(mainSec)}</span>
-           <span class="count">${list.length}</span>
-         </div>
-       </div>`;
-    sec.appendChild(header);
+      // Cabecera de la SECCIÓN (A · Anatomía Patológica · 5)
+      const header = document.createElement('div');
+      header.className = 'section-tag';
+      const headerId = `lbl-${ch}-${idx}`;
+      header.id = headerId;
+      if (idx === 0) {
+        // la primera sección de esa letra etiqueta al <section> para accesibilidad
+        sec.setAttribute('aria-labelledby', headerId);
+      }
 
-    const ul=document.createElement('ul');
-    ul.className='list';
-
-    list.forEach(x=>{
-      const li=document.createElement('li');
-      li.className='item';
-      li.innerHTML=
-        `<div class="text">
-           <div class="line">
-             <strong>${esc(x.nombre||'')}</strong>
+      header.innerHTML =
+        `<div class="section-main">
+           <div class="section-letter-pill"><span>${ch}</span></div>
+           <div class="section-meta">
+             <span class="section-name">${esc(g.seccion)}</span>
+             <span class="count">${g.items.length}</span>
            </div>
-           <div class="line dir-phones">${phonesToChips(x.telefono)}</div>
-           ${x.notas ? `<div class="muted dir-notes">${esc(x.notas)}</div>` : ''}
-         </div>
-         <div class="toolbar actions"></div>`;
-      const a=li.querySelector('.actions');
-      const edit=btn('',()=>editDir(x),'btn icon');
-      edit.title='Editar';
-      edit.innerHTML=`<svg class="ico" aria-hidden="true"><use href="#i-edit"/></svg>`;
-      const delBtn=btn('✖',()=>del('directorio',x.__id),'btn icon');
-      delBtn.title='Eliminar';
-      a.append(edit,delBtn);
-      ul.appendChild(li);
+         </div>`;
+      sec.appendChild(header);
+
+      // Lista de contactos de ESA sección
+      const ul = document.createElement('ul');
+      ul.className = 'list';
+
+      g.items.forEach(x => {
+        const li = document.createElement('li');
+        li.className = 'item';
+        li.innerHTML =
+          `<div class="text">
+             <div class="line">
+               <strong>${esc(x.nombre || '')}</strong>
+             </div>
+             <div class="line dir-phones">${phonesToChips(x.telefono)}</div>
+             ${x.notas ? `<div class="muted dir-notes">${esc(x.notas)}</div>` : ''}
+           </div>
+           <div class="toolbar actions"></div>`;
+
+        const a = li.querySelector('.actions');
+        const edit = btn('', () => editDir(x), 'btn icon');
+        edit.title = 'Editar';
+        edit.innerHTML = `<svg class="ico" aria-hidden="true"><use href="#i-edit"/></svg>`;
+        const delBtn = btn('✖', () => del('directorio', x.__id), 'btn icon');
+        delBtn.title = 'Eliminar';
+        a.append(edit, delBtn);
+
+        ul.appendChild(li);
+      });
+
+      sec.appendChild(ul);
     });
 
-    sec.appendChild(ul);
     wrap.appendChild(sec);
   }
 
-  $('#d-count').textContent=total+" registros";
-  $('#d-empty').style.display=total?'none':'block';
+  // 8) Contador y mensaje "vacío"
+  $('#d-count').textContent = total + " registros";
+  $('#d-empty').style.display = total ? 'none' : 'block';
 
-  if(firstLetterWithData && az){
-    const firstLink=az.querySelector(`a[href="#sec-${firstLetterWithData}"]`);
-    if(firstLink) firstLink.classList.add('is-active');
+  // 9) Marcar la primera letra con datos en el índice A-Z
+  if (firstLetterWithData && az) {
+    const firstLink = az.querySelector(`a[href="#sec-${firstLetterWithData}"]`);
+    if (firstLink) firstLink.classList.add('is-active');
   }
-
-const editDir=(x)=>openEdit(
-  [
-    {l:'Sección',id:'d_sec',v:x.seccion||''},
-    {l:'Nombre',id:'d_nom',v:x.nombre||''},
-    {l:'Teléfonos',id:'d_tel',v:x.telefono||''},
-    {l:'Notas',id:'d_not',v:x.notas||''}
-  ],
-  async()=>upd('directorio',x.__id,{
-    seccion:$('#d_sec').value,
-    nombre:$('#d_nom').value,
-    telefono:$('#d_tel').value,
-    notas:$('#d_not').value
-  })
-);
+}
 
 function setupDir(uid){
   $('#d-add').onclick=async()=>{
