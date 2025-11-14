@@ -752,7 +752,7 @@ main.container{
 </head>
 
 <body>
-<!-- ===== SVG sprite · Nav Premium One-UI style v5 (formas rediseñadas) ===== -->
+<!-- ===== SVG sprite · Nav Premium One-UI style v6 (limpio) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
     <!-- Gradientes base para iconos de acción -->
@@ -772,16 +772,10 @@ main.container{
       <stop offset="0" stop-color="#ffeaa8"/>
       <stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
-<!-- Relleno degradado para el reloj de arena -->
-<linearGradient id="hourglassFill" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0"   stop-color="#fee2e2"/>  <!-- coral muy claro -->
-  <stop offset="0.5" stop-color="#fb7185"/>  <!-- coral principal -->
-  <stop offset="1"   stop-color="#be123c"/>  <!-- coral profundo -->
-</linearGradient>
-       <!-- Platos circulares de navegación · estilo Material You pastel -->
+
+    <!-- Platos circulares de navegación · Material You pastel -->
     <radialGradient id="navIndigo" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
-      <!-- Planta: lavanda/violeta suave -->
       <stop offset="0"    stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#eee5ff"/>
       <stop offset="1"    stop-color="#a855f7"/>
@@ -789,7 +783,6 @@ main.container{
 
     <radialGradient id="navAmber" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
-      <!-- Tareas: coral pastel -->
       <stop offset="0"    stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#ffe4e6"/>
       <stop offset="1"    stop-color="#fb7185"/>
@@ -797,7 +790,6 @@ main.container{
 
     <radialGradient id="navLavender" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
-      <!-- Directorio: celeste / azul claro -->
       <stop offset="0"    stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#e0f2fe"/>
       <stop offset="1"    stop-color="#38bdf8"/>
@@ -805,12 +797,10 @@ main.container{
 
     <radialGradient id="navTeal" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
-      <!-- Biblioteca: verde-amarillo / turquesa claro -->
       <stop offset="0"    stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#fef9c3"/>
       <stop offset="1"    stop-color="#22c55e"/>
     </radialGradient>
-
 
     <!-- Aro metálico exterior -->
     <radialGradient id="ringMetal" cx="0.5" cy="0" r="1">
@@ -825,30 +815,20 @@ main.container{
       <stop offset="0" stop-color="#020617"/>
       <stop offset="1" stop-color="#4f46e5"/>
     </linearGradient>
-    <linearGradient id="strokeSticky" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7c2d12"/>
-      <stop offset="1" stop-color="#f97316"/>
+    <linearGradient id="strokeTools" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9f1239"/>
+      <stop offset="1" stop-color="#fb7185"/>
     </linearGradient>
     <linearGradient id="strokePhone" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#020617"/>
       <stop offset="1" stop-color="#7c3aed"/>
-       <!-- Relleno degradado para el teléfono -->
-<linearGradient id="phoneFill" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0"   stop-color="#eef2ff"/>
-  <stop offset="0.45" stop-color="#e0f2fe"/>
-  <stop offset="1"   stop-color="#7c3aed"/>
-</linearGradient>
     </linearGradient>
     <linearGradient id="strokeBooks" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#020617"/>
       <stop offset="1" stop-color="#059669"/>
     </linearGradient>
 
-    <!-- Rellenos para nota y libros -->
-    <linearGradient id="noteFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff8ee"/>
-      <stop offset="1" stop-color="#fed7aa"/>
-    </linearGradient>
+    <!-- Rellenos para libros / reloj / teléfono -->
     <linearGradient id="book1" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#e0f2fe"/>
       <stop offset="1" stop-color="#60a5fa"/>
@@ -861,6 +841,16 @@ main.container{
       <stop offset="0" stop-color="#dcfce7"/>
       <stop offset="1" stop-color="#22c55e"/>
     </linearGradient>
+    <linearGradient id="hourglassFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"   stop-color="#fee2e2"/>
+      <stop offset="0.5" stop-color="#fb7185"/>
+      <stop offset="1"   stop-color="#be123c"/>
+    </linearGradient>
+    <linearGradient id="phoneFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"   stop-color="#eef2ff"/>
+      <stop offset="0.45" stop-color="#e0f2fe"/>
+      <stop offset="1"   stop-color="#7c3aed"/>
+    </linearGradient>
 
     <!-- Sombras / glow -->
     <filter id="navShadow" x="-30%" y="-30%" width="160%" height="160%" filterUnits="userSpaceOnUse">
@@ -869,169 +859,152 @@ main.container{
     <filter id="iconGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="0" stdDeviation="1.0" flood-color="#e5e7eb" flood-opacity="0.95"/>
     </filter>
-
-    <!-- ===== NAV ICONS (formas nuevas, 90% inner circle) ===== -->
-
-    <!-- PLANTA – Estetoscopio simétrico -->
-   <!-- Icono 1: Planta (Fonendoscopio minimalista) -->
-<symbol id="i-stetho" viewBox="0 0 24 24">
-  <!-- Círculo de fondo con doble borde -->
-  <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
-  <circle cx="12" cy="12" r="9.8" fill="none" stroke="rgba(15,23,42,0.18)" stroke-width="0.9" filter="url(#navShadow)"/>
-  <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3" fill="#ffffff" opacity="0.7"/>
-  <!-- Fonendoscopio con trazo continuo gradiente -->
-  <g fill="none" stroke="url(#strokeStetho)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" filter="url(#iconGlow)">
-    <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>   <!-- tubo principal en U -->
-    <path d="M9.8 7.6V5.4"/>                           <!-- rama izquierda hacia auricular -->
-    <path d="M14.2 7.6V5.4"/>                          <!-- rama derecha hacia auricular -->
-    <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>      <!-- recorrido hacia el pecho -->
-    <circle cx="16.4" cy="17.1" r="2.2"/>               <!-- cabeza del fonendo (contorno) -->
-  </g>
-</symbol>
-
-<!-- Icono 2: Tareas (reloj de arena minimalista coral, centrado) -->
-<!-- Icono 2: Tareas (reloj de arena minimalista coral, relleno + borde) -->
-<symbol id="i-tools" viewBox="0 0 24 24">
-  <!-- Plato coral de fondo -->
-  <circle cx="12" cy="12" r="11"
-          fill="url(#navAmber)"/>
-  <circle cx="12" cy="12" r="9.8"
-          fill="none"
-          stroke="rgba(15,23,42,0.16)"
-          stroke-width="0.9"
-          filter="url(#navShadow)"/>
-  <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
-           fill="#ffffff" opacity="0.72"/>
-
-  <!-- Reloj de arena en primer plano -->
-  <g filter="url(#iconGlow)">
-    <!-- barra superior -->
-    <rect x="9" y="6.2" width="6" height="1.6" rx="0.8"
-          fill="url(#hourglassFill)"/>
-    <!-- barra inferior -->
-    <rect x="9" y="16.2" width="6" height="1.6" rx="0.8"
-          fill="url(#hourglassFill)"/>
-
-    <!-- cuerpo del reloj (figura central rellena) -->
-    <path
-      d="M10 7.8h4
-         c0.6 0 1 .4 1 1
-         c0 0.3-0.1 0.6-0.3 0.9L13.4 12
-         l1.3 2.3c0.2 0.3 0.3 0.6 0.3 0.9
-         c0 0.6-0.4 1-1 1h-4
-         c-0.6 0-1-0.4-1-1
-         c0-0.3 0.1-0.6 0.3-0.9L10.6 12
-         9.3 9.7C9.1 9.4 9 9.1 9 8.8
-         c0-0.6 0.4-1 1-1z"
-      fill="url(#hourglassFill)"
-      stroke="rgba(15,23,42,0.35)"
-      stroke-width="0.7"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </g>
-</symbol>
-
-
-
-    <!-- Directorio: teléfono minimalista azul pastel -->
-   <!-- Icono 3: Directorio (teléfono minimalista con relleno) -->
-<symbol id="i-handset" viewBox="0 0 24 24">
-  <!-- plato lavanda / celeste -->
-  <circle cx="12" cy="12" r="11"
-          fill="url(#navLavender)"/>
-  <circle cx="12" cy="12" r="9.8"
-          fill="none"
-          stroke="rgba(15,23,42,0.18)"
-          stroke-width="0.9"
-          filter="url(#navShadow)"/>
-  <!-- halo superior glass -->
-  <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
-           fill="#ffffff" opacity="0.72"/>
-
-  <!-- Teléfono centrado al 70% con relleno degradado -->
-  <g filter="url(#iconGlow)"
-     transform="translate(3.6 3.6) scale(0.7)">
-    <path
-      d="
-        M2.25 4.5
-        l4.5 -2.25
-        L9   5.25
-        L7.5 6.75
-        a11.5 11.5 0 0 0 9.75 9.75
-        l1.5 -1.5
-        3    2.25
-        -2.25 4.5
-        c-0.27 0.54 -0.88 0.78 -1.45 0.65
-        A17.56 17.56 0 0 1 2.1 6
-        C1.97 5.43 2.21 4.82 2.25 4.5
-        Z"
-      fill="url(#phoneFill)"
-      stroke="url(#strokePhone)"
-      stroke-width="1.9"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      vector-effect="non-scaling-stroke"
-    />
-  </g>
-
-  <!-- pequeño brillo extra en la parte superior del auricular -->
-  <path d="M8 7.2c1.6-1 3.3-1.1 5-0.9"
-        fill="none"
-        stroke="rgba(255,255,255,0.65)"
-        stroke-width="1.1"
-        stroke-linecap="round"
-        opacity="0.9"/>
-</symbol>
-
-
-
-<!-- Icono 4: Biblioteca (Tres libros minimalistas centrados) -->
-<symbol id="i-books" viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="11" fill="url(#navTeal)"/>
-  <circle cx="12" cy="12" r="9.8"
-          fill="none"
-          stroke="rgba(15,23,42,0.16)"
-          stroke-width="0.9"
-          filter="url(#navShadow)"/>
-  <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
-           fill="#ffffff" opacity="0.72"/>
-
-  <!-- Tres libros centrados (ancho total ~10.4, centrado en x=12) -->
-  <g stroke="url(#strokeBooks)"
-     stroke-width="1.9"
-     stroke-linejoin="round"
-     filter="url(#iconGlow)">
-    <!-- libro izquierdo -->
-    <rect x="6.8"  y="7.2" width="3.2" height="9.8" rx="0.9" fill="url(#book1)"/>
-    <!-- libro central -->
-    <rect x="10.4" y="6.9" width="3.2" height="10.2" rx="0.9" fill="url(#book2)"/>
-    <!-- libro derecho -->
-    <rect x="14.0" y="7.3" width="3.2" height="9.6" rx="0.9" fill="url(#book3)"/>
-  </g>
-</symbol>
-
-
-
-    <!-- ===== ICONOS DE ACCIÓN (se mantienen) ===== -->
-
-    <symbol id="i-swap" viewBox="0 0 24 24">
-      <path fill="url(#gInd)"
-            d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
-      <path fill="url(#gOra)"
-            d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
-    </symbol>
-
-    <symbol id="i-edit" viewBox="0 0 24 24">
-      <path fill="url(#gLav)"
-            d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-    </symbol>
-
-    <symbol id="i-check" viewBox="0 0 24 24">
-      <path fill="url(#gGold)"
-            d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
-    </symbol>
   </defs>
+
+  <!-- ===== NAV ICONS ===== -->
+
+  <!-- 1 · PLANTA – Estetoscopio -->
+  <symbol id="i-stetho" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
+    <circle cx="12" cy="12" r="9.8"
+            fill="none"
+            stroke="rgba(15,23,42,0.18)"
+            stroke-width="0.9"
+            filter="url(#navShadow)"/>
+    <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
+             fill="#ffffff" opacity="0.7"/>
+    <g fill="none"
+       stroke="url(#strokeStetho)"
+       stroke-width="1.9"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       filter="url(#iconGlow)">
+      <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>
+      <path d="M9.8 7.6V5.4"/>
+      <path d="M14.2 7.6V5.4"/>
+      <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
+      <circle cx="16.4" cy="17.1" r="2.2"/>
+    </g>
+  </symbol>
+
+  <!-- 2 · TAREAS – Reloj de arena: relleno + borde visible -->
+  <symbol id="i-tools" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="11" fill="url(#navAmber)"/>
+    <circle cx="12" cy="12" r="9.8"
+            fill="none"
+            stroke="rgba(15,23,42,0.16)"
+            stroke-width="0.9"
+            filter="url(#navShadow)"/>
+    <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
+             fill="#ffffff" opacity="0.72"/>
+
+    <!-- Reloj muy contrastado: si aquí no se ve, es CSS externo -->
+    <g filter="url(#iconGlow)">
+      <!-- barras superior e inferior -->
+      <rect x="9" y="6.2" width="6" height="1.6" rx="0.8"
+            fill="url(#hourglassFill)"/>
+      <rect x="9" y="16.2" width="6" height="1.6" rx="0.8"
+            fill="url(#hourglassFill)"/>
+
+      <!-- cuerpo del reloj -->
+      <path d="M10 7.8h4
+               c0.6 0 1 .4 1 1
+               c0 0.3-0.1 0.6-0.3 0.9L13.4 12
+               l1.3 2.3c0.2 0.3 0.3 0.6 0.3 0.9
+               c0 0.6-0.4 1-1 1h-4
+               c-0.6 0-1-0.4-1-1
+               c0-0.3 0.1-0.6 0.3-0.9L10.6 12
+               9.3 9.7C9.1 9.4 9 9.1 9 8.8
+               c0-0.6 0.4-1 1-1z"
+            fill="url(#hourglassFill)"
+            stroke="rgba(15,23,42,0.50)"
+            stroke-width="0.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+    </g>
+  </symbol>
+
+  <!-- 3 · DIRECTORIO – Teléfono -->
+  <symbol id="i-handset" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
+    <circle cx="12" cy="12" r="9.8"
+            fill="none"
+            stroke="rgba(15,23,42,0.18)"
+            stroke-width="0.9"
+            filter="url(#navShadow)"/>
+    <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
+             fill="#ffffff" opacity="0.72"/>
+
+    <g filter="url(#iconGlow)"
+       transform="translate(3.6 3.6) scale(0.7)">
+      <path d="M2.25 4.5
+               l4.5 -2.25
+               L9   5.25
+               L7.5 6.75
+               a11.5 11.5 0 0 0 9.75 9.75
+               l1.5 -1.5
+               3    2.25
+               -2.25 4.5
+               c-0.27 0.54 -0.88 0.78 -1.45 0.65
+               A17.56 17.56 0 0 1 2.1 6
+               C1.97 5.43 2.21 4.82 2.25 4.5
+               Z"
+            fill="url(#phoneFill)"
+            stroke="url(#strokePhone)"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            vector-effect="non-scaling-stroke"/>
+    </g>
+
+    <!-- pequeño brillo extra -->
+    <path d="M8 7.2c1.6-1 3.3-1.1 5-0.9"
+          fill="none"
+          stroke="rgba(255,255,255,0.65)"
+          stroke-width="1.1"
+          stroke-linecap="round"
+          opacity="0.9"/>
+  </symbol>
+
+  <!-- 4 · BIBLIOTECA – Tres libros centrados -->
+  <symbol id="i-books" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="11" fill="url(#navTeal)"/>
+    <circle cx="12" cy="12" r="9.8"
+            fill="none"
+            stroke="rgba(15,23,42,0.16)"
+            stroke-width="0.9"
+            filter="url(#navShadow)"/>
+    <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
+             fill="#ffffff" opacity="0.72"/>
+
+    <g stroke="url(#strokeBooks)"
+       stroke-width="1.9"
+       stroke-linejoin="round"
+       filter="url(#iconGlow)">
+      <!-- ancho total ≈ 9.9, centrado alrededor de x≈12 -->
+      <rect x="7.0"   y="7.2" width="3.3" height="9.8" rx="0.9" fill="url(#book1)"/>
+      <rect x="10.35" y="6.9" width="3.3" height="10.2" rx="0.9" fill="url(#book2)"/>
+      <rect x="13.7"  y="7.3" width="3.3" height="9.6" rx="0.9" fill="url(#book3)"/>
+    </g>
+  </symbol>
+
+  <!-- ICONOS DE ACCIÓN -->
+  <symbol id="i-swap" viewBox="0 0 24 24">
+    <path fill="url(#gInd)"
+          d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
+    <path fill="url(#gOra)"
+          d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
+  </symbol>
+
+  <symbol id="i-edit" viewBox="0 0 24 24">
+    <path fill="url(#gLav)"
+          d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+  </symbol>
+
+  <symbol id="i-check" viewBox="0 0 24 24">
+    <path fill="url(#gGold)"
+          d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
+  </symbol>
 </svg>
 
 <header class="appbar" role="banner">
