@@ -753,10 +753,10 @@ main.container{
 </head>
 
 <body>
-<!-- ===== SVG sprite · vPremium v2 ===== -->
+<!-- ===== SVG sprite · Nav Premium One-UI style ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
-    <!-- Gradientes utilitarios (botones de acción pequeños) -->
+    <!-- Base gradients -->
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#d9cbff"/>
       <stop offset="1" stop-color="#8B5CF6"/>
@@ -774,7 +774,7 @@ main.container{
       <stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
 
-    <!-- Platos metálicos de navegación -->
+    <!-- Platos circulares -->
     <radialGradient id="navIndigo" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
       <stop offset="0" stop-color="#ffffff"/>
@@ -818,57 +818,73 @@ main.container{
       <stop offset="1" stop-color="#059669"/>
     </linearGradient>
 
-    <!-- Sombra suave estilo One UI -->
+    <!-- Colores de los tres libros -->
+    <linearGradient id="book1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="book2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ede9fe"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="book3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dcfce7"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+
+    <!-- Relleno de nota adhesiva -->
+    <linearGradient id="noteFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fed7aa"/>
+    </linearGradient>
+
+    <!-- Sombras tipo One UI -->
     <filter id="navShadow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="0" dy="5" stdDeviation="4"
         flood-color="#0f172a" flood-opacity="0.22"/>
     </filter>
-
-    <!-- Glow local para el pictograma -->
     <filter id="iconGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="0" stdDeviation="1.1"
         flood-color="#e5e7eb" flood-opacity="0.8"/>
     </filter>
 
-    <!-- ===== ICONOS PRINCIPALES NAV ===== -->
+    <!-- ===== ICONOS NAV PRINCIPALES ===== -->
 
-    <!-- Fonendoscopio (Planta) -->
+    <!-- Planta: fonendoscopio -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
-      <!-- plato base -->
+      <!-- plato -->
       <circle cx="12" cy="12" r="11"
               fill="url(#navIndigo)"
               filter="url(#navShadow)"/>
-      <!-- anillo metálico -->
       <circle cx="12" cy="12" r="9.8"
               fill="none"
               stroke="rgba(15,23,42,0.18)"
               stroke-width="0.9"/>
-      <!-- halo superior -->
-      <ellipse cx="8.2" cy="6.1" rx="5.4" ry="3"
-               fill="#ffffff" opacity="0.68"/>
+      <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
+               fill="#ffffff" opacity="0.7"/>
 
-      <!-- pictograma -->
+      <!-- fonendo -->
       <g fill="none"
          stroke="url(#strokeStetho)"
          stroke-width="1.9"
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <!-- cuerpo -->
-        <path d="M7.6 7.4v3.4a4.4 4.4 0 0 0 8.8 0V7.4"/>
+        <!-- cuerpo U -->
+        <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>
         <!-- orejeras -->
-        <path d="M9.6 7.4V5.4"/>
-        <path d="M14.4 7.4V5.4"/>
-        <!-- tubo hacia campana -->
-        <path d="M12 13.5v2.5a3.7 3.7 0 0 0 3.7 3.7"/>
+        <path d="M9.8 7.6V5.4"/>
+        <path d="M14.2 7.6V5.4"/>
+        <!-- tubo a campana -->
+        <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
         <!-- aro campana -->
-        <circle cx="16.5" cy="17.2" r="2.3"/>
+        <circle cx="16.4" cy="17.1" r="2.2"/>
       </g>
       <!-- brillo campana -->
-      <circle cx="16.1" cy="16.7" r="0.75" fill="#F9FAFB"/>
+      <circle cx="16" cy="16.7" r="0.75" fill="#F9FAFB"/>
     </symbol>
 
-    <!-- Reloj de arena (Tareas) -->
+    <!-- Tareas: nota adhesiva / post-it -->
     <symbol id="i-tools" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
               fill="url(#navAmber)"
@@ -877,32 +893,39 @@ main.container{
               fill="none"
               stroke="rgba(15,23,42,0.16)"
               stroke-width="0.9"/>
-      <ellipse cx="8.8" cy="6.1" rx="5.1" ry="2.9"
+      <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
                fill="#ffffff" opacity="0.7"/>
 
-      <g stroke="url(#strokeTools)"
-         stroke-width="1.8"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         fill="none"
-         filter="url(#iconGlow)">
-        <!-- barras -->
-        <rect x="8" y="7.1" width="8" height="2.1" rx="1"
-              fill="#FEFCE8" stroke="none"/>
-        <rect x="8" y="14.8" width="8" height="2.1" rx="1"
-              fill="#FEFCE8" stroke="none"/>
-        <!-- estructura reloj -->
-        <path d="M9 9.2 12 12 9 14.8"/>
-        <path d="M15 9.2 12 12 15 14.8"/>
+      <g filter="url(#iconGlow)">
+        <!-- nota -->
+        <path d="M8.4 8h7.2a1 1 0 0 1 1 1v5.4l-2.1 2.1H9.4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+              fill="url(#noteFill)"
+              stroke="url(#strokeTools)"
+              stroke-width="1.1"
+              stroke-linejoin="round"/>
+        <!-- esquina doblada -->
+        <path d="M14.5 15.6h1.9l-1.9 1.9z"
+              fill="#fed7aa"
+              stroke="url(#strokeTools)"
+              stroke-width="0.9"
+              stroke-linejoin="round"/>
+        <!-- líneas de texto -->
+        <path d="M9.7 10.2h3.9M9.7 11.9h3.1"
+              stroke="url(#strokeTools)"
+              stroke-width="0.9"
+              stroke-linecap="round"
+              fill="none"/>
+        <!-- pequeño check -->
+        <path d="M10 13.7l0.9 0.9 1.5-1.5"
+              stroke="url(#strokeTools)"
+              stroke-width="0.95"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"/>
       </g>
-      <!-- arena -->
-      <path d="M9.2 9.5h5.6L13.2 11h-2.4z"
-            fill="#FDBA74" opacity="0.96"/>
-      <path d="M11.1 12.7 12 13.5l2 1.7h-3.8z"
-            fill="#FDBA74" opacity="0.96"/>
     </symbol>
 
-    <!-- Teléfono (Directorio) -->
+    <!-- Directorio: teléfono centrado -->
     <symbol id="i-handset" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
               fill="url(#navLavender)"
@@ -911,7 +934,7 @@ main.container{
               fill="none"
               stroke="rgba(15,23,42,0.18)"
               stroke-width="0.9"/>
-      <ellipse cx="8.7" cy="6.1" rx="5.2" ry="2.9"
+      <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
                fill="#ffffff" opacity="0.7"/>
 
       <g fill="none"
@@ -920,11 +943,14 @@ main.container{
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <path d="M7.8 7.4 9.9 5.6a1.6 1.6 0 0 1 2.1.1l1.7 1.7a1.7 1.7 0 0 1 .1 2.2l-.9 1a1.7 1.7 0 0 0 .1 2.2l1.8 1.8a1.7 1.7 0 0 0 2.2.1l1-.9a1.7 1.7 0 0 1 2.2.1l1.7 1.7a1.5 1.5 0 0 1 .1 2.1l-1.3 1.9c-1.1 1.4-2.7 2.1-4.3 1.8-2.4-.3-4.8-1.7-6.9-3.7-2.1-2.1-3.4-4.5-3.7-6.9-.2-1.6.4-3.3 1.8-4.3Z"/>
+        <path d="M8 7.6 10 5.7a1.6 1.6 0 0 1 2.1.1l1.7 1.7a1.8 1.8 0 0 1 .1 2.3l-.9 1
+                 a1.7 1.7 0 0 0 .1 2.3l1.8 1.8a1.7 1.7 0 0 0 2.3.1l1-.9a1.8 1.8 0 0 1 2.3.1l1.7 1.7
+                 a1.5 1.5 0 0 1 .1 2.1l-1.3 1.9c-1.1 1.4-2.8 2.1-4.4 1.8-2.5-.3-4.9-1.7-7.1-3.9
+                 -2.2-2.2-3.6-4.6-3.9-7.1-.2-1.6.4-3.3 1.8-4.4Z"/>
       </g>
     </symbol>
 
-    <!-- Libros (Biblioteca) -->
+    <!-- Biblioteca: tres libros verticales, cada uno de un color -->
     <symbol id="i-books" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
               fill="url(#navTeal)"
@@ -933,31 +959,31 @@ main.container{
               fill="none"
               stroke="rgba(15,23,42,0.16)"
               stroke-width="0.9"/>
-      <ellipse cx="8.7" cy="6.1" rx="5.2" ry="2.9"
+      <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
                fill="#ffffff" opacity="0.7"/>
 
       <g stroke="url(#strokeBooks)"
-         stroke-width="1.25"
+         stroke-width="0.9"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <!-- libro frontal -->
-        <rect x="8" y="8" width="4.7" height="8.1" rx="1"
-              fill="#e0f2fe"/>
-        <path d="M8.6 9.5h3.5" fill="none"/>
-        <path d="M8.6 11.2h3.5" fill="none"/>
+        <!-- libro izquierdo (azul) -->
+        <rect x="7.1" y="7.3" width="3" height="9.6" rx="0.8"
+              fill="url(#book1)"/>
+        <path d="M7.6 8.5h1.8" fill="none"/>
 
-        <!-- libro medio -->
-        <rect x="10.3" y="7" width="4.7" height="8.3" rx="1"
-              fill="#ede9fe"/>
-        <path d="M10.9 8.5h3.5" fill="none"/>
+        <!-- libro central (lila) -->
+        <rect x="10" y="7.1" width="3" height="9.8" rx="0.8"
+              fill="url(#book2)"/>
+        <path d="M10.5 8.3h1.8" fill="none"/>
 
-        <!-- libro tumbado -->
-        <path d="M7.9 16.7h7.8v1.8h-7.8z"
-              fill="#ccfbf1"/>
+        <!-- libro derecho (verde) -->
+        <rect x="12.9" y="7.5" width="3" height="9.4" rx="0.8"
+              fill="url(#book3)"/>
+        <path d="M13.4 8.7h1.8" fill="none"/>
       </g>
     </symbol>
 
-    <!-- ===== ICONOS DE ACCIÓN (listas, botones) ===== -->
+    <!-- ===== ICONOS DE ACCIÓN (listas, etc.) ===== -->
 
     <!-- swap -->
     <symbol id="i-swap" viewBox="0 0 24 24">
@@ -967,13 +993,13 @@ main.container{
             d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
     </symbol>
 
-    <!-- edit (pencil) -->
+    <!-- edit -->
     <symbol id="i-edit" viewBox="0 0 24 24">
       <path fill="url(#gLav)"
             d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
     </symbol>
 
-    <!-- check (complete) -->
+    <!-- check -->
     <symbol id="i-check" viewBox="0 0 24 24">
       <path fill="url(#gGold)"
             d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
