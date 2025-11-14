@@ -463,9 +463,9 @@ section[id^="sec-"]{ scroll-margin-top: calc(var(--appbar) + 56px) }
 nav.bottom{
   position:fixed;left:0;right:0;bottom:0;
   z-index:60;
-  background:#fff;
+  background:linear-gradient(180deg,#ffffff 0%,#f9fafb 40%,#eef2ff 100%);
   border-top:1px solid var(--border);
-  backdrop-filter: blur(6px) saturate(1.02);
+  backdrop-filter: blur(10px) saturate(1.08);
 }
 .bottom-inner{
   display:flex;align-items:center;gap:12px;
@@ -476,20 +476,29 @@ nav.bottom{
 .icons-left{display:flex;align-items:center;gap:12px;}
 .nav-btn{
   appearance:none;
-  border:1px solid var(--border);
-  background:var(--surface-2);
   border-radius:999px;
-  box-shadow:var(--shadow-1);
   width:var(--nav-btn);height:var(--nav-btn);
   display:grid;place-items:center;
   cursor:pointer;
+  border:1px solid color-mix(in oklab,var(--ink),transparent 86%);
+  background:
+    radial-gradient(circle at 30% 0%,#ffffff 0%,#e5e7f5 45%,#d2d7ee 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.95),
+    0 8px 18px rgba(15,23,42,0.18);
 }
 .nav-btn[aria-current="page"]{
-  background:#fff;
-  border-color:color-mix(in oklab,var(--gold-500),transparent 58%);
-  box-shadow:0 8px 22px rgba(0,0,0,.08), inset 0 1px 0 #fff;
+  border-color:color-mix(in oklab,var(--gold-500),transparent 48%);
+  background:
+    radial-gradient(circle at 30% 0%,#ffffff 0%,#fef3c7 40%,#fde68a 90%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9),
+    0 10px 24px rgba(15,23,42,0.24);
 }
-.nav-btn .ico{width:var(--ico-bottom);height:var(--ico-bottom)}
+.nav-btn .ico{
+  width:var(--ico-bottom);
+  height:var(--ico-bottom);
+}
 .divider{
   flex:1;height:1px;
   background:linear-gradient(90deg,transparent, var(--border), transparent);
@@ -497,9 +506,13 @@ nav.bottom{
 .active-chip{
   display:inline-flex;align-items:center;gap:8px;
   padding:8px 12px;
-  border:1px solid var(--border);
   border-radius:999px;
-  background:var(--surface-2);
+  border:1px solid color-mix(in oklab,var(--ink),transparent 85%);
+  background:
+    linear-gradient(135deg,#f9fafb,#eef2ff);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9),
+    0 8px 20px rgba(15,23,42,0.14);
   font-weight:900;
 }
 main.container{
@@ -738,10 +751,11 @@ main.container{
 </head>
 
 <body>
-<!-- ===== SVG sprite ===== -->
+<!-- ===== SVG sprite (vPremium) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
-   <defs>
-  <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1">
+  <defs>
+    <!-- Gradientes utilitarios para iconos de acción -->
+    <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#d9cbff"/><stop offset="1" stop-color="#8B5CF6"/>
     </linearGradient>
     <linearGradient id="gOra" x1="0" y1="0" x2="1" y2="1">
@@ -754,91 +768,126 @@ main.container{
       <stop offset="0" stop-color="#ffeaa8"/><stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
 
+    <!-- Platos metálicos de navegación -->
+    <radialGradient id="navIndigo" cx="0" cy="0" r="1" gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#e0e7ff"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </radialGradient>
+    <radialGradient id="navAmber" cx="0" cy="0" r="1" gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#ffedd5"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </radialGradient>
+    <radialGradient id="navLavender" cx="0" cy="0" r="1" gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#ede9fe"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </radialGradient>
+    <radialGradient id="navTeal" cx="0" cy="0" r="1" gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#ccfbf1"/>
+      <stop offset="1" stop-color="#0d9488"/>
+    </radialGradient>
+
+    <!-- Sombra suave tipo One UI -->
+    <filter id="navShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.30"/>
+    </filter>
+
+    <!-- ===== ICONOS PRINCIPALES NAV ===== -->
 
     <!-- Fonendoscopio premium -->
+    <symbol id="i-stetho" viewBox="0 0 24 24">
+      <!-- plato base -->
+      <circle cx="12" cy="12" r="10.4" fill="url(#navIndigo)" filter="url(#navShadow)"/>
+      <!-- anillo metálico -->
+      <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="0.9"/>
+      <!-- halo glass -->
+      <ellipse cx="9" cy="6.2" rx="4.8" ry="3" fill="#ffffff" opacity="0.65"/>
 
-   <symbol id="i-stetho" viewBox="0 0 24 24">
-  <!-- Disco base con degradado y sombra -->
-  <circle cx="12" cy="12" r="10.2" fill="url(#navIndigo)" filter="url(#navShadow)"/>
-  <!-- capa glass interna -->
-  <circle cx="11.5" cy="8" r="6.2" fill="#FFFFFF" opacity="0.45"/>
-  <!-- halo interior -->
-  <circle cx="12" cy="12" r="8.4" fill="#FFFFFF" opacity="0.16"/>
+      <!-- cuerpo del fonendo -->
+      <g fill="none" stroke="#020617" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <!-- ramas -->
+        <path d="M8 7.2v3.2a4 4 0 0 0 8 0V7.2"/>
+        <path d="M9.8 7.2V5.6"/>
+        <path d="M14.2 7.2V5.6"/>
+        <!-- tubo hacia campana -->
+        <path d="M12 13.1v2.4a3.5 3.5 0 0 0 3.5 3.5"/>
+        <!-- aro campana -->
+        <circle cx="16.4" cy="17" r="2.15"/>
+      </g>
+      <!-- brillo campana -->
+      <circle cx="15.9" cy="16.6" r="0.7" fill="#F9FAFB"/>
+    </symbol>
 
-  <!-- Fonendoscopio grande -->
-  <g fill="none" stroke="#020617" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Curva principal -->
-    <path d="M8.2 7.2v3.1a4.2 4.2 0 0 0 8.4 0V7.2"/>
-    <!-- orejeras -->
-    <path d="M9.8 7.2V5.7"/>
-    <path d="M14.2 7.2V5.7"/>
-    <!-- rama hacia campana -->
-    <path d="M12 13.2v2.4a3.4 3.4 0 0 0 3.4 3.4"/>
-    <!-- campana -->
-    <circle cx="16.3" cy="17" r="2.1"/>
-  </g>
-  <!-- brillo en la campana -->
-  <circle cx="15.9" cy="16.6" r="0.7" fill="#F9FAFB"/>
-</symbol>
+    <!-- Tareas / reloj de arena -->
+    <symbol id="i-tools" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10.4" fill="url(#navAmber)" filter="url(#navShadow)"/>
+      <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="0.9"/>
+      <ellipse cx="9.4" cy="6.4" rx="4.8" ry="2.7" fill="#ffffff" opacity="0.55"/>
+
+      <g stroke="#111827" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <!-- barras -->
+        <rect x="8.4" y="7.2" width="7.2" height="1.9" rx="0.9" fill="#FEFCE8" stroke="none"/>
+        <rect x="8.4" y="15" width="7.2" height="1.9" rx="0.9" fill="#FEFCE8" stroke="none"/>
+        <!-- estructura reloj -->
+        <path d="M9.2 8.9 12 11.7 9.2 14.5"/>
+        <path d="M14.8 8.9 12 11.7 14.8 14.5"/>
+      </g>
+      <!-- arena -->
+      <path d="M9.5 9.3h5L13 11h-2z" fill="#FDBA74" opacity="0.96"/>
+      <path d="M11.3 12.4 12 13.1l1.8 1.6h-3.6z" fill="#FDBA74" opacity="0.96"/>
+    </symbol>
+
+    <!-- Directorio / teléfono -->
+    <symbol id="i-handset" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10.4" fill="url(#navLavender)" filter="url(#navShadow)"/>
+      <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(15,23,42,0.18)" stroke-width="0.9"/>
+      <ellipse cx="9.2" cy="6.3" rx="4.6" ry="2.6" fill="#ffffff" opacity="0.6"/>
+
+      <g fill="none" stroke="#111827" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8.1 7.3 9.9 5.8a1.4 1.4 0 0 1 1.9.1l1.6 1.6a1.6 1.6 0 0 1 .1 2.1l-.8.9a1.5 1.5 0 0 0 .1 2l1.7 1.7a1.5 1.5 0 0 0 2 .1l.9-.8a1.6 1.6 0 0 1 2.1.1l1.6 1.6a1.4 1.4 0 0 1 .1 1.9l-1.2 1.7c-.9 1.2-2.4 1.8-3.9 1.6-2.2-.3-4.3-1.5-6.2-3.4-1.9-1.9-3.1-4-3.4-6.2-.2-1.5.4-3 1.6-3.9Z"/>
+      </g>
+    </symbol>
+
+    <!-- Biblioteca / 3 libros -->
+    <symbol id="i-books" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10.4" fill="url(#navTeal)" filter="url(#navShadow)"/>
+      <circle cx="12" cy="12" r="9" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="0.9"/>
+      <ellipse cx="9.3" cy="6.4" rx="4.7" ry="2.6" fill="#ffffff" opacity="0.6"/>
+
+      <!-- libros escalonados -->
+      <g stroke="#0f172a" stroke-width="1.1" stroke-linejoin="round">
+        <!-- libro frontal -->
+        <rect x="8.4" y="8" width="4.2" height="7.6" rx="0.9" fill="#e0f2fe"/>
+        <path d="M8.9 9.3h3.2" fill="none"/>
+        <path d="M8.9 11h3.2" fill="none"/>
+        <!-- libro medio -->
+        <rect x="10.3" y="7.1" width="4.2" height="7.8" rx="0.9" fill="#ede9fe"/>
+        <path d="M10.8 8.4h3.2" fill="none"/>
+        <!-- lomo libro tumbado -->
+        <path d="M8.2 16.5h7.2v1.7h-7.2z" fill="#ccfbf1"/>
+      </g>
+    </symbol>
+
+    <!-- ===== ICONOS DE ACCIÓN (listas, botones) ===== -->
 
     <!-- swap -->
     <symbol id="i-swap" viewBox="0 0 24 24">
       <path fill="url(#gInd)" d="M7.1 7.5a6 6 0 0 1 10.6-2.4l1.5-1.5v5.8H13l2-2A4 4 0 1 0 7.9 9.7a1 1 0 1 1-0.8 1.8A6 6 0 0 1 7.1 7.5z"/>
       <path fill="url(#gOra)" d="M16.9 16.5a6 6 0 0 1-10.6 2.4l-1.5 1.5V14.6H11l-2 2A4 4 0 1 0 16.1 14a1 1 0 1 1 .8-1.8 6 6 0 0 1 0 4.3z"/>
     </symbol>
+
     <!-- edit (pencil) -->
     <symbol id="i-edit" viewBox="0 0 24 24">
       <path fill="url(#gLav)" d="M3 17.25V21h3.75L18.81 8.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
     </symbol>
+
     <!-- check (complete) -->
     <symbol id="i-check" viewBox="0 0 24 24">
       <path fill="url(#gGold)" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm-1.2 13.2-3.6-3.6 1.4-1.4 2.2 2.2 4.6-4.6 1.4 1.4-6 6z"/>
     </symbol>
-    <!-- herramientas -->
-  <symbol id="i-tools" viewBox="0 0 24 24">
-  <!-- Disco base ámbar -->
-  <circle cx="12" cy="12" r="10.2" fill="url(#navAmber)" filter="url(#navShadow)"/>
-  <circle cx="12" cy="12" r="8.4" fill="#FFFFFF" opacity="0.18"/>
-
-  <!-- Reloj de arena grande -->
-  <g stroke="#1F2937" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- barras superior e inferior -->
-    <rect x="8.2" y="7" width="7.6" height="2" rx="1" fill="#FDFDFD" stroke="none"/>
-    <rect x="8.2" y="15" width="7.6" height="2" rx="1" fill="#FDFDFD" stroke="none"/>
-    <!-- contorno -->
-    <path d="M9 8.8 12 11.6 9 14.4"/>
-    <path d="M15 8.8 12 11.6 15 14.4"/>
-  </g>
-  <!-- arena -->
-  <path d="M9.4 9.2h5.2l-2 1.7h-1.2z" fill="#FDBA74" opacity="0.95"/>
-  <path d="M11.3 12.3 12 13l1.8 1.6h-3.6z" fill="#FDBA74" opacity="0.95"/>
-     
-</symbol>
-
-    <!-- handset -->
-  <symbol id="i-handset" viewBox="0 0 24 24">
-  <!-- Disco base lavanda -->
-  <circle cx="12" cy="12" r="10.2" fill="url(#navLavender)" filter="url(#navShadow)"/>
-  <circle cx="12" cy="12" r="8.4" fill="#FFFFFF" opacity="0.18"/>
-
-  <!-- Teléfono grande -->
-  <g fill="none" stroke="#111827" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8.1 7.4 9.9 5.8a1.4 1.4 0 0 1 1.9.1l1.6 1.6a1.6 1.6 0 0 1 .1 2.1l-.8.9a1.5 1.5 0 0 0 .1 2l1.7 1.7a1.5 1.5 0 0 0 2 .1l.9-.8a1.6 1.6 0 0 1 2.1.1l1.6 1.6a1.4 1.4 0 0 1 .1 1.9l-1.2 1.7c-.9 1.2-2.4 1.8-3.9 1.6-2.2-.3-4.3-1.5-6.2-3.4-1.9-1.9-3.1-4-3.4-6.2-.2-1.5.4-3 1.6-3.9Z"/>
-  </g>
-</symbol>
-
-    <!-- libros -->
- <symbol id="i-handset" viewBox="0 0 24 24">
-  <!-- Disco base lavanda -->
-  <circle cx="12" cy="12" r="10.2" fill="url(#navLavender)" filter="url(#navShadow)"/>
-  <circle cx="12" cy="12" r="8.4" fill="#FFFFFF" opacity="0.18"/>
-
-  <!-- Teléfono grande -->
-  <g fill="none" stroke="#111827" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8.1 7.4 9.9 5.8a1.4 1.4 0 0 1 1.9.1l1.6 1.6a1.6 1.6 0 0 1 .1 2.1l-.8.9a1.5 1.5 0 0 0 .1 2l1.7 1.7a1.5 1.5 0 0 0 2 .1l.9-.8a1.6 1.6 0 0 1 2.1.1l1.6 1.6a1.4 1.4 0 0 1 .1 1.9l-1.2 1.7c-.9 1.2-2.4 1.8-3.9 1.6-2.2-.3-4.3-1.5-6.2-3.4-1.9-1.9-3.1-4-3.4-6.2-.2-1.5.4-3 1.6-3.9Z"/>
-  </g>
-</symbol>
-
   </defs>
 </svg>
 
