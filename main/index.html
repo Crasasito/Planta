@@ -884,9 +884,7 @@ main.container{
   </g>
 </symbol>
 
-<!-- Icono 2: Tareas (Reloj de arena minimalista) -->
-    <!-- Tareas: reloj de arena minimalista coral -->
-   <!-- Icono 2: Tareas (reloj de arena minimalista) -->
+<!-- Icono 2: Tareas (reloj de arena minimalista coral, centrado) -->
 <symbol id="i-tools" viewBox="0 0 24 24">
   <!-- plato coral -->
   <circle cx="12" cy="12" r="11"
@@ -901,14 +899,14 @@ main.container{
 
   <!-- Reloj de arena súper simple, estilo Material -->
   <g fill="none"
-     stroke="url(#strokeTools)"
+     stroke="#fb7185"  <!-- coral sólido asegurado -->
      stroke-width="1.9"
      stroke-linecap="round"
      stroke-linejoin="round"
      filter="url(#iconGlow)">
-    <!-- barra superior e inferior -->
+    <!-- barras superior e inferior (ancho 8, centradas en x=12) -->
     <path d="M8 6h8M8 18h8"/>
-    <!-- X central (dos triángulos enfrentados) -->
+    <!-- X central (dos triángulos enfrentados), de y=6 a y=18 -->
     <path d="M8 6l4 5 4-5M8 18l4-5 4 5"/>
   </g>
 </symbol>
@@ -966,19 +964,31 @@ main.container{
 
 
 
-<!-- Icono 4: Biblioteca (Tres libros minimalistas) -->
+<!-- Icono 4: Biblioteca (Tres libros minimalistas centrados) -->
 <symbol id="i-books" viewBox="0 0 24 24">
   <circle cx="12" cy="12" r="11" fill="url(#navTeal)"/>
-  <circle cx="12" cy="12" r="9.8" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="0.9" filter="url(#navShadow)"/>
-  <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9" fill="#ffffff" opacity="0.72"/>
-  <!-- Tres libros representados con rectángulos simples -->
-  <g stroke="url(#strokeBooks)" stroke-width="1.9" stroke-linejoin="round" filter="url(#iconGlow)"transform="translate(1.2 1.2) scale(1.1)">
-    <rect x="6.9" y="7.3" width="3.4" height="9.7" rx="0.9" fill="url(#book1)"/>  <!-- libro izquierdo -->
-    <rect x="10"  y="7.0" width="3.5" height="10.0" rx="0.9" fill="url(#book2)"/> <!-- libro central (ligeramente adelantado) -->
-    <rect x="13.2" y="7.4" width="3.4" height="9.6" rx="0.9" fill="url(#book3)"/>  <!-- libro derecho -->
-      
+  <circle cx="12" cy="12" r="9.8"
+          fill="none"
+          stroke="rgba(15,23,42,0.16)"
+          stroke-width="0.9"
+          filter="url(#navShadow)"/>
+  <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
+           fill="#ffffff" opacity="0.72"/>
+
+  <!-- Tres libros centrados (ancho total ~10.4, centrado en x=12) -->
+  <g stroke="url(#strokeBooks)"
+     stroke-width="1.9"
+     stroke-linejoin="round"
+     filter="url(#iconGlow)">
+    <!-- libro izquierdo -->
+    <rect x="6.8"  y="7.2" width="3.2" height="9.8" rx="0.9" fill="url(#book1)"/>
+    <!-- libro central -->
+    <rect x="10.4" y="6.9" width="3.2" height="10.2" rx="0.9" fill="url(#book2)"/>
+    <!-- libro derecho -->
+    <rect x="14.0" y="7.3" width="3.2" height="9.6" rx="0.9" fill="url(#book3)"/>
   </g>
 </symbol>
+
 
 
     <!-- ===== ICONOS DE ACCIÓN (se mantienen) ===== -->
