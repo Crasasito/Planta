@@ -711,6 +711,28 @@ main.container{
   }
 }
 /* REGION: CSS-ACTIONS-MOBILE-GAP-END */
+/* REGION: CSS-BOTTOM-DESKTOP-START */
+@media (min-width: 1024px){
+
+  /* Deja sitio al contenido para que la barra no lo tape */
+  body{
+    padding-bottom: var(--bottom-h);
+  }
+
+  /* Por si el scroll principal está en un contenedor */
+  .container{
+    padding-bottom: var(--bottom-h);
+  }
+
+  /* Barra inferior fija SIEMPRE visible en PC */
+  .bottom{
+    position: fixed;
+    inset-block-end: 0;  /* bottom: 0 */
+    inset-inline: 0;     /* left: 0; right: 0 */
+    z-index: 50;
+  }
+}
+/* REGION: CSS-BOTTOM-DESKTOP-END */
 
 </style>
 </head>
