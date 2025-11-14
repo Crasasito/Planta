@@ -499,7 +499,6 @@ nav.bottom{
   /* icono grande, casi todo el plato */
   width:calc(var(--nav-btn) * 0.78);
   height:calc(var(--nav-btn) * 0.78);
-  filter:drop-shadow(0 1px 2px rgba(15,23,42,0.35));
 }
 .divider{
   flex:1;height:1px;
@@ -753,10 +752,10 @@ main.container{
 </head>
 
 <body>
-<!-- ===== SVG sprite · Nav Premium One-UI style ===== -->
+<!-- ===== SVG sprite · Nav Premium One-UI style v3 ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
-    <!-- Base gradients -->
+    <!-- Gradientes base (botones pequeños) -->
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#d9cbff"/>
       <stop offset="1" stop-color="#8B5CF6"/>
@@ -774,7 +773,7 @@ main.container{
       <stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
 
-    <!-- Platos circulares -->
+    <!-- Platos circulares de navegación -->
     <radialGradient id="navIndigo" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
       <stop offset="0" stop-color="#ffffff"/>
@@ -838,28 +837,29 @@ main.container{
       <stop offset="1" stop-color="#fed7aa"/>
     </linearGradient>
 
-    <!-- Sombras tipo One UI -->
-    <filter id="navShadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="5" stdDeviation="4"
-        flood-color="#0f172a" flood-opacity="0.22"/>
+    <!-- Sombras circulares tipo One UI (no rectángulo) -->
+    <filter id="navShadow" x="-30%" y="-30%" width="160%" height="160%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5"
+        flood-color="#0f172a" flood-opacity="0.23"/>
     </filter>
     <filter id="iconGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="0" stdDeviation="1.1"
-        flood-color="#e5e7eb" flood-opacity="0.8"/>
+        flood-color="#e5e7eb" flood-opacity="0.85"/>
     </filter>
 
     <!-- ===== ICONOS NAV PRINCIPALES ===== -->
 
-    <!-- Planta: fonendoscopio -->
+    <!-- Planta: fonendoscopio (lo dejamos casi igual) -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
       <!-- plato -->
       <circle cx="12" cy="12" r="11"
-              fill="url(#navIndigo)"
-              filter="url(#navShadow)"/>
+              fill="url(#navIndigo)"/>
       <circle cx="12" cy="12" r="9.8"
               fill="none"
               stroke="rgba(15,23,42,0.18)"
-              stroke-width="0.9"/>
+              stroke-width="0.9"
+              filter="url(#navShadow)"/>
+      <!-- halo -->
       <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
                fill="#ffffff" opacity="0.7"/>
 
@@ -870,53 +870,48 @@ main.container{
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <!-- cuerpo U -->
         <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>
-        <!-- orejeras -->
         <path d="M9.8 7.6V5.4"/>
         <path d="M14.2 7.6V5.4"/>
-        <!-- tubo a campana -->
         <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
-        <!-- aro campana -->
         <circle cx="16.4" cy="17.1" r="2.2"/>
       </g>
-      <!-- brillo campana -->
       <circle cx="16" cy="16.7" r="0.75" fill="#F9FAFB"/>
     </symbol>
 
-    <!-- Tareas: nota adhesiva / post-it -->
+    <!-- Tareas: post-it centrado y más grande -->
     <symbol id="i-tools" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
-              fill="url(#navAmber)"
-              filter="url(#navShadow)"/>
+              fill="url(#navAmber)"/>
       <circle cx="12" cy="12" r="9.8"
               fill="none"
               stroke="rgba(15,23,42,0.16)"
-              stroke-width="0.9"/>
+              stroke-width="0.9"
+              filter="url(#navShadow)"/>
       <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
-               fill="#ffffff" opacity="0.7"/>
+               fill="#ffffff" opacity="0.72"/>
 
       <g filter="url(#iconGlow)">
-        <!-- nota -->
-        <path d="M8.4 8h7.2a1 1 0 0 1 1 1v5.4l-2.1 2.1H9.4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+        <!-- nota principal, más ancha y centrada -->
+        <path d="M8.2 7.9h7.6a1 1 0 0 1 1 1v5.6l-2.3 2.3H9.2a1 1 0 0 1-1-1V8.9a1 1 0 0 1 1-1z"
               fill="url(#noteFill)"
               stroke="url(#strokeTools)"
               stroke-width="1.1"
               stroke-linejoin="round"/>
-        <!-- esquina doblada -->
-        <path d="M14.5 15.6h1.9l-1.9 1.9z"
+        <!-- esquina doblada más marcada -->
+        <path d="M14.6 15.7h2l-2 2z"
               fill="#fed7aa"
               stroke="url(#strokeTools)"
               stroke-width="0.9"
               stroke-linejoin="round"/>
         <!-- líneas de texto -->
-        <path d="M9.7 10.2h3.9M9.7 11.9h3.1"
+        <path d="M9.7 10.1h4.1M9.7 11.8h3.3"
               stroke="url(#strokeTools)"
               stroke-width="0.9"
               stroke-linecap="round"
               fill="none"/>
-        <!-- pequeño check -->
-        <path d="M10 13.7l0.9 0.9 1.5-1.5"
+        <!-- check más claro -->
+        <path d="M10 13.7l1 1 1.6-1.6"
               stroke="url(#strokeTools)"
               stroke-width="0.95"
               stroke-linecap="round"
@@ -925,61 +920,82 @@ main.container{
       </g>
     </symbol>
 
-    <!-- Directorio: teléfono centrado -->
+    <!-- Directorio: teléfono centrado, trazo continuo y degradado -->
     <symbol id="i-handset" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
-              fill="url(#navLavender)"
-              filter="url(#navShadow)"/>
+              fill="url(#navLavender)"/>
       <circle cx="12" cy="12" r="9.8"
               fill="none"
               stroke="rgba(15,23,42,0.18)"
-              stroke-width="0.9"/>
+              stroke-width="0.9"
+              filter="url(#navShadow)"/>
       <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
-               fill="#ffffff" opacity="0.7"/>
+               fill="#ffffff" opacity="0.72"/>
 
+      <!-- Único trazo continuo, centrado, con degradado -->
       <g fill="none"
          stroke="url(#strokePhone)"
          stroke-width="1.9"
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <path d="M8 7.6 10 5.7a1.6 1.6 0 0 1 2.1.1l1.7 1.7a1.8 1.8 0 0 1 .1 2.3l-.9 1
-                 a1.7 1.7 0 0 0 .1 2.3l1.8 1.8a1.7 1.7 0 0 0 2.3.1l1-.9a1.8 1.8 0 0 1 2.3.1l1.7 1.7
-                 a1.5 1.5 0 0 1 .1 2.1l-1.3 1.9c-1.1 1.4-2.8 2.1-4.4 1.8-2.5-.3-4.9-1.7-7.1-3.9
-                 -2.2-2.2-3.6-4.6-3.9-7.1-.2-1.6.4-3.3 1.8-4.4Z"/>
+        <path d="
+          M8.2 7.3
+          L10.2 5.6
+          a1.7 1.7 0 0 1 2.1.2
+          l1.4 1.4
+          a2 2 0 0 1 .2 2.2
+          l-.6 1.1
+          a1.9 1.9 0 0 0 .2 2.2
+          l1.6 1.6
+          a1.9 1.9 0 0 0 2.2.2
+          l1.1-.6
+          a2 2 0 0 1 2.2.2
+          l1.4 1.4
+          a1.7 1.7 0 0 1 .2 2.1
+          l-1.3 2.1
+          c-1.1 1.6-2.9 2.3-4.7 2
+          c-2.6-.3-5.2-1.9-7.6-4.3
+          c-2.4-2.4-4-5-4.3-7.6
+          c-.2-1.8.4-3.6 2-4.7
+          Z"/>
       </g>
     </symbol>
 
-    <!-- Biblioteca: tres libros verticales, cada uno de un color -->
+    <!-- Biblioteca: tres libros más anchos y con más relieve -->
     <symbol id="i-books" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="11"
-              fill="url(#navTeal)"
-              filter="url(#navShadow)"/>
+              fill="url(#navTeal)"/>
       <circle cx="12" cy="12" r="9.8"
               fill="none"
               stroke="rgba(15,23,42,0.16)"
-              stroke-width="0.9"/>
+              stroke-width="0.9"
+              filter="url(#navShadow)"/>
       <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
-               fill="#ffffff" opacity="0.7"/>
+               fill="#ffffff" opacity="0.72"/>
 
       <g stroke="url(#strokeBooks)"
          stroke-width="0.9"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <!-- libro izquierdo (azul) -->
-        <rect x="7.1" y="7.3" width="3" height="9.6" rx="0.8"
+        <!-- libro izquierdo (más ancho) -->
+        <rect x="6.9" y="7.3" width="3.4" height="9.7" rx="0.9"
               fill="url(#book1)"/>
-        <path d="M7.6 8.5h1.8" fill="none"/>
+        <path d="M7.4 8.6h2.1" fill="none"/>
 
-        <!-- libro central (lila) -->
-        <rect x="10" y="7.1" width="3" height="9.8" rx="0.8"
+        <!-- libro central (algo adelantado para relieve) -->
+        <rect x="10" y="7.0" width="3.5" height="10.0" rx="0.9"
               fill="url(#book2)"/>
-        <path d="M10.5 8.3h1.8" fill="none"/>
+        <path d="M10.6 8.4h2.2" fill="none"/>
 
-        <!-- libro derecho (verde) -->
-        <rect x="12.9" y="7.5" width="3" height="9.4" rx="0.8"
+        <!-- libro derecho -->
+        <rect x="13.2" y="7.4" width="3.4" height="9.6" rx="0.9"
               fill="url(#book3)"/>
-        <path d="M13.4 8.7h1.8" fill="none"/>
+        <path d="M13.8 8.7h2.1" fill="none"/>
+
+        <!-- pequeña base sombreada para dar volumen -->
+        <path d="M6.9 17.3h9.7v1.3h-9.7z"
+              fill="rgba(15,23,42,0.08)"/>
       </g>
     </symbol>
 
@@ -1006,6 +1022,7 @@ main.container{
     </symbol>
   </defs>
 </svg>
+
 
 <header class="appbar" role="banner">
   <div class="container">
