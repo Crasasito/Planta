@@ -772,7 +772,12 @@ main.container{
       <stop offset="0" stop-color="#ffeaa8"/>
       <stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
-
+<!-- Relleno degradado para el reloj de arena -->
+<linearGradient id="hourglassFill" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0"   stop-color="#fee2e2"/>  <!-- coral muy claro -->
+  <stop offset="0.5" stop-color="#fb7185"/>  <!-- coral principal -->
+  <stop offset="1"   stop-color="#be123c"/>  <!-- coral profundo -->
+</linearGradient>
        <!-- Platos circulares de navegación · estilo Material You pastel -->
     <radialGradient id="navIndigo" cx="0" cy="0" r="1"
       gradientTransform="translate(0.2 0.1) rotate(45) scale(1.4)">
@@ -885,8 +890,9 @@ main.container{
 </symbol>
 
 <!-- Icono 2: Tareas (reloj de arena minimalista coral, centrado) -->
+<!-- Icono 2: Tareas (reloj de arena minimalista coral, relleno + borde) -->
 <symbol id="i-tools" viewBox="0 0 24 24">
-  <!-- plato coral -->
+  <!-- Plato coral de fondo -->
   <circle cx="12" cy="12" r="11"
           fill="url(#navAmber)"/>
   <circle cx="12" cy="12" r="9.8"
@@ -897,19 +903,35 @@ main.container{
   <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
-  <!-- Reloj de arena súper simple, estilo Material -->
-  <g fill="none"
-     stroke="#fb7185"  <!-- coral sólido asegurado -->
-     stroke-width="1.9"
-     stroke-linecap="round"
-     stroke-linejoin="round"
-     filter="url(#iconGlow)">
-    <!-- barras superior e inferior (ancho 8, centradas en x=12) -->
-    <path d="M8 6h8M8 18h8"/>
-    <!-- X central (dos triángulos enfrentados), de y=6 a y=18 -->
-    <path d="M8 6l4 5 4-5M8 18l4-5 4 5"/>
+  <!-- Reloj de arena en primer plano -->
+  <g filter="url(#iconGlow)">
+    <!-- barra superior -->
+    <rect x="9" y="6.2" width="6" height="1.6" rx="0.8"
+          fill="url(#hourglassFill)"/>
+    <!-- barra inferior -->
+    <rect x="9" y="16.2" width="6" height="1.6" rx="0.8"
+          fill="url(#hourglassFill)"/>
+
+    <!-- cuerpo del reloj (figura central rellena) -->
+    <path
+      d="M10 7.8h4
+         c0.6 0 1 .4 1 1
+         c0 0.3-0.1 0.6-0.3 0.9L13.4 12
+         l1.3 2.3c0.2 0.3 0.3 0.6 0.3 0.9
+         c0 0.6-0.4 1-1 1h-4
+         c-0.6 0-1-0.4-1-1
+         c0-0.3 0.1-0.6 0.3-0.9L10.6 12
+         9.3 9.7C9.1 9.4 9 9.1 9 8.8
+         c0-0.6 0.4-1 1-1z"
+      fill="url(#hourglassFill)"
+      stroke="rgba(15,23,42,0.35)"
+      stroke-width="0.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
   </g>
 </symbol>
+
 
 
     <!-- Directorio: teléfono minimalista azul pastel -->
