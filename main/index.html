@@ -752,10 +752,10 @@ main.container{
 </head>
 
 <body>
-<!-- ===== SVG sprite · Nav Premium One-UI style v4 (nav icons reworked) ===== -->
+<!-- ===== SVG sprite · Nav Premium One-UI style v5 (formas rediseñadas) ===== -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;pointer-events:none">
   <defs>
-    <!-- Gradientes base usados por iconos de acción -->
+    <!-- Gradientes base para iconos de acción -->
     <linearGradient id="gLav" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#d9cbff"/>
       <stop offset="1" stop-color="#8B5CF6"/>
@@ -773,21 +773,21 @@ main.container{
       <stop offset="1" stop-color="#FACC15"/>
     </linearGradient>
 
-    <!-- Discos de navegación (inner circle) -->
+    <!-- Discos de navegación -->
     <radialGradient id="navPlanta" cx="0.2" cy="0.12" r="1.3">
       <stop offset="0" stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#e7e3ff"/>
-      <stop offset="1" stop-color="#5643d7"/>
+      <stop offset="1" stop-color="#5b4bf4"/>
     </radialGradient>
     <radialGradient id="navTareas" cx="0.18" cy="0.10" r="1.3">
       <stop offset="0" stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#ffe6c8"/>
-      <stop offset="1" stop-color="#ea5a0c"/>
+      <stop offset="1" stop-color="#f97316"/>
     </radialGradient>
     <radialGradient id="navTelefono" cx="0.20" cy="0.12" r="1.3">
       <stop offset="0" stop-color="#ffffff"/>
       <stop offset="0.45" stop-color="#e9ddff"/>
-      <stop offset="1" stop-color="#6d28d9"/>
+      <stop offset="1" stop-color="#7c3aed"/>
     </radialGradient>
     <radialGradient id="navLibros" cx="0.20" cy="0.12" r="1.3">
       <stop offset="0" stop-color="#ffffff"/>
@@ -795,7 +795,7 @@ main.container{
       <stop offset="1" stop-color="#0f766e"/>
     </radialGradient>
 
-    <!-- Aro metálico exterior (outer circle) -->
+    <!-- Aro metálico exterior -->
     <radialGradient id="ringMetal" cx="0.5" cy="0" r="1">
       <stop offset="0"   stop-color="#ffffff" stop-opacity="0.9"/>
       <stop offset="0.35" stop-color="#e5e7eb" stop-opacity="0.9"/>
@@ -839,46 +839,52 @@ main.container{
       <stop offset="1" stop-color="#22c55e"/>
     </linearGradient>
 
-    <!-- Sombras / glow tipo One UI -->
+    <!-- Sombras / glow -->
     <filter id="navShadow" x="-30%" y="-30%" width="160%" height="160%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#020617" flood-opacity="0.26"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#020617" flood-opacity="0.22"/>
     </filter>
     <filter id="iconGlow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="0" stdDeviation="1.05" flood-color="#e5e7eb" flood-opacity="0.9"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="1.0" flood-color="#e5e7eb" flood-opacity="0.95"/>
     </filter>
 
-    <!-- ===== NAV ICONS (90% del área interna) ===== -->
+    <!-- ===== NAV ICONS (formas nuevas, 90% inner circle) ===== -->
 
-    <!-- Planta – fonendoscopio -->
+    <!-- PLANTA – Estetoscopio simétrico -->
     <symbol id="i-stetho" viewBox="0 0 24 24">
-      <!-- inner disc + outer ring -->
+      <!-- disco -->
       <circle cx="12" cy="12" r="10.8" fill="url(#navPlanta)"/>
       <circle cx="12" cy="12" r="11.2"
               fill="none"
               stroke="url(#ringMetal)"
               stroke-width="0.8"
               filter="url(#navShadow)"/>
-      <!-- highlight de cristal -->
-      <ellipse cx="8.1" cy="6.1" rx="5.2" ry="2.7"
-               fill="#ffffff" opacity="0.85"/>
+      <ellipse cx="8.4" cy="5.9" rx="5.0" ry="2.5"
+               fill="#ffffff" opacity="0.80"/>
 
-      <!-- pictograma -->
+      <!-- auriculares -->
       <g fill="none"
          stroke="url(#strokeStetho)"
-         stroke-width="1.9"
+         stroke-width="1.8"
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <path d="M7 7.4v3.7a4.9 4.9 0 0 0 9.8 0V7.4"/>
-        <path d="M9.6 7.4V4.9"/>
-        <path d="M14.4 7.4V4.9"/>
-        <path d="M12 13.5v2.5a3.8 3.8 0 0 0 3.8 3.8"/>
-        <circle cx="16.4" cy="17.3" r="2.2"/>
+        <!-- ramas -->
+        <path d="M7.5 6v4.2a4.5 4.5 0 0 0 9 0V6"/>
+        <!-- varillas superiores -->
+        <path d="M9.5 6V4.3M14.5 6V4.3"/>
+        <!-- tubo central hacia el diafragma -->
+        <path d="M12 12.5v2.7a3.1 3.1 0 0 0 3.1 3.1h0.2"/>
+        <!-- círculo del diafragma -->
+        <circle cx="16.3" cy="18.2" r="2.1"/>
       </g>
-      <circle cx="16.1" cy="17.0" r="0.75" fill="#f9fafb"/>
+      <!-- punto de brillo del diafragma -->
+      <circle cx="15.8" cy="17.7" r="0.7" fill="#f9fafb"/>
+      <!-- olivas -->
+      <circle cx="9.5" cy="3.7" r="0.9" fill="#0f172a"/>
+      <circle cx="14.5" cy="3.7" r="0.9" fill="#0f172a"/>
     </symbol>
 
-    <!-- Tareas – post-it / checklist -->
+    <!-- TAREAS – Post-it checklist muy limpio -->
     <symbol id="i-tools" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10.8" fill="url(#navTareas)"/>
       <circle cx="12" cy="12" r="11.2"
@@ -886,34 +892,36 @@ main.container{
               stroke="url(#ringMetal)"
               stroke-width="0.8"
               filter="url(#navShadow)"/>
-      <ellipse cx="8.5" cy="6.0" rx="5.0" ry="2.7"
+      <ellipse cx="8.6" cy="5.8" rx="4.8" ry="2.4"
                fill="#ffffff" opacity="0.78"/>
 
       <g filter="url(#iconGlow)"
          stroke="url(#strokeSticky)"
          stroke-linejoin="round">
-        <!-- Nota grande y centrada -->
-        <path d="M7.7 7.7h8.6a1.1 1.1 0 0 1 1.1 1.1v6.2l-2.6 2.6H8.8a1.1 1.1 0 0 1-1.1-1.1V8.8a1.1 1.1 0 0 1 1.1-1.1z"
+        <!-- hoja -->
+        <path d="M7.2 7h9.2a1.1 1.1 0 0 1 1.1 1.1v6.4l-2.8 2.8H8.3A1.1 1.1 0 0 1 7.2 16.2V8.1A1.1 1.1 0 0 1 8.3 7z"
               fill="url(#noteFill)"
-              stroke-width="1.05"/>
+              stroke-width="1.1"/>
         <!-- esquina doblada -->
-        <path d="M15.2 16.1h2.2l-2.2 2.2z"
+        <path d="M14.8 16.3h2.7l-2.7 2.7z"
               fill="#fed7aa"
-              stroke-width="0.9"/>
+              stroke-width="0.95"/>
         <!-- líneas de texto -->
-        <path d="M9.7 10.1h4.4M9.7 11.9h3.5"
+        <path d="M9.1 9.6h4.7M9.1 11.2h3.8"
               fill="none"
               stroke-width="0.9"
               stroke-linecap="round"/>
-        <!-- check -->
-        <path d="M10.1 13.8l1.1 1.1 1.7-1.7"
+        <!-- checkbox -->
+        <rect x="9.1" y="12.7" width="2.3" height="2.3" rx="0.5"
+              fill="none" stroke-width="0.9"/>
+        <path d="M9.4 13.9l0.7 0.8 1.2-1.4"
               fill="none"
-              stroke-width="1.0"
+              stroke-width="0.95"
               stroke-linecap="round"/>
       </g>
     </symbol>
 
-    <!-- Directorio – teléfono, trazo continuo y centrado -->
+    <!-- DIRECTORIO – Teléfono estilizado continuo -->
     <symbol id="i-handset" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10.8" fill="url(#navTelefono)"/>
       <circle cx="12" cy="12" r="11.2"
@@ -921,8 +929,8 @@ main.container{
               stroke="url(#ringMetal)"
               stroke-width="0.8"
               filter="url(#navShadow)"/>
-      <ellipse cx="8.6" cy="6.0" rx="5.1" ry="2.7"
-               fill="#ffffff" opacity="0.8"/>
+      <ellipse cx="8.7" cy="5.8" rx="4.9" ry="2.4"
+               fill="#ffffff" opacity="0.80"/>
 
       <g fill="none"
          stroke="url(#strokePhone)"
@@ -930,15 +938,25 @@ main.container{
          stroke-linecap="round"
          stroke-linejoin="round"
          filter="url(#iconGlow)">
-        <!-- forma única de auricular, ocupando casi todo el disco -->
-        <path d="M7.2 5.1c-.4 0-.8.2-1 .6l-1.3 2.7c-.3.6-.2 1.4.2 2
-                 1.9 3.1 4.6 5.7 7.7 7.7.6.4 1.3.5 2 .2l2.7-1.3c.4-.2.6-.6.6-1.1l-.2-2.6c0-.5-.3-.9-.7-1.1l-2.2-1
-                 a1.3 1.3 0 0 0-1.4.3l-1 1.1a.9.9 0 0 1-1.1.2 8.7 8.7 0 0 1-3.2-3.2.9.9 0 0 1 .2-1.1l1.1-1
-                 c.4-.4.5-1 .3-1.4l-1-2.2a1.2 1.2 0 0 0-1.1-.7z"/>
+        <!-- una sola forma de auricular, geométrica y centrada -->
+        <path d="
+          M7.1 5.4
+          c0.3-0.5 0.9-0.7 1.4-0.4l2.0 1.2
+          c0.4 0.2 0.6 0.7 0.5 1.1l-0.5 2.2
+          c-0.1 0.4-0.4 0.7-0.9 0.8l-1.3 0.3
+          a8.1 8.1 0 0 0 3.9 3.9l0.3-1.3
+          c0.1-0.5 0.4-0.8 0.8-0.9l2.2-0.5
+          c0.4-0.1 0.9 0.1 1.1 0.5l1.2 2.0
+          c0.3 0.5 0.2 1.1-0.4 1.4l-1.8 1.0
+          c-0.5 0.3-1.1 0.4-1.6 0.3
+          c-2.6-0.5-4.9-1.7-6.9-3.7
+          c-2.0-2.0-3.2-4.3-3.7-6.9
+          c-0.1-0.6 0.0-1.1 0.3-1.6
+          z"/>
       </g>
     </symbol>
 
-    <!-- Biblioteca – tres libros verticales, más anchos -->
+    <!-- BIBLIOTECA – Tres libros verticales sólidos -->
     <symbol id="i-books" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10.8" fill="url(#navLibros)"/>
       <circle cx="12" cy="12" r="11.2"
@@ -946,27 +964,26 @@ main.container{
               stroke="url(#ringMetal)"
               stroke-width="0.8"
               filter="url(#navShadow)"/>
-      <ellipse cx="8.8" cy="6.1" rx="5.2" ry="2.7"
+      <ellipse cx="8.9" cy="5.9" rx="5.0" ry="2.5"
                fill="#ffffff" opacity="0.82"/>
 
       <g filter="url(#iconGlow)"
          stroke="url(#strokeBooks)"
          stroke-width="0.9"
          stroke-linejoin="round">
-        <!-- libros, ocupando casi todo el ancho interior -->
-        <rect x="6.5"  y="7.0" width="3.6" height="10.2" rx="1.0" fill="url(#book1)"/>
-        <rect x="9.9"  y="6.6" width="3.7" height="10.6" rx="1.0" fill="url(#book2)"/>
-        <rect x="13.4" y="7.2" width="3.6" height="10.0" rx="1.0" fill="url(#book3)"/>
-        <!-- líneas superiores tipo lomo -->
-        <path d="M7.2 8.5h2.2M10.7 8.1h2.3M14.2 8.8h2.2"
-              fill="none"/>
-        <!-- base sombreada para volumen -->
-        <path d="M6.3 17.9h10.9v1.3H6.3z"
+        <!-- tres lomos, ocupan casi todo el ancho interior -->
+        <rect x="5.8"  y="6.3" width="3.5" height="10.6" rx="1.0" fill="url(#book1)"/>
+        <rect x="9.3"  y="5.7" width="3.5" height="11.2" rx="1.0" fill="url(#book2)"/>
+        <rect x="12.8" y="6.6" width="3.5" height="10.3" rx="1.0" fill="url(#book3)"/>
+        <!-- líneas superiores tipo título -->
+        <path d="M6.4 7.8h2.2M9.9 7.2h2.3M13.4 8.1h2.2" fill="none"/>
+        <!-- base sombreada -->
+        <path d="M5.6 17.9h11.2v1.2H5.6z"
               fill="rgba(15,23,42,0.12)" stroke="none"/>
       </g>
     </symbol>
 
-    <!-- ===== ICONOS DE ACCIÓN (listas) – se mantienen ===== -->
+    <!-- ===== ICONOS DE ACCIÓN (se mantienen) ===== -->
 
     <symbol id="i-swap" viewBox="0 0 24 24">
       <path fill="url(#gInd)"
@@ -986,7 +1003,6 @@ main.container{
     </symbol>
   </defs>
 </svg>
-
 
 <header class="appbar" role="banner">
   <div class="container">
