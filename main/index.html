@@ -1513,20 +1513,24 @@ function renderDir(){
   const wrap=$('#d-list-wrap'); if(!wrap) return;
   wrap.innerHTML='';
   let arr=[...dirCache];
-arr.sort((a,b)=>
-  (a.seccion||'').localeCompare(b.seccion||'')
-  || (a.nombre||'').localeCompare(b.nombre||'')
-);
+
+  // Orden base: primero SECCIÓN, luego NOMBRE
+  arr.sort((a,b)=>
+    (a.seccion||'').localeCompare(b.seccion||'')
+    || (a.nombre||'').localeCompare(b.nombre||'')
+  );
+
   const filtered=v
     ? arr.filter(x=>[x.seccion,x.nombre,String(x.telefono||''),x.notas].some(y=>norm(y).includes(v)))
     : arr;
 
-  const groups=new Map();
-  for(const x of filtered){
-    const k=/^[A-Za-zÁÉÍÓÚÜÑ]/.test(x.nombre||'')
-      ? norm(x.nombre)[0].toUpperCase()
+  const groups = new Map();
+  for (const x of filtered) {
+    const base = (x.seccion && String(x.seccion)) || String(x.nombre || '');
+    const k = /^[A-Za-zÁÉÍÓÚÜÑ]/.test(base)
+      ? norm(base)[0].toUpperCase()
       : '#';
-    if(!groups.has(k)) groups.set(k,[]);
+    if (!groups.has(k)) groups.set(k, []);
     groups.get(k).push(x);
   }
 
@@ -1537,6 +1541,9 @@ arr.sort((a,b)=>
       .map(ch=>`<a href="#sec-${ch}" aria-label="Ir a ${ch}">${ch}</a>`)
       .join('');
   }
+
+  // ... resto de renderDir igual
+}
 
   let total=0;
   let firstLetterWithData=null;
