@@ -827,7 +827,11 @@ main.container{
       <stop offset="0" stop-color="#020617"/>
       <stop offset="1" stop-color="#059669"/>
     </linearGradient>
-
+<!-- Relleno glow verde suave para las olivas del fonendo -->
+<radialGradient id="oliveFill" cx="0.5" cy="0.3" r="0.8">
+  <stop offset="0"   stop-color="#ecfdf5" stop-opacity="1"/>
+  <stop offset="1"   stop-color="#22c55e" stop-opacity="0.9"/>
+</radialGradient>
     <!-- Rellenos para libros / reloj / teléfono -->
     <linearGradient id="book1" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#e0f2fe"/>
@@ -879,6 +883,13 @@ main.container{
           stroke-opacity="0.85"
           stroke-width="0.9"
           filter="url(#navShadow)"/>
+     <!-- rim light interior -->
+  <circle cx="12" cy="12" r="10.4"
+          fill="none"
+          stroke="url(#navIndigo)"
+          stroke-width="0.7"
+          stroke-opacity="0.95"
+          filter="url(#iconGlow)"/>
   <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
            fill="#ffffff" opacity="0.7"/>
 
@@ -895,7 +906,7 @@ main.container{
     <path d="M14.2 7.6V5.4"/>
         <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
 
-       <!-- olivas del fonendo (50% más grandes y pegadas a las varillas) -->
+          <!-- olivas del fonendo (50% más grandes y pegadas a las varillas) -->
     <circle cx="9.8" cy="5.1" r="1.05"
             fill="#e5e7eb"
             stroke="url(#strokeStetho)"
@@ -904,6 +915,7 @@ main.container{
             fill="#e5e7eb"
             stroke="url(#strokeStetho)"
             stroke-width="0.7"/>
+
 
     <!-- campana del fonendo en naranja suave -->
     <circle cx="16.4" cy="17.1" r="2.2"
@@ -927,6 +939,13 @@ main.container{
           stroke-opacity="0.85"
           stroke-width="0.9"
           filter="url(#navShadow)"/>
+     <!-- rim light interior -->
+  <circle cx="12" cy="12" r="10.4"
+          fill="none"
+          stroke="url(#navAmber)"
+          stroke-width="0.7"
+          stroke-opacity="0.95"
+          filter="url(#iconGlow)"/>
   <ellipse cx="8.8" cy="6.2" rx="5.1" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
@@ -978,6 +997,13 @@ main.container{
           stroke-opacity="0.85"
           stroke-width="0.9"
           filter="url(#navShadow)"/>
+     <!-- rim light interior -->
+  <circle cx="12" cy="12" r="10.4"
+          fill="none"
+          stroke="url(#navLavender)"
+          stroke-width="0.7"
+          stroke-opacity="0.95"
+          filter="url(#iconGlow)"/>
   <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
@@ -1038,6 +1064,13 @@ main.container{
           stroke-opacity="0.85"
           stroke-width="0.9"
           filter="url(#navShadow)"/>
+     <!-- rim light interior -->
+  <circle cx="12" cy="12" r="10.4"
+          fill="none"
+          stroke="url(#navTeal)"
+          stroke-width="0.7"
+          stroke-opacity="0.95"
+          filter="url(#iconGlow)"/>
   <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
