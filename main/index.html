@@ -920,46 +920,146 @@ main.container{
     align-items: center;
   }
 }
+   /* ---------- SOS FAB PANEL ---------- */
+#fabPanel{
+  max-width:min(480px,96vw);
+}
+
+.sos-list{
+  margin-top:4px;
+}
+
+.sos-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  margin:4px 0;
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff7ed,#fffbeb);
+  box-shadow:0 6px 18px rgba(15,23,42,0.14);
+}
+
+.sos-main{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.sos-name{
+  font-weight:900;
+  letter-spacing:.02em;
+  font-size:.9rem;
+}
+
+.sos-tel{
+  margin-top:2px;
+  font-weight:900;
+  font-size:.9rem;
+  background:linear-gradient(135deg,#eef2ff,#e0f2fe);
+}
+
+.sos-check{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.sos-check input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.sos-check-box{
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  border:1.4px solid color-mix(in oklab,var(--ora-700),transparent 50%);
+  background:#fff;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.96),
+    0 4px 10px rgba(15,23,42,0.20);
+}
+
+.sos-check input:checked + .sos-check-box{
+  background:radial-gradient(circle at 30% 0%,#ffffff,#fed7aa);
+  border-color:color-mix(in oklab,var(--coral-700),transparent 40%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.9),
+    0 0 0 4px rgba(254,249,195,0.8),
+    0 6px 14px rgba(15,23,42,0.32);
+}
+
+.sos-check input:checked + .sos-check-box::after{
+  content:'';
+  display:block;
+  width:9px;
+  height:6px;
+  border-bottom:2px solid #7c2d12;
+  border-right:2px solid #7c2d12;
+  transform:translate(3px,1px) rotate(36deg);
+}
+
+.sos-remove.btn{
+  width:32px;
+  height:32px;
+  min-width:32px;
+  min-height:32px;
+  padding:0;
+  border-radius:999px;
+  font-size:14px;
+}
+
+@media (max-width:480px){
+  .sos-row{
+    padding:6px 8px;
+    margin:3px 0;
+  }
+}
 /* REGION: CSS-APPBAR-ANDROID-START */
 /* Ajustes específicos para pantallas pequeñas (Android / móvil) */
 @media (max-width: 720px){
 
-  /* AppBar más compacta y sin alturas excesivas */
+  /* AppBar más compacta */
   header.appbar{
     min-height: auto;
     padding-block: 6px;
   }
 
-  /* GRID en 3 columnas:
-     col1: contenido principal
-     col2: apoyo
-     col3: chips/botones pequeños (contador, Salir)
+  /* Contenedor del header como GRID:
      Filas:
-       1) brand
-       2) título
-       3) estados + contador
-       4) usuario + Salir
+       1) UNIDAD INFECCIOSAS
+       2) Título de sección
+       3) Online + Google / contador a la derecha
+       4) Usuario (avatar + nombre) / Salir a la derecha
   */
   header.appbar .container{
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-rows: auto auto auto auto;
     grid-template-areas:
       "brand  brand  brand"
       "title  title  title"
       "status status notif"
-      "user   user   signout";
+      "avatar name  signout";
     column-gap: 8px;
     row-gap: 4px;
     align-items: center;
+    justify-items: start;
+    max-width: 100%;
   }
 
-  /* El grow solo sirve en escritorio → aquí genera huecos */
+  /* El grow en móvil solo genera huecos → fuera */
   header.appbar .container .grow{
     display: none;
   }
 
-  /* Píldora UNIDAD INFECTIOSAS */
+  /* Píldora UNIDAD INFECCIOSAS */
   .brand{
     grid-area: brand;
     padding: 6px 10px;
@@ -968,8 +1068,7 @@ main.container{
     justify-self: flex-start;
   }
 
-  /* Título de sección (PLANTA, TAREAS, etc.) justo debajo
-     con tamaño fluido y sin salirse de pantalla */
+  /* Título de sección (PLANTA, TAREAS, etc.) autoajustable y sin desbordar */
   h1#title{
     grid-area: title;
     margin: 0;
@@ -980,8 +1079,7 @@ main.container{
     overflow-wrap: break-word;
   }
 
-  /* Fila de estado: Online + Google:… a la izquierda
-     Pueden partirse en 2 líneas si hace falta */
+  /* Fila de estados: Online + Google:… a la izquierda */
   .statusRow{
     grid-area: status;
     margin-left: 0 !important;
@@ -990,15 +1088,16 @@ main.container{
     gap: 4px;
   }
 
-  /* Aplanamos solo el contenedor de usuario para poder
-     colocar avatar/nombre/contador/botones en el grid */
-  #userGroup{
+  /* Aplanamos estos contenedores para que sus hijos sean items del grid */
+  #userGroup,
+  #userchip{
     display: contents;
+    margin-left: 0 !important;
   }
 
-  /* Avatar + nombre comparten el área "user" (fila 4, izquierda) */
+  /* Avatar: fila 4, columna izquierda */
   #avatar{
-    grid-area: user;
+    grid-area: avatar;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -1006,10 +1105,9 @@ main.container{
     justify-self: flex-start;
   }
 
+  /* Nombre: fila 4, columna central */
   #displayname{
-    grid-area: user;
-    /* desplazamos el texto a la derecha del avatar */
-    margin-left: 34px;
+    grid-area: name;
     max-width: 18ch;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1017,34 +1115,47 @@ main.container{
     align-self: center;
   }
 
-  /* Contador de tareas → siempre 2ª fila visual, a la derecha */
+  /* Contador de tareas: fila 3, derecha (segunda banda visual) */
   #notifBadge{
     grid-area: notif;
     justify-self: flex-end;
   }
 
-  /* Botón Salir / Acceder → última fila, derecha */
+  /* Botones de sesión:
+     - Acceder (cuando no hay sesión)
+     - Salir (cuando hay sesión)
+     → misma celda, fila 4, derecha
+  */
   #signin,
   #signout{
     grid-area: signout;
     justify-self: flex-end;
   }
 
-  /* El botón Instalar es lo menos crítico → se oculta en móvil
-     (sigue siendo instalable desde el navegador) */
+  /* El botón Instalar se oculta en móvil para ahorrar ancho */
   #installBtn{
     display: none;
   }
 
-  /* Chips un poco más compactos para que todo entre sin forzar ancho */
+  /* Chips algo más compactos en móvil */
   .chip{
     padding: 4px 8px;
     font-size: 0.78rem;
   }
 }
 /* REGION: CSS-APPBAR-ANDROID-END */
+@media (max-width: 720px){
+  nav.bottom{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 
-
+  main.container{
+    padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 24px);
+  }
+}
 
 
 </style>
@@ -1719,7 +1830,7 @@ main.container{
 <div id="fabPanel" class="card" role="dialog" aria-modal="false" aria-label="SOS" style="position:fixed;display:none;z-index:69; width:min(460px,96vw)">
   <div class="card-h h-inter" style="border-bottom:none"><h2>SOS</h2><button id="fabCfg" class="btn" aria-label="Configurar">⚙ Configurar</button></div>
   <div class="card-b">
-    <div id="fabList"></div>
+    <div id="fabList" class="sos-list"></div>
     <div id="fabPager" class="toolbar" style="margin-top:8px;gap:6px;display:flex;justify-content:space-between"></div>
   </div>
 </div>
@@ -1815,18 +1926,21 @@ const col={
   tareas:(uid)=>fsMod.collection(db,'users',uid,'tareas'),
   dir:(uid)=>fsMod.collection(db,'users',uid,'directorio'),
   biblio:(uid)=>fsMod.collection(db,'users',uid,'biblioteca'),
+    sos:(uid)=>fsMod.collection(db,'users',uid,'sos'),
   notes:(uid)=>fsMod.doc(db,'users',uid,'biblioteca','__notes__'),
 };
 let unsubs=[];
 const currentUid=()=>auth.currentUser?.uid;
-function unmount(){unsubs.forEach(u=>u&&u()); unsubs=[];}
-const pushRetry=(job)=>{
-  try{
-    const q=JSON.parse(localStorage.getItem('aurora.retry')||'[]');
-    q.push(job);
-    localStorage.setItem('aurora.retry',JSON.stringify(q));
-  }catch{}
-};
+function unmount(){
+  unsubs.forEach(u=>u&&u());
+  unsubs=[];
+  emergency=[];
+  page=0;
+  const list=$('#fabList');
+  if(list) list.innerHTML='<p class="muted">Accede con Google para configurar SOS.</p>';
+  $('#e-add').onclick=()=>toast('Accede con Google para configurar SOS sincronizado');
+}
+
 async function upd(kind,id,patch){
   const ref=fsMod.doc(db,'users',currentUid(),kind,id);
   const data={...patch,updatedAt:serverTS()};
@@ -2664,62 +2778,150 @@ if('serviceWorker' in navigator){
 }
 
 /* FAB SOS */
-let emergency=[]; let page=0; const PAGE_SIZE=10;
+let emergency=[]; 
+let page=0; 
+const PAGE_SIZE=10;
+
 function renderEmergency(){
   const box=$('#fabList');
+  if(!box) return;
+
+  const totalPages=Math.max(1, Math.ceil(emergency.length/PAGE_SIZE));
+  if(page>=totalPages) page=totalPages-1;
+  if(page<0) page=0;
+
   const start=page*PAGE_SIZE;
   const slice=emergency.slice(start,start+PAGE_SIZE);
+
   box.innerHTML = slice.length
-    ? slice.map((e,i)=>
-        `<div style="display:flex;align-items:center;gap:10px;margin:6px 0">
-           <input type="checkbox" data-i="${start+i}" style="margin-right:6px">
-           <strong>${esc(e.name||'')}</strong>
-           <a class="pill tel" href="tel:${String(e.tel||'').replace(/[^\\d+]/g,'')}" dir="ltr">${esc(e.tel||'')}</a>
-           <button class="btn icon" aria-label="Eliminar" data-del="${start+i}">✖</button>
-         </div>`
-      ).join('')
+    ? slice.map((e)=>{
+        const telRaw=String(e.tel||'');
+        const telHref=telRaw.replace(/[^\d+]/g,'');
+        const name=esc(e.name||'');
+        const tel=esc(telRaw);
+        const id=e.__id||'';
+        return `
+        <article class="sos-row">
+          <label class="sos-check">
+            <input type="checkbox" data-id="${id}">
+            <span class="sos-check-box" aria-hidden="true"></span>
+          </label>
+          <div class="sos-main">
+            <div class="sos-name">${name}</div>
+            <a class="sos-tel pill tel" href="tel:${telHref}" dir="ltr">${tel}</a>
+          </div>
+          <button class="btn icon sos-remove" aria-label="Eliminar ${name}" data-id="${id}">✖</button>
+        </article>`;
+      }).join('')
     : '<p class="muted">Añade accesos rápidos desde ⚙ Configurar.</p>';
 
   const pager=$('#fabPager');
-  const pages=Math.ceil(emergency.length/PAGE_SIZE)||1;
+  if(!pager) return;
+
+  const pages=totalPages;
   pager.innerHTML=
     `<div>
        <button class="btn" id="fabPrev" ${page<=0?'disabled':''}>◀</button>
        <span class="chip">${page+1}/${pages}</span>
        <button class="btn" id="fabNext" ${page>=pages-1?'disabled':''}>▶</button>
      </div>
-     <div><button class="btn" id="fabDelSel">Eliminar seleccionados</button></div>`;
+     <div><button class="btn" id="fabDelSel"${!emergency.length?' disabled':''}>Eliminar seleccionados</button></div>`;
 
   $('#fabPrev')?.addEventListener('click',()=>{
     if(page>0){page--;renderEmergency();}
   });
   $('#fabNext')?.addEventListener('click',()=>{
-    const pages=Math.ceil(emergency.length/PAGE_SIZE)||1;
+    const pages=Math.max(1,Math.ceil(emergency.length/PAGE_SIZE));
     if(page<pages-1){page++;renderEmergency();}
   });
-  $$('#fabList [data-del]')?.forEach(b=>{
+
+  $$('#fabList .sos-remove')?.forEach(b=>{
     b.addEventListener('click',()=>{
-      const i=Number(b.getAttribute('data-del'));
-      emergency.splice(i,1);
-      saveEmergencies();
-      renderEmergency();
+      const id=b.getAttribute('data-id');
+      if(!id) return;
+      del('sos',id);
     });
   });
+
   $('#fabDelSel')?.addEventListener('click',()=>{
-    const idx=$$('#fabList input[type="checkbox"]:checked')
-      .map(c=>Number(c.getAttribute('data-i')))
-      .sort((a,b)=>b-a);
-    if(!idx.length) return;
-    idx.forEach(i=>emergency.splice(i,1));
-    saveEmergencies();
-    renderEmergency();
+    const ids=$$('#fabList .sos-check input[type="checkbox"]:checked')
+      .map(c=>c.getAttribute('data-id'))
+      .filter(Boolean);
+    if(!ids.length) return;
+    ids.forEach(id=>del('sos',id));
   });
 }
-function saveEmergencies(){localStorage.setItem('aurora.emerg', JSON.stringify(emergency))}
-function loadEmergencies(){
-  try{emergency=JSON.parse(localStorage.getItem('aurora.emerg')||'[]')||[]}
-  catch{emergency=[]}
+
+const sosDoc=(d)=>({
+  name:(d.name||'').trim(),
+  tel:(d.tel||'').trim(),
+  createdAt:d.createdAt||serverTS(),
+  updatedAt:serverTS()
+});
+
+// Migra los SOS antiguos de localStorage -> Firestore solo una vez
+async function migrateLocalSos(uid){
+  try{
+    const raw=JSON.parse(localStorage.getItem('aurora.emerg')||'[]');
+    if(!Array.isArray(raw) || !raw.length) return;
+    const snap=await fsMod.getDocs(col.sos(uid));
+    const seen=new Set();
+    snap.forEach(doc=>{
+      const x=doc.data();
+      const key=(String(x.name||'').trim()+'|'+String(x.tel||'').trim()).toLowerCase();
+      seen.add(key);
+    });
+    const ops=[];
+    for(const e of raw){
+      const name=String(e.name||'').trim();
+      const tel=String(e.tel||'').trim();
+      if(!name || !tel) continue;
+      const key=(name+'|'+tel).toLowerCase();
+      if(seen.has(key)) continue;
+      ops.push(fsMod.addDoc(col.sos(uid), sosDoc({name,tel})));
+    }
+    if(ops.length) await Promise.all(ops);
+    localStorage.removeItem('aurora.emerg');
+  }catch{}
 }
+
+function setupSos(uid){
+  migrateLocalSos(uid);
+
+  const q=fsMod.query(col.sos(uid), fsMod.orderBy('name'));
+  const u=fsMod.onSnapshot(q,snap=>{
+    emergency=[];
+    snap.forEach(doc=>{
+      const x=doc.data();
+      x.__id=doc.id;
+      emergency.push(x);
+    });
+    page=0;
+    renderEmergency();
+  });
+  unsubs.push(u);
+
+  $('#e-add').onclick=async()=>{
+    const name=$('#e-name').value.trim();
+    const tel=$('#e-tel').value.trim();
+    if(!name||!tel) return;
+    const key=(name+'|'+tel).toLowerCase();
+    if(emergency.some(x=>(((x.name||'')+'|'+(x.tel||'')).toLowerCase()===key))){
+      toast('Duplicado: ya existe'); 
+      return;
+    }
+    try{
+      await fsMod.addDoc(col.sos(uid), sosDoc({name,tel}));
+      $('#e-name').value='';
+      $('#e-tel').value='';
+      toast('Añadido');
+    }catch(e){
+      console.error(e);
+      toast('Error al guardar SOS');
+    }
+  };
+}
+
 $('#fab').onclick=()=>{
   const p=$('#fabPanel');
   const open=p.style.display!=='block';
@@ -2732,22 +2934,9 @@ $('#fab').onclick=()=>{
 };
 $('#fabCfg').onclick=()=>$('#fabConfigDlg').showModal();
 $('#e-close').onclick=()=>$('#fabConfigDlg').close();
-$('#e-add').onclick=()=>{
-  const name=$('#e-name').value.trim();
-  const tel=$('#e-tel').value.trim();
-  if(!name||!tel) return;
-  const key=(name+'|'+tel).toLowerCase();
-  if(emergency.some(x=>(x.name+'|'+x.tel).toLowerCase()===key)){
-    toast('Duplicado: ya existe'); return;
-  }
-  emergency.push({name,tel});
-  saveEmergencies();
-  $('#e-name').value='';
-  $('#e-tel').value='';
-  renderEmergency();
-  toast('Añadido');
-};
-
+if(!auth.currentUser){
+  $('#e-add').onclick=()=>toast('Accede con Google para configurar SOS sincronizado');
+}
 (function enableFabDrag(){
   const fab=$('#fab');
   let dragging=false, sx=0, sy=0, ox=0, oy=0;
@@ -2820,6 +3009,7 @@ function mount(uid){
   setupTareas(uid);
   setupDir(uid);
   setupBiblio(uid);
+     setupSos(uid);
   const first=location.hash?.slice(1);
   if(mapTabs[first]) selectTab(first);
   else selectTab(localStorage.getItem('tab')||'planta');
