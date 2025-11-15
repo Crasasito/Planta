@@ -924,54 +924,64 @@ main.container{
 /* Ajustes específicos para pantallas pequeñas (Android / móvil) */
 @media (max-width: 720px){
 
-  /* AppBar más compacta */
+  /* AppBar más compacta y sin alturas excesivas */
   header.appbar{
     min-height: auto;
     padding-block: 6px;
   }
 
-  /* GRID de 3 filas:
-     1) INFECCIOSAS + título
-     2) Estados + contador tareas
-     3) Avatar + nombre + Salir
+  /* GRID en 3 columnas:
+     col1: contenido principal
+     col2: apoyo
+     col3: chips/botones pequeños (contador, Salir)
+     Filas:
+       1) brand
+       2) título
+       3) estados + contador
+       4) usuario + Salir
   */
   header.appbar .container{
-    position: relative;
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-rows: auto auto auto auto;
     grid-template-areas:
-      "brand  title   title"
-      "status status  notif"
-      "avatar name    signout";
+      "brand  brand  brand"
+      "title  title  title"
+      "status status notif"
+      "user   user   signout";
     column-gap: 8px;
     row-gap: 4px;
     align-items: center;
   }
 
-  /* El grow no tiene sentido en móvil: evita huecos */
+  /* El grow solo sirve en escritorio → aquí genera huecos */
   header.appbar .container .grow{
     display: none;
   }
 
-  /* Píldora UNIDAD INFECCIOSAS */
+  /* Píldora UNIDAD INFECTIOSAS */
   .brand{
     grid-area: brand;
     padding: 6px 10px;
     font-size: 0.82rem;
+    max-width: 100%;
+    justify-self: flex-start;
   }
 
-  /* Título de sección (PLANTA / TAREAS / …) autoajustable */
+  /* Título de sección (PLANTA, TAREAS, etc.) justo debajo
+     con tamaño fluido y sin salirse de pantalla */
   h1#title{
     grid-area: title;
     margin: 0;
-    font-size: clamp(16px, 4.4vw, 19px);
+    font-size: clamp(16px, 4.2vw, 19px);
     line-height: 1.15;
+    max-width: 100%;
     white-space: normal;
     overflow-wrap: break-word;
   }
 
-  /* Fila de estado: Online + Google:… a la izquierda */
+  /* Fila de estado: Online + Google:… a la izquierda
+     Pueden partirse en 2 líneas si hace falta */
   .statusRow{
     grid-area: status;
     margin-left: 0 !important;
@@ -980,55 +990,61 @@ main.container{
     gap: 4px;
   }
 
-  /* Hacemos "transparentes" estos contenedores para que sus hijos
-     se conviertan en ítems directos del grid del header */
-  #userGroup,
-  #userchip{
+  /* Aplanamos solo el contenedor de usuario para poder
+     colocar avatar/nombre/contador/botones en el grid */
+  #userGroup{
     display: contents;
   }
 
-  /* Avatar → 3ª fila, columna izquierda */
+  /* Avatar + nombre comparten el área "user" (fila 4, izquierda) */
   #avatar{
-    grid-area: avatar;
+    grid-area: user;
     width: 28px;
     height: 28px;
+    border-radius: 50%;
+    box-shadow: var(--shadow-1);
+    justify-self: flex-start;
   }
 
-  /* Nombre → 3ª fila, centro, alineado a avatar */
   #displayname{
-    grid-area: name;
-    align-self: center;
-    max-width: 16ch;
+    grid-area: user;
+    /* desplazamos el texto a la derecha del avatar */
+    margin-left: 34px;
+    max-width: 18ch;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    align-self: center;
   }
 
-  /* Contador de tareas → 2ª fila, derecha */
+  /* Contador de tareas → siempre 2ª fila visual, a la derecha */
   #notifBadge{
     grid-area: notif;
-    justify-self: end;
+    justify-self: flex-end;
   }
 
-  /* Salir / Acceder → 3ª fila, derecha (según estado de sesión) */
+  /* Botón Salir / Acceder → última fila, derecha */
   #signin,
   #signout{
     grid-area: signout;
-    justify-self: end;
+    justify-self: flex-end;
   }
 
-  /* Chips algo más compactos en móvil */
+  /* El botón Instalar es lo menos crítico → se oculta en móvil
+     (sigue siendo instalable desde el navegador) */
+  #installBtn{
+    display: none;
+  }
+
+  /* Chips un poco más compactos para que todo entre sin forzar ancho */
   .chip{
     padding: 4px 8px;
     font-size: 0.78rem;
   }
-
-  /* En móvil ocultamos "Instalar" para ganar espacio */
-  #installBtn{
-    display: none;
-  }
 }
 /* REGION: CSS-APPBAR-ANDROID-END */
+
+
 
 
 </style>
