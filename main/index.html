@@ -859,19 +859,7 @@ main.container{
   <stop offset="0.5" stop-color="#0ea5e9"/>  <!-- cian brillante premium -->
   <stop offset="1"   stop-color="#0369a1"/>  <!-- turquesa profundo -->
 </linearGradient>
-        <linearGradient id="phoneStrokeLavender" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0%"  stop-color="#FFFFFF" stop-opacity="0.15"/>
-  <stop offset="40%" stop-color="#D3B3FF"/>
-  <stop offset="100%" stop-color="#4C1D95"/>
-</linearGradient>
-  
-  <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
-  <circle cx="12" cy="12" r="9.8"
-          fill="none"
-          stroke="url(#navIndigo)"
-          stroke-opacity="0.85"
-          stroke-width="0.9"
-          filter="url(#navShadow)"/>
+     
   <!-- rim light interior -->
   <circle cx="12" cy="12" r="10.4"
           fill="none"
@@ -885,7 +873,12 @@ main.container{
       </symbol>f2fe"/>
       <stop offset="1"   stop-color="#7c3aed"/>
     </linearGradient>
-
+      <!-- Relleno lavanda premium para el teléfono -->
+    <linearGradient id="phoneFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#F8F5FF"/>
+      <stop offset="40%"  stop-color="#DCC4FF"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
     <!-- Sombras / glow -->
     <filter id="navShadow" x="-30%" y="-30%" width="160%" height="160%" filterUnits="userSpaceOnUse">
       <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#020617" flood-opacity="0.22"/>
@@ -1025,82 +1018,74 @@ main.container{
 </symbol>
 
  <!-- 3 · DIRECTORIO – Teléfono 3D con ondas -->
-<symbol id="i-handset" viewBox="0 0 24 24">
-  <!-- disco lavanda -->
-  <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
-  <circle cx="12" cy="12" r="9.8"
+  <!-- 3 · DIRECTORIO – Teléfono 3D con ondas -->
+  <symbol id="i-handset" viewBox="0 0 24 24">
+    <!-- disco lavanda -->
+    <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
+    <circle cx="12" cy="12" r="9.8"
+            fill="none"
+            stroke="url(#navLavender)"
+            stroke-opacity="0.85"
+            stroke-width="0.9"
+            filter="url(#navShadow)"/>
+    <!-- rim light interior -->
+    <circle cx="12" cy="12" r="10.4"
+            fill="none"
+            stroke="url(#navLavender)"
+            stroke-width="0.8"
+            stroke-opacity="1.0"
+            filter="url(#iconGlow)"/>
+
+    <!-- brillo suave superior del disco (más discreto) -->
+    <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
+             fill="#ffffff" opacity="0.35"/>
+
+    <!-- Brillo extra superior del disco (debajo del teléfono) -->
+    <path d="M8.2 7.3c1.5-0.9 3.2-1 4.8-0.8"
           fill="none"
-          stroke="url(#navLavender)"
-          stroke-opacity="0.85"
+          stroke="rgba(255,255,255,0.65)"
           stroke-width="0.9"
-          filter="url(#navShadow)"/>
-  <!-- rim light interior -->
-  <circle cx="12" cy="12" r="10.4"
-          fill="none"
-          stroke="url(#navLavender)"
-          stroke-width="0.8"
-          stroke-opacity="1.0"
-          filter="url(#iconGlow)"/>
-  <!-- brillo suave superior del disco -->
-  <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
-           fill="#ffffff" opacity="0.22"/>
+          stroke-linecap="round"
+          opacity="0.30"/>
 
-  <!-- Brillo extra en la parte superior del círculo -->
-  <path d="M8.2 7.3c1.5-0.9 3.2-1 4.8-0.8"
-        fill="none"
-        stroke="rgba(255,255,255,0.65)"
-        stroke-width="1.1"
+    <!-- Teléfono lavanda centrado y ligeramente más bajo -->
+    <g filter="url(#iconGlow)" transform="translate(0 1.0)">
+      <path
+        d="M7.1 5.3c.4-.7 1.3-1 2-.7l1.6.8c.6.3.9 1 .7 1.6l-.4 1.4
+           c-.2.7-.7 1.2-1.4 1.3l-.9.2
+           a8.4 8.4 0 0 0 3.6 3.6l.2-.9
+           c.1-.7.6-1.2 1.3-1.4l1.4-.4
+           c.6-.2 1.3.1 1.6.7l.8 1.6
+           c.3.7 0 1.6-.7 2l-1.1.7
+           c-.6.4-1.4.5-2.1.3
+           a13 13 0 0 1-7.3-7.3
+           c-.2-.7-.1-1.5.3-2.1z"
+        fill="url(#phoneFill)"
+        stroke="url(#strokePhone)"
+        stroke-width="1.4"
         stroke-linecap="round"
-        opacity="0.2"/>
-     <!-- Teléfono lavanda centrado -->
-  <g filter="url(#iconGlow)" transform="translate(0, 0.6)">
-    <!-- Auricular con degradado lavanda y trazo “glass” -->
-    <path
-      d="M7.1 5.3c.4-.7 1.3-1 2-.7l1.6.8c.6.3.9 1 .7 1.6l-.4 1.4
-         c-.2.7-.7 1.2-1.4 1.3l-.9.2
-         a8.4 8.4 0 0 0 3.6 3.6l.2-.9
-         c.1-.7.6-1.2 1.3-1.4l1.4-.4
-         c.6-.2 1.3.1 1.6.7l.8 1.6
-         c.3.7 0 1.6-.7 2l-1.1.7
-         c-.6.4-1.4.5-2.1.3
-         a13 13 0 0 1-7.3-7.3
-         c-.2-.7-.1-1.5.3-2.1z"
-      fill="url(#phoneFillLavender)"
-      stroke="url(#phoneStrokeLavender)"
-      stroke-width="1.4"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
+        stroke-linejoin="round"/>
 
-    <!-- highlight “cristal” en el borde superior del auricular -->
-    <path
-      d="M7.9 6.0c.8-.7 1.8-1.1 2.8-1.1l1.1.5"
-      fill="none"
-      stroke="rgba(255,255,255,0.9)"
-      stroke-width="0.7"
-      stroke-linecap="round"
-      opacity="0.1"/>
-
-    <!-- Ondas de llamada con el mismo trazo lavanda -->
-    <path d="M15.2 7.2a3.1 3.1 0 0 1 1.7 1.7"
-          fill="none"
-          stroke="url(#phoneStrokeLavender)"
-          stroke-width="1.0"
-          stroke-linecap="round"/>
-    <path d="M15.5 5.5a5.1 5.1 0 0 1 2.8 2.8"
-          fill="none"
-          stroke="url(#phoneStrokeLavender)"
-          stroke-width="0.85"
-          stroke-linecap="round"
-          opacity="0.9"/>
-    <path d="M15.8 3.8a7.2 7.2 0 0 1 3.9 3.9"
-          fill="none"
-          stroke="url(#phoneStrokeLavender)"
-          stroke-width="0.8"
-          stroke-linecap="round"
-          opacity="0.75"/>
-  </g>
-
-</symbol>
+      <!-- Ondas de llamada -->
+      <path d="M15.2 7.2a3.1 3.1 0 0 1 1.7 1.7"
+            fill="none"
+            stroke="url(#strokePhone)"
+            stroke-width="1.0"
+            stroke-linecap="round"/>
+      <path d="M15.5 5.5a5.1 5.1 0 0 1 2.8 2.8"
+            fill="none"
+            stroke="url(#strokePhone)"
+            stroke-width="0.85"
+            stroke-linecap="round"
+            opacity="0.9"/>
+      <path d="M15.8 3.8a7.2 7.2 0 0 1 3.9 3.9"
+            fill="none"
+            stroke="url(#strokePhone)"
+            stroke-width="0.8"
+            stroke-linecap="round"
+            opacity="0.75"/>
+    </g>
+  </symbol>
 
 <!-- 4 · BIBLIOTECA – Tres libros premium -->
 <!-- 4 · BIBLIOTECA – Tres libros centrados, trazo fino -->
@@ -1145,10 +1130,10 @@ main.container{
     <rect x="10.9"  y="7.3" width="2.4" height="0.6" rx="0.3" fill="#f9fafb" opacity="0.46"/>
     <rect x="10.9"  y="16.1" width="2.4" height="0.6" rx="0.3" fill="#f9fafb" opacity="0.46"/>
     <!-- derecho (rotadas con el mismo centro 15.9,12) -->
-    <rect x="14.2"  y="7.3" width="2.4" height="0.6" rx="0.3"
+    <rect x="14.0"  y="7.3" width="2.4" height="0.6" rx="0.3"
           fill="#f9fafb" opacity="0.46"
           transform="rotate(-10 15.9 7.6)"/>
-    <rect x="15.0"  y="16.1" width="2.4" height="0.6" rx="0.3"
+    <rect x="15.2"  y="16.1" width="2.4" height="0.6" rx="0.3"
           fill="#f9fafb" opacity="0.46"
           transform="rotate(-10 15.9 16.4)"/>
   </g>
