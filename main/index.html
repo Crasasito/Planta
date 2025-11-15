@@ -869,28 +869,35 @@ main.container{
   <!-- ===== NAV ICONS ===== -->
 
   <!-- 1 · PLANTA – Estetoscopio -->
-  <symbol id="i-stetho" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
-    <circle cx="12" cy="12" r="9.8"
-            fill="none"
-            stroke="rgba(15,23,42,0.18)"
-            stroke-width="0.9"
-            filter="url(#navShadow)"/>
-    <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
-             fill="#ffffff" opacity="0.7"/>
-    <g fill="none"
-       stroke="url(#strokeStetho)"
-       stroke-width="1.9"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       filter="url(#iconGlow)">
-      <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>
-      <path d="M9.8 7.6V5.4"/>
-      <path d="M14.2 7.6V5.4"/>
-      <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
-      <circle cx="16.4" cy="17.1" r="2.2"/>
-    </g>
-  </symbol>
+ <!-- 1 · PLANTA – Estetoscopio (ligeramente más alto) -->
+<!-- 1 · PLANTA – Estetoscopio (ligeramente más alto) -->
+<symbol id="i-stetho" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
+  <circle cx="12" cy="12" r="9.8"
+          fill="none"
+          stroke="rgba(15,23,42,0.18)"
+          stroke-width="0.9"
+          filter="url(#navShadow)"/>
+  <ellipse cx="8.4" cy="6.2" rx="5.3" ry="3"
+           fill="#ffffff" opacity="0.7"/>
+
+  <!-- Subimos el fonendo ~0.4 hacia arriba -->
+  <g fill="none"
+     stroke="url(#strokeStetho)"
+     stroke-width="1.9"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     filter="url(#iconGlow)"
+     transform="translate(0,-0.4)">
+    <path d="M7.6 7.6v3.3a4.4 4.4 0 0 0 8.8 0V7.6"/>
+    <path d="M9.8 7.6V5.4"/>
+    <path d="M14.2 7.6V5.4"/>
+    <path d="M12 13.6v2.4a3.7 3.7 0 0 0 3.7 3.7"/>
+    <circle cx="16.4" cy="17.1" r="2.2"/>
+  </g>
+</symbol>
+
+
 
   <!-- 2 · TAREAS – Reloj de arena: relleno + borde visible -->
  <!-- 2 · TAREAS – Reloj de arena premium -->
@@ -948,6 +955,7 @@ main.container{
 </symbol>
 
  <!-- 3 · DIRECTORIO – Teléfono 3D con ondas -->
+<!-- 3 · DIRECTORIO – Teléfono lavanda centrado (ligeramente más bajo) -->
 <symbol id="i-handset" viewBox="0 0 24 24">
   <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
   <circle cx="12" cy="12" r="9.8"
@@ -958,37 +966,40 @@ main.container{
   <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
-  <g filter="url(#iconGlow)">
-    <!-- Auricular, centrado y sin transform -->
+  <!-- Bajamos teléfono + ondas ~0.4 hacia abajo -->
+  <g filter="url(#iconGlow)"
+     transform="translate(0,0.4)">
     <path
-      d="M7.1 5.3c.4-.7 1.3-1 2-.7l1.6.8c.6.3.9 1 .7 1.6l-.4 1.4
-         c-.2.7-.7 1.2-1.4 1.3l-.9.2
-         a8.4 8.4 0 0 0 3.6 3.6l.2-.9
-         c.1-.7.6-1.2 1.3-1.4l1.4-.4
-         c.6-.2 1.3.1 1.6.7l.8 1.6
-         c.3.7 0 1.6-.7 2l-1.1.7
-         c-.6.4-1.4.5-2.1.3
-         a13 13 0 0 1-7.3-7.3
-         c-.2-.7-.1-1.5.3-2.1z"
-      fill="url(#phoneFill)"
+      d="M2.25 4.5
+         l4.5 -2.25
+         L9   5.25
+         L7.5 6.75
+         a11.5 11.5 0 0 0 9.75 9.75
+         l1.5 -1.5
+         3    2.25
+         -2.25 4.5
+         c-0.27 0.54 -0.88 0.78 -1.45 0.65
+         A17.56 17.56 0 0 1 2.1 6
+         C1.97 5.43 2.21 4.82 2.25 4.5
+         Z"
+      fill="#e0e7ff"
       stroke="url(#strokePhone)"
-      stroke-width="1.7"
+      stroke-width="1.9"
       stroke-linecap="round"
       stroke-linejoin="round"/>
 
-    <!-- Ondas de llamada -->
-    <path d="M15.2 7.2a3.1 3.1 0 0 1 1.7 1.7"
+    <path d="M16 8a3 3 0 0 1 3 3"
           fill="none"
           stroke="url(#strokePhone)"
           stroke-width="1.4"
           stroke-linecap="round"/>
-    <path d="M15.5 5.5a5.1 5.1 0 0 1 2.8 2.8"
+    <path d="M16 6a5 5 0 0 1 5 5"
           fill="none"
           stroke="url(#strokePhone)"
           stroke-width="1.2"
           stroke-linecap="round"
           opacity="0.85"/>
-    <path d="M15.8 3.8a7.2 7.2 0 0 1 3.9 3.9"
+    <path d="M16 4a7 7 0 0 1 7 7"
           fill="none"
           stroke="url(#strokePhone)"
           stroke-width="1.0"
@@ -996,14 +1007,15 @@ main.container{
           opacity="0.7"/>
   </g>
 
-  <!-- Brillo extra en parte superior del círculo del teléfono -->
-  <path d="M8.2 7.3c1.5-0.9 3.2-1 4.8-0.8"
+  <!-- Brillo extra: lo bajamos también para que acompañe -->
+  <path d="M8.2 7.7c1.5-0.9 3.2-1 4.8-0.8"
         fill="none"
         stroke="rgba(255,255,255,0.65)"
         stroke-width="1.1"
         stroke-linecap="round"
         opacity="0.9"/>
 </symbol>
+
 
 <!-- 4 · BIBLIOTECA – Tres libros premium -->
 <!-- 4 · BIBLIOTECA – Tres libros centrados, trazo fino -->
