@@ -167,6 +167,15 @@ h1#title{
   border-radius:999px;font-size:.84rem;
   background:var(--surface-2);box-shadow:inset 0 1px 0 #fff;
 }
+   .chip.counter{
+  font-size: calc(0.84rem * 1.3);  /* ≈ 30% más grande */
+  font-weight: 1000;               /* negrita fuerte */
+  font-variant-numeric: tabular-nums; /* dígitos alineados */
+  justify-content: center;         /* número centrado dentro de la píldora */
+  padding-inline: 12px;            /* un poco más de aire lateral */
+  min-width: 2.4em;                /* para que 2–3 dígitos sigan viéndose simétricos */
+}
+
 .chip.ok{background:#ecfdf5;color:#065F46;border-color:#a7f3d0}
 .chip.bad{background:#fef2f2;color:#991B1B;border-color:#fecaca}
 .btn{
@@ -1174,7 +1183,7 @@ main.container{
       <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
         <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
         <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
-        <span id="notifBadge" class="chip" title="Tareas activas">0</span>
+       <span id="notifBadge" class="chip counter" title="Tareas activas">0</span>
       </div>
       <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
       <button id="signin"  class="btn primary">Acceder</button>
@@ -1226,7 +1235,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-planta"><h2>Planta</h2><span id="p-count-planta" class="chip">0</span></div>
+        <div class="card-h h-planta"><h2>Planta</h2><span id="p-count-planta" class="chip counter">0</span></div>
         <div class="card-b">
           <ul id="p-list-planta" class="list"></ul>
           <p id="p-empty-planta" class="muted">Sin elementos en Planta.</p>
@@ -1234,7 +1243,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip">0</span></div>
+        <div class="card-h h-inter"><h2>Interconsultas</h2><span id="p-count-inter" class="chip counter">0</span></div>
         <div class="card-b">
           <ul id="p-list-inter" class="list"></ul>
           <p id="p-empty-inter" class="muted">Sin elementos en Interconsulta.</p>
@@ -1242,7 +1251,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-green"><h2>Completados</h2><span id="p-done-count" class="chip">0</span></div>
+        <div class="card-h h-green"><h2>Completados</h2><span id="p-done-count" class="chip counter">0</span></div>
         <div class="card-b">
           <ul id="p-done" class="list"></ul>
           <p id="p-done-empty" class="muted">Nada completado.</p>
@@ -1264,7 +1273,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip">0</span></div>
+        <div class="card-h h-tareas"><h2>Tareas activas</h2><span id="t-count" class="chip counter">0</span></div>
         <div class="card-b">
           <ul id="t-list" class="list"></ul>
           <p id="t-empty" class="muted">No hay tareas activas.</p>
@@ -1272,7 +1281,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-green"><h2>Completadas</h2><span id="t-done-count" class="chip">0</span></div>
+        <div class="card-h h-green"><h2>Completadas</h2><span id="t-done-count" class="chip counter">0</span></div>
         <div class="card-b">
           <ul id="t-done" class="list"></ul>
           <p id="t-done-empty" class="muted">No hay tareas completadas.</p>
@@ -1280,7 +1289,7 @@ main.container{
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="card-h h-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip">0</span></div>
+        <div class="card-h h-inter"><h2>Papelera</h2><span id="t-trash-count" class="chip counter">0</span></div>
         <div class="card-b">
           <div class="toolbar" style="margin-bottom:8px"><button id="t-emptyTrash" class="btn primary">Vaciar papelera</button></div>
           <ul id="t-trash" class="list"></ul>
@@ -1292,7 +1301,7 @@ main.container{
     <!-- ===== DIRECTORIO ===== -->
     <div id="panel-directorio" class="hide" role="region" aria-label="Directorio" tabindex="-1">
       <div class="card">
-        <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip">0</span></div>
+        <div class="card-h h-coral"><h2>Directorio telefónico</h2><span id="d-count" class="chip counter">0</span></div>
         <div class="card-b" style="display:grid;gap:12px;grid-template-columns:1fr auto">
           <div><label for="d-q">Búsqueda inteligente</label><input id="d-q" type="search" placeholder="Sección, nombre o extensión…"></div>
           <div class="toolbar" style="align-self:end; justify-content:flex-end;flex-wrap:wrap; gap:6px">
