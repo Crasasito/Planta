@@ -20,6 +20,12 @@
 
 /* ---------- TOKENS & BASE ---------- */
 :root{
+   @media (min-width: 1024px){
+  :root{
+    --appbar: 56px;  /* antes 64px: un poco más baja en PC */
+  }
+}
+
   --ink:#0b1220; --muted:#5a667a;
   --surface:#ffffff; --surface-2:#f7f9fc; --border:#e8eef5;
 
@@ -84,26 +90,150 @@ svg.ico{display:block}
 
 /* ---------- APPBAR ---------- */
 header.appbar{
-  position:sticky; top:0; z-index:50;
+  position:sticky;
+  top:0;
+  z-index:50;
   min-height:var(--appbar);
-  backdrop-filter: blur(8px) saturate(1.06);
-  background: var(--glass-bg);
+  backdrop-filter: blur(10px) saturate(1.1);
+  background:
+    radial-gradient(130% 180% at 0% 0%, rgba(250,249,255,.96), rgba(255,255,255,.98));
   border-bottom:1px solid var(--border);
 }
-.appbar .container{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{
-  padding:10px 14px;border-radius:999px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);
-  box-shadow:inset 0 1px 0 #fff, var(--shadow-1);
-  display:inline-flex;align-items:center;gap:10px;
-  font-weight:1000;letter-spacing:.2px;
+
+.appbar .container{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  padding-block:6px 8px;   /* un poco más compacta que antes */
 }
-.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--gold-500)}
-h1#title{
-  margin:0;font-size:clamp(18px,2.2vw,22px);
-  font-weight:1000;letter-spacing:.2px;color:#0e1624;
-  filter:drop-shadow(0 1px 0 rgba(0,0,0,.05));
+
+/* Bloque de marca izquierda: INFECCIOSAS + sección */
+.brand-block{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  align-items:flex-start;
+}
+
+/* Pastilla de marca “INFECCIOSAS” más protagonista */
+.brand{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid color-mix(in oklab,var(--lav-700),transparent 60%);
+  background:
+    radial-gradient(circle at 0% 0%,#fefce8 0,#f5f3ff 38%,#eef2ff 90%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.9),
+    0 14px 32px rgba(15,23,42,.18);
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-weight:1000;
+  letter-spacing:.2px;
+}
+
+/* Punto dorado con halo tipo app icon */
+.brand-dot{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:
+    conic-gradient(from 220deg at 50% 50%,
+      #f97316,#facc15,#22c55e,#4f46e5,#f97316);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,.95),
+    0 4px 10px rgba(15,23,42,.35);
+}
+
+/* Texto dentro de la marca */
+.brand-text{
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+
+.brand-kicker{
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.brand-title{
+  font-size:clamp(18px,2.2vw,22px);
+  font-weight:1000;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#0e1624;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.06));
+}
+
+/* Pastilla de sección (Planta / Tareas / …) debajo de la marca */
+.section-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid color-mix(in oklab,var(--lav-700),transparent 70%);
+  background:linear-gradient(135deg,#eef2ff,#fefce8);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.9),
+    0 10px 24px rgba(15,23,42,.18);
+}
+
+.section-pill-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--muted);
+}
+
+/* El título (sección activa) ahora vive dentro de la pastilla */
+.section-pill h1#title{
+  margin:0;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#0b1220;
+}
+
+/* Ajustes ligeros para pantallas pequeñas: no engordar demasiado la barra */
+@media (max-width: 720px){
+  .brand{
+    padding:6px 10px;
+    box-shadow:var(--shadow-1);
+  }
+  .brand-title{
+    font-size:17px;
+    letter-spacing:.14em;
+  }
+  .section-pill{
+    padding:2px 8px;
+    box-shadow:none;
+    background:#f9fafb;
+  }
+  .section-pill h1#title{
+    font-size:12px;
+  }
+}
+
+/* Alineado del bloque de estado + usuario en escritorio */
+.statusRow{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  flex-wrap:wrap;
+  font-size:12px;
+}
+
+#userGroup{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
 }
 
 /* ---------- CARDS ---------- */
@@ -1017,14 +1147,14 @@ main.container{
 <path d="M8.8 6.8 h6.4 L12 10.0z" 
       fill="url(#hourglassSand)"
       stroke="#a855f7"
-      stroke-width="0.55"
+      stroke-width="0.65"
       stroke-linejoin="round"/>
 
 <!-- Arena inferior (con borde lavanda fino) -->
 <path d="M7.2 16.5 h7.0 L10.7 10.0z" 
       fill="url(#hourglassSand)"
       stroke="#a855f7"
-      stroke-width="0.55"
+      stroke-width="0.65"
       stroke-linejoin="round"/>
 
     <!-- Brillo central vertical -->
@@ -1180,18 +1310,39 @@ main.container{
 
 <header class="appbar" role="banner">
   <div class="container">
-    <span class="brand"><span class="brand-dot" aria-hidden="true"></span>INFECCIOSAS</span>
-    <h1 id="title">Planta</h1>
+    <!-- Bloque de marca izquierda -->
+    <div class="brand-block">
+      <span class="brand" aria-label="Unidad de Enfermedades Infecciosas">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-kicker">Unidad</span>
+          <span class="brand-title">INFECCIOSAS</span>
+        </span>
+      </span>
+
+      <!-- Pastilla con la sección activa (Planta / Tareas / …) -->
+      <div class="section-pill" aria-live="polite">
+        <span class="section-pill-label">Sección</span>
+        <h1 id="title">Planta</h1>
+      </div>
+    </div>
+
     <div class="grow"></div>
-    <div class="statusRow" aria-live="polite" style="margin-left:12px">
+
+    <!-- Estado online + auth -->
+    <div class="statusRow" aria-live="polite">
       <span id="badge-online" class="chip bad">Offline</span>
       <span id="badge-auth" class="chip bad">Google: desconectado</span>
     </div>
-    <div id="userGroup" class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+
+    <!-- Usuario + botones -->
+    <div id="userGroup">
       <div id="userchip" class="hide" style="display:flex;align-items:center;gap:8px">
-        <img id="avatar" alt="" referrerpolicy="no-referrer" style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
-        <strong id="displayname" style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
-       <span id="notifBadge" class="chip counter" title="Tareas activas">0</span>
+        <img id="avatar" alt="" referrerpolicy="no-referrer"
+             style="width:32px;height:32px;border-radius:50%;box-shadow:var(--shadow-1)">
+        <strong id="displayname"
+                style="max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong>
+        <span id="notifBadge" class="chip" title="Tareas activas">0</span>
       </div>
       <button id="installBtn" class="btn" aria-label="Instalar">➕ Instalar</button>
       <button id="signin"  class="btn primary">Acceder</button>
@@ -1199,6 +1350,7 @@ main.container{
     </div>
   </div>
 </header>
+
 
 <main class="container">
   <div id="updateBanner" class="chip" style="display:none">
