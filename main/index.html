@@ -892,6 +892,34 @@ main.container{
   }
 }
 /* REGION: CSS-BOTTOM-DESKTOP-END */
+/* ---------- Ajustes barra inferior solo en PC ---------- */
+@media (min-width: 1024px){
+
+  /* Hacemos que la barra inferior respete el mismo ancho y padding que .container */
+  nav.bottom .bottom-inner{
+    max-width: min(1180px, 98vw);           /* igual que .container */
+    margin-inline: auto;
+    padding-inline: clamp(12px, 4vw, 20px); /* igual que .container */
+    justify-content: flex-start;            /* todo el grupo alineado a la izquierda */
+  }
+
+  /* Los iconos ya tienen gap:12px; no tocamos eso, sólo el divisor */
+  nav.bottom .divider{
+    flex: 0;               /* deja de empujar la etiqueta a la derecha */
+    width: 32px;           /* línea corta como separador visual */
+    background: linear-gradient(
+      90deg,
+      var(--border),
+      transparent
+    );
+  }
+
+  /* Por si hiciera falta asegurar alineación vertical perfecta */
+  nav.bottom .bottom-inner,
+  nav.bottom .icons-left{
+    align-items: center;
+  }
+}
 
 </style>
 </head>
