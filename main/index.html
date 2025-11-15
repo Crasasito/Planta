@@ -920,6 +920,101 @@ main.container{
     align-items: center;
   }
 }
+/* REGION: CSS-APPBAR-ANDROID-START */
+/* Ajustes específicos para pantallas pequeñas (Android / móvil) */
+@media (max-width: 720px){
+
+  /* La AppBar deja de ser tan alta y se compacta */
+  header.appbar{
+    min-height: auto;
+    padding-block: 6px;
+  }
+
+  /* Pasamos el contenedor del header a GRID para controlar filas y evitar huecos */
+  header.appbar .container{
+    display: grid;
+    grid-template-columns: auto 1fr; /* [INFECCIOSAS] [Título] */
+    grid-auto-rows: auto;
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 4px;
+  }
+
+  /* El "grow" solo tiene sentido en escritorio; en móvil crea huecos */
+  header.appbar .container .grow{
+    display: none;
+  }
+
+  /* Píldora INFECCIOSAS: un poco más compacta en móvil */
+  .brand{
+    grid-column: 1;
+    grid-row: 1;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  /* Título de sección (Planta, Tareas, etc.)
+     - Tamaño fluido
+     - Hasta 3 líneas como máximo visual
+     - Ocupa toda la columna derecha
+  */
+  h1#title{
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: clamp(16px, 4.4vw, 19px);
+    line-height: 1.16;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* Fila de estado (Online / Google) a lo ancho, sin margen izquierdo
+     Se muestra debajo del título (segunda banda visual)
+  */
+  .statusRow{
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-left: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Grupo de usuario (avatar, nombre, badge tareas, botones)
+     → tercera banda visual, a lo ancho
+  */
+  #userGroup{
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-left: 0 !important;
+    justify-content: flex-start;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  /* Nombre del usuario: recortamos para no comernos el ancho */
+  #userchip #displayname{
+    max-width: 14ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Píldoras (Online / Google / Tareas) más compactas en móvil */
+  .chip{
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* Botón "Instalar" es lo menos crítico → se oculta en móvil
+     (sigue siendo instalable desde el navegador/PWA)
+  */
+  #installBtn{
+    display: none;
+  }
+}
+/* REGION: CSS-APPBAR-ANDROID-END */
 
 </style>
 </head>
