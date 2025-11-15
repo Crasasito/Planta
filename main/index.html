@@ -924,97 +924,112 @@ main.container{
 /* Ajustes específicos para pantallas pequeñas (Android / móvil) */
 @media (max-width: 720px){
 
-  /* La AppBar deja de ser tan alta y se compacta */
+  /* AppBar más compacta */
   header.appbar{
     min-height: auto;
     padding-block: 6px;
   }
 
-  /* Pasamos el contenedor del header a GRID para controlar filas y evitar huecos */
+  /* GRID de 3 filas:
+     1) INFECCIOSAS + título
+     2) Estados + contador tareas
+     3) Avatar + nombre + Salir
+  */
   header.appbar .container{
+    position: relative;
     display: grid;
-    grid-template-columns: auto 1fr; /* [INFECCIOSAS] [Título] */
-    grid-auto-rows: auto;
-    align-items: center;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "brand  title   title"
+      "status status  notif"
+      "avatar name    signout";
     column-gap: 8px;
     row-gap: 4px;
+    align-items: center;
   }
 
-  /* El "grow" solo tiene sentido en escritorio; en móvil crea huecos */
+  /* El grow no tiene sentido en móvil: evita huecos */
   header.appbar .container .grow{
     display: none;
   }
 
-  /* Píldora INFECCIOSAS: un poco más compacta en móvil */
+  /* Píldora UNIDAD INFECCIOSAS */
   .brand{
-    grid-column: 1;
-    grid-row: 1;
+    grid-area: brand;
     padding: 6px 10px;
     font-size: 0.82rem;
   }
 
-  /* Título de sección (Planta, Tareas, etc.)
-     - Tamaño fluido
-     - Hasta 3 líneas como máximo visual
-     - Ocupa toda la columna derecha
-  */
+  /* Título de sección (PLANTA / TAREAS / …) autoajustable */
   h1#title{
-    grid-column: 2;
-    grid-row: 1;
+    grid-area: title;
     margin: 0;
     font-size: clamp(16px, 4.4vw, 19px);
-    line-height: 1.16;
-    max-width: 100%;
+    line-height: 1.15;
     white-space: normal;
     overflow-wrap: break-word;
   }
 
-  /* Fila de estado (Online / Google) a lo ancho, sin margen izquierdo
-     Se muestra debajo del título (segunda banda visual)
-  */
+  /* Fila de estado: Online + Google:… a la izquierda */
   .statusRow{
-    grid-column: 1 / -1;
-    grid-row: 2;
+    grid-area: status;
     margin-left: 0 !important;
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
   }
 
-  /* Grupo de usuario (avatar, nombre, badge tareas, botones)
-     → tercera banda visual, a lo ancho
-  */
-  #userGroup{
-    grid-column: 1 / -1;
-    grid-row: 3;
-    margin-left: 0 !important;
-    justify-content: flex-start;
-    gap: 6px;
-    flex-wrap: nowrap;
+  /* Hacemos "transparentes" estos contenedores para que sus hijos
+     se conviertan en ítems directos del grid del header */
+  #userGroup,
+  #userchip{
+    display: contents;
   }
 
-  /* Nombre del usuario: recortamos para no comernos el ancho */
-  #userchip #displayname{
-    max-width: 14ch;
+  /* Avatar → 3ª fila, columna izquierda */
+  #avatar{
+    grid-area: avatar;
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Nombre → 3ª fila, centro, alineado a avatar */
+  #displayname{
+    grid-area: name;
+    align-self: center;
+    max-width: 16ch;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* Píldoras (Online / Google / Tareas) más compactas en móvil */
+  /* Contador de tareas → 2ª fila, derecha */
+  #notifBadge{
+    grid-area: notif;
+    justify-self: end;
+  }
+
+  /* Salir / Acceder → 3ª fila, derecha (según estado de sesión) */
+  #signin,
+  #signout{
+    grid-area: signout;
+    justify-self: end;
+  }
+
+  /* Chips algo más compactos en móvil */
   .chip{
     padding: 4px 8px;
     font-size: 0.78rem;
   }
 
-  /* Botón "Instalar" es lo menos crítico → se oculta en móvil
-     (sigue siendo instalable desde el navegador/PWA)
-  */
+  /* En móvil ocultamos "Instalar" para ganar espacio */
   #installBtn{
     display: none;
   }
 }
 /* REGION: CSS-APPBAR-ANDROID-END */
+
 
 </style>
 </head>
