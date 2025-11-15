@@ -897,6 +897,7 @@ main.container{
 
   <!-- 1 · PLANTA – Estetoscopio -->
 <!-- 1 · PLANTA – Fonendoscopio ajustado (U más baja, tallo más corto) -->
+<!-- 1 · PLANTA – Fonendoscopio ajustado (U más baja, tallo más corto) -->
 <symbol id="i-stetho" viewBox="0 0 24 24">
   <!-- fondo y borde -->
   <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
@@ -925,27 +926,27 @@ main.container{
      filter="url(#iconGlow)"
      transform="translate(-0.6,-0.7)">
 
-    <!-- U principal MÁS BAJA (bajamos todo ~0.4) -->
+    <!-- U principal algo más baja -->
     <path d="
-      M9.2 8.9          <!-- antes 8.5 -->
-      V10.2             <!-- antes 9.6 -->
-      Q9.2 12.6 12 12.6 <!-- antes 12.2 -->
+      M9.2 8.9
+      V10.2
+      Q9.2 12.6 12 12.6
       Q14.8 12.6 14.8 10.2
       V8.9
     "/>
 
-    <!-- Tramos rectos hacia las olivas (más largos, olivas NO se tocan) -->
-    <path d="M9.2 8.9V7.2"/>
-    <path d="M14.8 8.9V7.2"/>
+    <!-- Tramos rectos hacia las olivas (más largos) -->
+    <path d="M9.2 8.9 V7.2"/>
+    <path d="M14.8 8.9 V7.2"/>
 
-    <!-- Tallo central: arranca más abajo (12.6) y se recorta por arriba -->
+    <!-- Tallo central más corto -->
     <path d="
-      M12 12.6          <!-- antes 12.2 -->
-      V14.4             <!-- mantenemos el final para no mover la curva -->
+      M12 12.6
+      V14.4
       a3.7 3.7 0 0 0 3.7 3.7
     "/>
 
-    <!-- Olivas (se mantienen exactamente igual que las tenías) -->
+    <!-- Olivas (se mantienen) -->
     <circle cx="9.2" cy="6.4" r="0.85"
             fill="url(#oliveFill)"
             stroke="url(#strokeStetho)"
@@ -955,13 +956,12 @@ main.container{
             stroke="url(#strokeStetho)"
             stroke-width="0.7"/>
 
-    <!-- Campana (igual que antes) -->
+    <!-- Campana -->
     <circle cx="16.4" cy="17.1" r="2.2"
             fill="#fed7aa"
             stroke="url(#strokeStetho)"/>
   </g>
 </symbol>
-
    REAS – Reloj de arena premium -->
 <!-- 2 · TAREAS – Reloj de arena premium 3.0 -->
 <!-- 2 · TAREAS – Reloj de arena premium, centrado -->
