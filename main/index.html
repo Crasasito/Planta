@@ -859,10 +859,18 @@ main.container{
   <stop offset="0.5" stop-color="#0ea5e9"/>  <!-- cian brillante premium -->
   <stop offset="1"   stop-color="#0369a1"/>  <!-- turquesa profundo -->
 </linearGradient>
-    <linearGradient id="phoneFill" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0"   stop-color="#eef2ff"/>
-      <stop offset="0.45" stop-color="#e0
-         <symbol id="i-stetho" viewBox="0 0 24 24">
+         <linearGradient id="phoneFillLavender" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%"  stop-color="#FEF9FF"/>
+  <stop offset="40%" stop-color="#E4C7FF"/>
+  <stop offset="100%" stop-color="#B266FF"/>
+</linearGradient>
+
+<linearGradient id="phoneStrokeLavender" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%"  stop-color="#FFFFFF" stop-opacity="0.95"/>
+  <stop offset="40%" stop-color="#D3B3FF"/>
+  <stop offset="100%" stop-color="#4C1D95"/>
+</linearGradient>
+
   <circle cx="12" cy="12" r="11" fill="url(#navIndigo)"/>
   <circle cx="12" cy="12" r="9.8"
           fill="none"
@@ -1024,25 +1032,28 @@ main.container{
 
  <!-- 3 · DIRECTORIO – Teléfono 3D con ondas -->
 <symbol id="i-handset" viewBox="0 0 24 24">
-   <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
+  <!-- disco lavanda -->
+  <circle cx="12" cy="12" r="11" fill="url(#navLavender)"/>
   <circle cx="12" cy="12" r="9.8"
           fill="none"
           stroke="url(#navLavender)"
           stroke-opacity="0.85"
           stroke-width="0.9"
           filter="url(#navShadow)"/>
-     <!-- rim light interior -->
+  <!-- rim light interior -->
   <circle cx="12" cy="12" r="10.4"
           fill="none"
           stroke="url(#navLavender)"
           stroke-width="0.8"
           stroke-opacity="1.0"
           filter="url(#iconGlow)"/>
+  <!-- brillo suave superior del disco -->
   <ellipse cx="8.7" cy="6.2" rx="5.2" ry="2.9"
            fill="#ffffff" opacity="0.72"/>
 
-  <g filter="url(#iconGlow)" transform="translate(0 0.7)">
-    <!-- Auricular, centrado y sin transform -->
+  <!-- Teléfono lavanda centrado -->
+  <g filter="url(#iconGlow)" transform="translate(0, 0.1)">
+    <!-- Auricular con degradado lavanda y trazo “glass” -->
     <path
       d="M7.1 5.3c.4-.7 1.3-1 2-.7l1.6.8c.6.3.9 1 .7 1.6l-.4 1.4
          c-.2.7-.7 1.2-1.4 1.3l-.9.2
@@ -1053,33 +1064,42 @@ main.container{
          c-.6.4-1.4.5-2.1.3
          a13 13 0 0 1-7.3-7.3
          c-.2-.7-.1-1.5.3-2.1z"
-      fill="url(#phoneFill)"
-      stroke="url(#strokePhone)"
-      stroke-width="1.2"
+      fill="url(#phoneFillLavender)"
+      stroke="url(#phoneStrokeLavender)"
+      stroke-width="1.4"
       stroke-linecap="round"
       stroke-linejoin="round"/>
 
-    <!-- Ondas de llamada -->
+    <!-- highlight “cristal” en el borde superior del auricular -->
+    <path
+      d="M7.9 6.0c.8-.7 1.8-1.1 2.8-1.1l1.1.5"
+      fill="none"
+      stroke="rgba(255,255,255,0.9)"
+      stroke-width="0.7"
+      stroke-linecap="round"
+      opacity="0.9"/>
+
+    <!-- Ondas de llamada con el mismo trazo lavanda -->
     <path d="M15.2 7.2a3.1 3.1 0 0 1 1.7 1.7"
           fill="none"
-          stroke="url(#strokePhone)"
+          stroke="url(#phoneStrokeLavender)"
           stroke-width="1.0"
           stroke-linecap="round"/>
     <path d="M15.5 5.5a5.1 5.1 0 0 1 2.8 2.8"
           fill="none"
-          stroke="url(#strokePhone)"
-          stroke-width="0.8"
+          stroke="url(#phoneStrokeLavender)"
+          stroke-width="0.85"
           stroke-linecap="round"
-          opacity="0.85"/>
+          opacity="0.9"/>
     <path d="M15.8 3.8a7.2 7.2 0 0 1 3.9 3.9"
           fill="none"
-          stroke="url(#strokePhone)"
-          stroke-width="0.7"
+          stroke="url(#phoneStrokeLavender)"
+          stroke-width="0.8"
           stroke-linecap="round"
-          opacity="0.7"/>
+          opacity="0.75"/>
   </g>
 
-  <!-- Brillo extra en parte superior del círculo del teléfono -->
+  <!-- Brillo extra en la parte superior del círculo -->
   <path d="M8.2 7.3c1.5-0.9 3.2-1 4.8-0.8"
         fill="none"
         stroke="rgba(255,255,255,0.65)"
