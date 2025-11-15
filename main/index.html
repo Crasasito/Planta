@@ -100,32 +100,39 @@ header.appbar{
   border-bottom:1px solid var(--border);
 }
 
+/* ---------- APPBAR LAYOUT ---------- */
+
 .appbar .container{
   display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  padding-block:6px 8px;   /* un poco más compacta que antes */
+  align-items:center;        /* todo centrado verticalmente */
+  gap:14px;
+  flex-wrap:wrap;            /* móvil puede romper a 2 filas */
+  padding-block:10px;        /* mismo aire arriba y abajo */
 }
 
-/* Bloque de marca izquierda: INFECCIOSAS + sección */
+/* En escritorio, intentamos que todo vaya en una sola fila */
+@media (min-width: 1024px){
+  .appbar .container{
+    flex-wrap:nowrap;
+  }
+}
+
+/* Bloque de la marca (solo INFECCIOSAS) */
 .brand-block{
   display:flex;
-  flex-direction:column;
-  gap:4px;
-  align-items:flex-start;
+  align-items:center;
 }
 
-/* Pastilla de marca “INFECCIOSAS” más protagonista */
+/* Píldora INFECCIOSAS, un poco más grande y premium */
 .brand{
-  padding:8px 14px;
+  padding:10px 18px;   /* antes 8x14 → subimos un poco */
   border-radius:999px;
-  border:1px solid color-mix(in oklab,var(--lav-700),transparent 60%);
+  border:1px solid color-mix(in oklab,var(--lav-700),transparent 55%);
   background:
-    radial-gradient(circle at 0% 0%,#fefce8 0,#f5f3ff 38%,#eef2ff 90%);
+    radial-gradient(circle at 0% 0%,#fefce8 0,#f5f3ff 40%,#eef2ff 92%);
   box-shadow:
     0 0 0 1px rgba(255,255,255,.9),
-    0 14px 32px rgba(15,23,42,.18);
+    0 16px 36px rgba(15,23,42,.20);
   display:inline-flex;
   align-items:center;
   gap:10px;
@@ -133,10 +140,10 @@ header.appbar{
   letter-spacing:.2px;
 }
 
-/* Punto dorado con halo tipo app icon */
+/* Punto con halo */
 .brand-dot{
-  width:14px;
-  height:14px;
+  width:15px;
+  height:15px;
   border-radius:50%;
   background:
     conic-gradient(from 220deg at 50% 50%,
@@ -146,11 +153,10 @@ header.appbar{
     0 4px 10px rgba(15,23,42,.35);
 }
 
-/* Texto dentro de la marca */
 .brand-text{
   display:flex;
   flex-direction:column;
-  line-height:1.1;
+  line-height:1.15;
 }
 
 .brand-kicker{
@@ -161,7 +167,7 @@ header.appbar{
 }
 
 .brand-title{
-  font-size:clamp(18px,2.2vw,22px);
+  font-size:clamp(19px,2.5vw,24px);   /* un poco más grande */
   font-weight:1000;
   letter-spacing:.18em;
   text-transform:uppercase;
@@ -169,18 +175,19 @@ header.appbar{
   filter:drop-shadow(0 1px 0 rgba(0,0,0,.06));
 }
 
-/* Pastilla de sección (Planta / Tareas / …) debajo de la marca */
+/* Pastilla de sección – ahora va a la derecha de la marca */
 .section-pill{
   display:inline-flex;
   align-items:center;
   gap:6px;
-  padding:4px 10px;
+  padding:6px 12px;
   border-radius:999px;
   border:1px solid color-mix(in oklab,var(--lav-700),transparent 70%);
   background:linear-gradient(135deg,#eef2ff,#fefce8);
   box-shadow:
     0 1px 0 rgba(255,255,255,.9),
     0 10px 24px rgba(15,23,42,.18);
+  white-space:nowrap;
 }
 
 .section-pill-label{
@@ -190,28 +197,27 @@ header.appbar{
   color:var(--muted);
 }
 
-/* El título (sección activa) ahora vive dentro de la pastilla */
 .section-pill h1#title{
   margin:0;
   font-size:13px;
   font-weight:900;
-  letter-spacing:.06em;
+  letter-spacing:.08em;
   text-transform:uppercase;
   color:#0b1220;
 }
 
-/* Ajustes ligeros para pantallas pequeñas: no engordar demasiado la barra */
+/* Ajustes en pantallas pequeñas: todo un poco más contenido */
 @media (max-width: 720px){
   .brand{
-    padding:6px 10px;
+    padding:7px 12px;
     box-shadow:var(--shadow-1);
   }
   .brand-title{
-    font-size:17px;
+    font-size:18px;
     letter-spacing:.14em;
   }
   .section-pill{
-    padding:2px 8px;
+    padding:4px 10px;
     box-shadow:none;
     background:#f9fafb;
   }
@@ -220,7 +226,7 @@ header.appbar{
   }
 }
 
-/* Alineado del bloque de estado + usuario en escritorio */
+/* Chips de estado + usuario alineados verticalmente */
 .statusRow{
   display:flex;
   gap:6px;
@@ -1151,7 +1157,7 @@ main.container{
       stroke-linejoin="round"/>
 
 <!-- Arena inferior (con borde lavanda fino) -->
-<path d="M7.2 16.5 h7.0 L10.7 10.0z" 
+<path d="M7.2 15.5 h9.6 L12 11.86z"" 
       fill="url(#hourglassSand)"
       stroke="#a855f7"
       stroke-width="0.65"
@@ -1310,7 +1316,7 @@ main.container{
 
 <header class="appbar" role="banner">
   <div class="container">
-    <!-- Bloque de marca izquierda -->
+    <!-- Marca izquierda -->
     <div class="brand-block">
       <span class="brand" aria-label="Unidad de Enfermedades Infecciosas">
         <span class="brand-dot" aria-hidden="true"></span>
@@ -1319,12 +1325,12 @@ main.container{
           <span class="brand-title">INFECCIOSAS</span>
         </span>
       </span>
+    </div>
 
-      <!-- Pastilla con la sección activa (Planta / Tareas / …) -->
-      <div class="section-pill" aria-live="polite">
-        <span class="section-pill-label">Sección</span>
-        <h1 id="title">Planta</h1>
-      </div>
+    <!-- Píldora de sección, ahora justo a la derecha de la marca -->
+    <div class="section-pill" aria-live="polite">
+      <span class="section-pill-label">Sección</span>
+      <h1 id="title">Planta</h1>
     </div>
 
     <div class="grow"></div>
@@ -1350,7 +1356,6 @@ main.container{
     </div>
   </div>
 </header>
-
 
 <main class="container">
   <div id="updateBanner" class="chip" style="display:none">
