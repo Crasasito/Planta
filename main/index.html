@@ -987,7 +987,107 @@ main.container{
 
 .sos-check input:checked + .sos-check-box{
   background:radial-gradient(circle at 30% 0%,#ffffff,#fed7aa);
-  border-color:color-mix(in oklab,var(--coral-700),transparent 40%);
+  border-color:color-mix(in oklab,var(--coral-700),transpare/* REGION: CSS-APPBAR-ANDROID-START */
+/* Ajustes específicos AppBar para pantallas pequeñas (Android / móvil) */
+@media (max-width: 720px){
+
+  /* AppBar más compacta */
+  header.appbar{
+    min-height: auto;
+    padding-block: 6px;
+  }
+
+  /* Grid de 3 filas:
+     1) UNIDAD INFECCIOSAS + SECCIÓN
+     2) Online / Google + contador tareas
+     3) Avatar + nombre + Salir
+  */
+  header.appbar .container{
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "brand  title   title"
+      "status status  notif"
+      "avatar name    signout";
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: center;
+    padding-inline: clamp(12px,4vw,20px);
+    max-width: 100%;
+    overflow: hidden;     /* evita scroll lateral por seguridad */
+  }
+
+  /* El grow solo sirve en escritorio → fuera en móvil */
+  header.appbar .container .grow{
+    display: none;
+  }
+
+  /* UNIDAD INFECCIOSAS */
+  .brand{
+    grid-area: brand;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  /* SECCIÓN PLANTA / TAREAS… (título) */
+  h1#title{
+    grid-area: title;
+    margin: 0;
+    font-size: clamp(16px, 4.4vw, 19px);
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* Fila 2: Online + Google:… (izquierda) */
+  .statusRow{
+    grid-area: status;
+    margin-left: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Aplanamos los contenedores para que sus hijos entren en la grid */
+  #userGroup,
+  #userchip{
+    display: contents !important;
+  }
+
+  /* Fila 2: contador de tareas a la derecha */
+  #notifBadge{
+    grid-area: notif;
+    justify-self: end;
+  }
+
+  /* Fila 3: avatar + nombre (izquierda) */
+  #avatar{
+    grid-area: avatar;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    box-shadow: var(--shadow-1);
+  }
+
+  #displayname{
+    grid-area: name;
+    align-self: center;
+    max-width: 16ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Fila 3: botón Salir / Acceder (derecha) */
+  #signin,
+  #signout{
+    grid-area: signout;
+    justify-self: end;
+  }
+
+  /* Chipsnt 40%);
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.9),
     0 0 0 4px rgba(254,249,195,0.8),
@@ -1020,130 +1120,7 @@ main.container{
     margin:3px 0;
   }
 }
-/* REGION: CSS-APPBAR-ANDROID-START */
-/* Ajustes específicos para pantallas pequeñas (Android / móvil) */
-@media (max-width: 720px){
 
-  /* AppBar más compacta */
-  header.appbar{
-    min-height: auto;
-    padding-block: 6px;
-  }
-
-  /* Contenedor del header como GRID:
-     Filas:
-       1) UNIDAD INFECCIOSAS
-       2) Título de sección
-       3) Online + Google / contador a la derecha
-       4) Usuario (avatar + nombre) / Salir a la derecha
-  */
-  header.appbar .container{
-    position: relative;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas:
-      "brand  brand  brand"
-      "title  title  title"
-      "status status notif"
-      "avatar name  signout";
-    column-gap: 8px;
-    row-gap: 4px;
-    align-items: center;
-    justify-items: start;
-    max-width: 100%;
-  }
-
-  /* El grow en móvil solo genera huecos → fuera */
-  header.appbar .container .grow{
-    display: none;
-  }
-
-  /* Píldora UNIDAD INFECCIOSAS */
-  .brand{
-    grid-area: brand;
-    padding: 6px 10px;
-    font-size: 0.82rem;
-    max-width: 100%;
-    justify-self: flex-start;
-  }
-
-  /* Título de sección (PLANTA, TAREAS, etc.) autoajustable y sin desbordar */
-  h1#title{
-    grid-area: title;
-    margin: 0;
-    font-size: clamp(16px, 4.2vw, 19px);
-    line-height: 1.15;
-    max-width: 100%;
-    white-space: normal;
-    overflow-wrap: break-word;
-  }
-
-  /* Fila de estados: Online + Google:… a la izquierda */
-  .statusRow{
-    grid-area: status;
-    margin-left: 0 !important;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  /* Aplanamos estos contenedores para que sus hijos sean items del grid */
-  #userGroup,
-  #userchip{
-    display: contents;
-    margin-left: 0 !important;
-  }
-
-  /* Avatar: fila 4, columna izquierda */
-  #avatar{
-    grid-area: avatar;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    box-shadow: var(--shadow-1);
-    justify-self: flex-start;
-  }
-
-  /* Nombre: fila 4, columna central */
-  #displayname{
-    grid-area: name;
-    max-width: 18ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    align-self: center;
-  }
-
-  /* Contador de tareas: fila 3, derecha (segunda banda visual) */
-  #notifBadge{
-    grid-area: notif;
-    justify-self: flex-end;
-  }
-
-  /* Botones de sesión:
-     - Acceder (cuando no hay sesión)
-     - Salir (cuando hay sesión)
-     → misma celda, fila 4, derecha
-  */
-  #signin,
-  #signout{
-    grid-area: signout;
-    justify-self: flex-end;
-  }
-
-  /* El botón Instalar se oculta en móvil para ahorrar ancho */
-  #installBtn{
-    display: none;
-  }
-
-  /* Chips algo más compactos en móvil */
-  .chip{
-    padding: 4px 8px;
-    font-size: 0.78rem;
-  }
-}
-/* REGION: CSS-APPBAR-ANDROID-END */
 @media (max-width: 720px){
   nav.bottom{
     position: fixed;
