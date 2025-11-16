@@ -1420,6 +1420,135 @@ main.container{
   /* ✅ Mantener visible el botón Instalar en Android (no lo ocultamos) */
 }
 /* REGION: CSS-APPBAR-ANDROID-END */
+/* REGION: CSS-APPBAR-ANDROID-STRONG-START */
+/* Layout específico para móviles / tablets táctiles (S25 Ultra, etc.) */
+@media (max-width: 1100px) and (pointer: coarse){
+
+  /* AppBar más compacta */
+  header.appbar{
+    min-height: auto;
+    padding-block: 6px;
+  }
+
+  /* GRID de 3 filas:
+     1) UNIDAD INFECCIOSAS + SECCIÓN
+     2) Online (izq) + CONTADOR (dcha)
+     3) Avatar + nombre (izq) + Acciones (Instalar/Acceder/Salir) (dcha)
+  */
+  header.appbar .container{
+    position: relative;
+    display: grid !important;           /* fuerza grid en móvil */
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "brand   title   title"
+      "status  status  notif"
+      "avatar  name    actions";
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: center;
+    padding-inline: clamp(12px,4vw,20px);
+    max-width: 100%;
+    overflow: hidden;                    /* sin scroll lateral */
+  }
+
+  /* El grow solo sirve en escritorio → fuera en móvil */
+  header.appbar .container .grow{
+    display: none;
+  }
+
+  /* Aplanamos el contenedor de marca para que .brand sea ítem de la grid */
+  .brand-block{
+    display: contents !important;
+  }
+
+  /* Fila 1: UNIDAD INFECCIOSAS (izquierda) */
+  .brand{
+    grid-area: brand;
+    padding: 7px 12px;
+    box-shadow: var(--shadow-1);
+  }
+
+  /* Fila 1: SECCIÓN PLANTA/TAREAS/DIRECTORIO (derecha) */
+  .section-pill{
+    grid-area: title;
+    padding: 4px 10px;
+    box-shadow: none;
+    background: #f9fafb;
+  }
+
+  .section-pill h1#title{
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* Fila 2: Online a la izquierda */
+  .statusRow{
+    grid-area: status;
+    margin-left: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Ocultamos el chip "Google: Antonio Sánchez" SOLO en móvil */
+  #badge-auth{
+    display: none !important;
+  }
+
+  /* Aplanamos usuario para que avatar, nombre, contador y botones
+     entren como celdas independientes en la grid */
+  #userGroup,
+  #userchip{
+    display: contents !important;
+  }
+
+  /* Fila 2: contador de tareas a la derecha */
+  #notifBadge{
+    grid-area: notif;
+    justify-self: end;
+  }
+
+  /* Fila 3: avatar + nombre a la izquierda */
+  #avatar{
+    grid-area: avatar;
+    border-radius: 50%;
+    box-shadow: var(--shadow-1);
+  }
+
+  #displayname{
+    grid-area: name;
+    align-self: center;
+    max-width: 16ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Fila 3: zona de acciones (Instalar + Acceder/Salir) a la derecha */
+  #installBtn,
+  #signin,
+  #signout{
+    grid-area: actions;
+    justify-self: end;
+    margin-left: 8px;
+  }
+
+  /* Aseguramos que Instalar NO se oculte aunque en otro bloque se ponga display:none */
+  #installBtn{
+    display: inline-flex !important;
+  }
+
+  /* Chips algo más compactos para que todo quepa sin huecos grandes */
+  .chip{
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+}
+/* REGION: CSS-APPBAR-ANDROID-STRONG-END */
 
 </style>
 </head>
