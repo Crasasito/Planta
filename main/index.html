@@ -961,11 +961,13 @@ main.container{
   background:linear-gradient(135deg,#eef2ff,#e0f2fe);
 }
 
+/* Check redondo para selección de contactos a eliminar */
 .sos-check{
   position:relative;
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  cursor:pointer;
 }
 
 .sos-check input{
@@ -987,7 +989,41 @@ main.container{
 
 .sos-check input:checked + .sos-check-box{
   background:radial-gradient(circle at 30% 0%,#ffffff,#fed7aa);
-  border-color:color-mix(in oklab,var(--coral-700),transpare/* REGION: CSS-APPBAR-ANDROID-START */
+  border-color:color-mix(in oklab,var(--coral-700),transparent 40%);
+}
+
+.sos-check-box::after{
+  content:"";
+  position:absolute;
+  width:9px;
+  height:6px;
+  border-radius:2px;
+  border:2px solid rgba(15,23,42,0.95);
+  border-top:none;
+  border-left:none;
+  transform:translateY(-1px) rotate(45deg);
+}
+
+/* Botón X de cada SOS */
+.sos-remove.btn{
+  width:32px;
+  height:32px;
+  min-width:32px;
+  min-height:32px;
+  padding:0;
+  border-radius:999px;
+  font-size:14px;
+}
+
+/* Ajuste fino en móviles */
+@media (max-width: 480px){
+  .sos-row{
+    padding:6px 8px;
+    margin:3px 0;
+  }
+}
+
+   * REGION: CSS-APPBAR-ANDROID-START */
 /* Ajustes específicos AppBar para pantallas pequeñas (Android / móvil) */
 @media (max-width: 720px){
 
@@ -2158,6 +2194,12 @@ const col={
 };
 let unsubs=[];
 const currentUid=()=>auth.currentUser?.uid;
+
+// Cola de reintentos para escrituras fallidas (no-op porque Firestore ya gestiona cache offline).
+function pushRetry(_op){
+  // Si algún día quieres una cola manual, aquí podrías guardar en localStorage
+}
+
 function unmount(){
   unsubs.forEach(u=>u&&u());
   unsubs=[];
@@ -3230,13 +3272,14 @@ function placePanelNearFab(){
 
 /* ===== Montaje ===== */
 function mount(uid){
-  loadEmergencies();
-  renderEmergency();
+  // Inicializa cada módulo ya conectado a Firestore
   setupPlanta(uid);
   setupTareas(uid);
   setupDir(uid);
   setupBiblio(uid);
-     setupSos(uid);
+  setupSos(uid);
+
+  // Mantiene el comportamiento de navegación que ya tenías
   const first=location.hash?.slice(1);
   if(mapTabs[first]) selectTab(first);
   else selectTab(localStorage.getItem('tab')||'planta');
